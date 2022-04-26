@@ -1,0 +1,18 @@
+SCIDB QUERY : <create temp array M8x8_default <val:double default 0.0> [x=0:*,32,0,y=0:*,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M8x8_default_stored <val:double default 0.0> [x=0:*,32,0,y=0:*,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<val:double>[i=0:9;j=0:9],i*j),M8x8_default)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<val:double>[i=0:9;j=0:9],i*j),M8x8_default_stored)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M8x8_default)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M8x8_default_stored)>
+Query was executed successfully
+

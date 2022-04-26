@@ -1,0 +1,3 @@
+SCIDB QUERY : <mquery(build(<v:int64>[i=0:9],i))>
+[An error expected at this place for the query "mquery(build(<v:int64>[i=0:9],i))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_OPERATOR_FAILED. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_OPERATOR_FAILED.]
+

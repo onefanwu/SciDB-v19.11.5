@@ -1,0 +1,35 @@
+# SDB-6720: Same as add_attributes_19_agg_count test, except using
+# overlaps.
+#
+# Show that adding an attribute with the smallest size in the array
+# (which will therefore be the iterated-over attribute) won't alter
+# the cell count.
+
+--setup
+
+create array FUNO <a:int64, b:int32>[x=0:99:2:10]
+--shell --command "rm -f /tmp/fun.tsv"
+--shell --command " \
+  for A in $(seq 100) \
+  ;do \
+     printf "$A\t$((A + 10))\n" >> /tmp/fun.tsv \
+  ;done"
+
+# Have to load using no-overlap schema until SDB-6725 is fixed, *sigh*.
+store(input(<a:int64, b:int32>[x=0:99:0:10], '/tmp/fun.tsv', format:'tsv'), FUNO)
+
+--test
+
+# Run an aggregate, show that we iterate using attrId == 1 (b:int32) because it is smallest.
+aggregate(_trace(FUNO, '/tmp/attr1.trace'), count(*))
+--shell --store --command "grep getConstIteratorImpl /tmp/attr1.trace-0 | cut -f4"
+
+# Add an even smaller attribute and try it again.  The new attribute
+# will be "synthesized".  *Should* have the same count!
+add_attributes(FUNO, <c:int8>)
+aggregate(_trace(FUNO, '/tmp/attr2.trace'), count(*))
+--shell --store --command "grep getConstIteratorImpl /tmp/attr2.trace-0 | cut -f4"
+
+--cleanup
+remove(FUNO)
+--shell --command "rm -f /tmp/attr1.trace* /tmp/attr2.trace* /tmp/fun.tsv"

@@ -1,0 +1,73 @@
+--setup
+--start-query-logging
+create array A <a:int64> [x=0:2,3,0]
+create array B <a:string,b:int32> [x=0:5,3,0,y=0:3,3,0]
+create array TS <a:string> [x=0:5,3,0,y=0:3,3,0]
+create array T <b:int32> [x=0:5,3,0,y=0:3,3,0]
+store(build(A,x+1),A)
+scan(A)  -- Inserted by scan_doctor
+store(join(build(TS,string(x)+'-'+string(y)),build(T,x+y)),B)
+scan(B)  -- Inserted by scan_doctor
+
+--test
+_show_nodist(A)
+store(cast(A,<b:int64> [y=0:2,3,0]),A1)
+scan(A1)  -- Inserted by scan_doctor
+_show_nodist(A1)
+store(cast(A,<b:int64> [x=0:2,3,0]),A2)
+scan(A2)  -- Inserted by scan_doctor
+_show_nodist(A2)
+store(cast(A,<a:int64> [y=0:2,3,0]),A3)
+scan(A3)  -- Inserted by scan_doctor
+_show_nodist(A3)
+store(cast(A,<a:int64> [x=0:2,3,0]),A4)
+scan(A4)  -- Inserted by scan_doctor
+_show_nodist(A4)
+_show_nodist(B)
+store(cast(B,<c:string,b:int32> [x=0:5,3,0,y=0:3,3,0]),B1)
+scan(B1)  -- Inserted by scan_doctor
+_show_nodist(B1)
+store(cast(B,<c:string,d:int32> [x=0:5,3,0,y=0:3,3,0]),B2)
+scan(B2)  -- Inserted by scan_doctor
+_show_nodist(B2)
+store(cast(B,<a:string,d:int32> [x=0:5,3,0,y=0:3,3,0]),B3)
+scan(B3)  -- Inserted by scan_doctor
+_show_nodist(B3)
+store(cast(B,<a:string,b:int32> [x=0:5,3,0,y=0:3,3,0]),B4)
+scan(B4)  -- Inserted by scan_doctor
+_show_nodist(B4)
+store(cast(B,<a:string,b:int32> [p=0:5,3,0,y=0:3,3,0]),B5)
+scan(B5)  -- Inserted by scan_doctor
+_show_nodist(B5)
+store(cast(B,<a:string,b:int32> [p=0:5,3,0,q=0:3,3,0]),B6)
+scan(B6)  -- Inserted by scan_doctor
+_show_nodist(B6)
+store(cast(B,<a:string,b:int32> [x=0:5,3,0,q=0:3,3,0]),B7)
+scan(B7)  -- Inserted by scan_doctor
+_show_nodist(B7)
+store(cast(B,<d:string,c:int32> [p=0:5,3,0,q=0:3,3,0]),B8)
+scan(B8)  -- Inserted by scan_doctor
+_show_nodist(B8)
+store(cast(B,<d:string,c:int32> [q=0:5,3,0,p=0:3,3,0]),B9)
+scan(B9)  -- Inserted by scan_doctor
+_show_nodist(B9)
+
+--cleanup
+remove(A)
+remove(B)
+remove(TS)
+remove(T)
+remove(A1)
+remove(A2)
+remove(A3)
+remove(A4)
+remove(B1)
+remove(B2)
+remove(B3)
+remove(B4)
+remove(B5)
+remove(B6)
+remove(B7)
+remove(B8)
+remove(B9)
+--stop-query-logging

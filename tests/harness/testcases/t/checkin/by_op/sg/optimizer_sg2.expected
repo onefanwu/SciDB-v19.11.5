@@ -1,0 +1,45 @@
+SCIDB QUERY : <create array S <val : double> [x=0:1,1,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(S, 2-(x*2)),S)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(S)  -- Inserted by scan_doctor>
+{x} val
+{0} 2
+{1} 0
+
+SCIDB QUERY : <subarray(S,0,1)>
+{x} val
+{0} 2
+{1} 0
+
+SCIDB QUERY : <subarray(S,1,2)>
+{x} val
+{0} 0
+
+SCIDB QUERY : <join(subarray(S,0,1) as A, subarray(S,1,2) as B)>
+{x} val,val
+{0} 2,0
+
+SCIDB QUERY : <apply(join(subarray(S,0,1) as A, subarray(S,1,2) as B), c, A.val-B.val)>
+{x} val,val,c
+{0} 2,0,2
+
+SCIDB QUERY : <project(apply(join(subarray(S,0,1) as A, subarray(S,1,2) as B), c, A.val-B.val),c)>
+{x} c
+{0} 2
+
+SCIDB QUERY : <store(project(apply(join(subarray(S,0,1) as A, subarray(S,1,2) as B), c, A.val - B.val), c), R)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(R)  -- Inserted by scan_doctor>
+{x} c
+{0} 2
+
+SCIDB QUERY : <remove(S)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(R)>
+Query was executed successfully
+

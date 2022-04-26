@@ -1,0 +1,52 @@
+Query was executed successfully
+
+Query was executed successfully
+
+0	*
+1	*
+2	*
+3	*
+4	*
+5	*
+6	*
+7	*
+8	*
+9	*
+10	*
+11	*
+12	*
+13	*
+14	*
+15	*
+16	*
+17	*
+18	*
+19	*
+
+0	*
+1	*
+2	*
+3	*
+4	*
+5	*
+6	*
+7	*
+8	*
+9	*
+10	*
+11	*
+12	*
+13	*
+14	*
+15	*
+16	*
+17	*
+18	*
+19	*
+
+[An error expected at this place for the query "cast(build(<v:int32>[i=0:9], i), <dummy:char>[$seq])". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME.]
+
+[An error expected at this place for the query "cast(build(<v:int32>[i=0:9], i), (i, $seq))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME.]
+
+Query was executed successfully
+

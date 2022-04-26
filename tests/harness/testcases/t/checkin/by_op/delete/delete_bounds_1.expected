@@ -1,0 +1,37 @@
+Query was executed successfully
+
+{No} name,low,high
+{0} 'i',0,999
+
+SCIDB QUERY : <delete(A6210, i > 995)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(A6210), name, low, high)>
+{No} name,low,high
+{0} 'i',0,995
+
+SCIDB QUERY : <delete(A6210, v < 3)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(A6210), name, low, high)>
+{No} name,low,high
+{0} 'i',3,995
+
+SCIDB QUERY : <delete(A6210, v > 25 and i < 30)>
+Query was executed successfully
+
+SCIDB QUERY : <delete(A6210, i > 28 and v < 100)>
+Query was executed successfully
+
+SCIDB QUERY : <delete(A6210, i > 125 and i < 210)>
+Query was executed successfully
+
+SCIDB QUERY : <delete(A6210, v > 225 and v < 310)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(A6210), name, low, high)>
+{No} name,low,high
+{0} 'i',3,995
+
+Query was executed successfully
+

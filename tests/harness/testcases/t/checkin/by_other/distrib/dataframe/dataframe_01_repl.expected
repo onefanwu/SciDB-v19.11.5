@@ -1,0 +1,938 @@
+SCIDB QUERY : <create array DF <i:int64, v:int64>>
+Query was executed successfully
+
+SCIDB QUERY : <create array DF_REPL <i:int64, v:int64> distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF)>
+{i} schema,distribution,etcomp
+{0} 'DF<i:int64,v:int64> [$inst=0:*:0:1; $seq=0:*:0:*]','dataframe','none'
+
+SCIDB QUERY : <show(DF_REPL)>
+{i} schema,distribution,etcomp
+{0} 'DF_REPL<i:int64,v:int64> [$inst=0:*:0:1; $seq=0:*:0:*]','replicated','none'
+
+subtest: store to created
+SCIDB QUERY : <store(flatten(build(<v:int64>[i=0:31:0:4], i+10)), DF)>
+Query was executed successfully
+
+SCIDB QUERY : <store(flatten(build(<v:int64>[i=0:31:0:4], i+10)), DF_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF)>
+{i} schema,distribution,etcomp
+{0} 'DF<i:int64,v:int64> [$inst=0:*:0:1; $seq=0:*:0:4]','dataframe','none'
+
+SCIDB QUERY : <show(DF_REPL)>
+{i} schema,distribution,etcomp
+{0} 'DF_REPL<i:int64,v:int64> [$inst=0:*:0:1; $seq=0:*:0:4]','replicated','none'
+
+SCIDB QUERY : <sort(DF)>
+{$n} i,v
+{0} 0,10
+{1} 1,11
+{2} 2,12
+{3} 3,13
+{4} 4,14
+{5} 5,15
+{6} 6,16
+{7} 7,17
+{8} 8,18
+{9} 9,19
+{10} 10,20
+{11} 11,21
+{12} 12,22
+{13} 13,23
+{14} 14,24
+{15} 15,25
+{16} 16,26
+{17} 17,27
+{18} 18,28
+{19} 19,29
+{20} 20,30
+{21} 21,31
+{22} 22,32
+{23} 23,33
+{24} 24,34
+{25} 25,35
+{26} 26,36
+{27} 27,37
+{28} 28,38
+{29} 29,39
+{30} 30,40
+{31} 31,41
+
+SCIDB QUERY : <sort(DF_REPL)>
+{$n} i,v
+{0} 0,10
+{1} 1,11
+{2} 2,12
+{3} 3,13
+{4} 4,14
+{5} 5,15
+{6} 6,16
+{7} 7,17
+{8} 8,18
+{9} 9,19
+{10} 10,20
+{11} 11,21
+{12} 12,22
+{13} 13,23
+{14} 14,24
+{15} 15,25
+{16} 16,26
+{17} 17,27
+{18} 18,28
+{19} 19,29
+{20} 20,30
+{21} 21,31
+{22} 22,32
+{23} 23,33
+{24} 24,34
+{25} 25,35
+{26} 26,36
+{27} 27,37
+{28} 28,38
+{29} 29,39
+{30} 30,40
+{31} 31,41
+
+SCIDB QUERY : <aggregate(DF, count(v))>
+{i} v_count
+{0} 32
+
+SCIDB QUERY : <aggregate(DF_REPL, count(v))>
+{i} v_count
+{0} 32
+
+remove so we can re-create
+SCIDB QUERY : <remove(DF)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF_REPL)>
+Query was executed successfully
+
+subtest: store with creation
+SCIDB QUERY : <store(flatten(build(<v:int64>[i=0:31:04], i+10)), DF)>
+Query was executed successfully
+
+SCIDB QUERY : <store(flatten(build(<v:int64>[i=0:31:04], i+10)), DF_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF)>
+{i} schema,distribution,etcomp
+{0} 'DF<i:int64 NOT NULL,v:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000]','dataframe','none'
+
+SCIDB QUERY : <show(DF_REPL)>
+{i} schema,distribution,etcomp
+{0} 'DF_REPL<i:int64 NOT NULL,v:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000]','replicated','none'
+
+SCIDB QUERY : <sort(DF)>
+{$n} i,v
+{0} 0,10
+{1} 1,11
+{2} 2,12
+{3} 3,13
+{4} 4,14
+{5} 5,15
+{6} 6,16
+{7} 7,17
+{8} 8,18
+{9} 9,19
+{10} 10,20
+{11} 11,21
+{12} 12,22
+{13} 13,23
+{14} 14,24
+{15} 15,25
+{16} 16,26
+{17} 17,27
+{18} 18,28
+{19} 19,29
+{20} 20,30
+{21} 21,31
+{22} 22,32
+{23} 23,33
+{24} 24,34
+{25} 25,35
+{26} 26,36
+{27} 27,37
+{28} 28,38
+{29} 29,39
+{30} 30,40
+{31} 31,41
+
+SCIDB QUERY : <sort(DF_REPL)>
+{$n} i,v
+{0} 0,10
+{1} 1,11
+{2} 2,12
+{3} 3,13
+{4} 4,14
+{5} 5,15
+{6} 6,16
+{7} 7,17
+{8} 8,18
+{9} 9,19
+{10} 10,20
+{11} 11,21
+{12} 12,22
+{13} 13,23
+{14} 14,24
+{15} 15,25
+{16} 16,26
+{17} 17,27
+{18} 18,28
+{19} 19,29
+{20} 20,30
+{21} 21,31
+{22} 22,32
+{23} 23,33
+{24} 24,34
+{25} 25,35
+{26} 26,36
+{27} 27,37
+{28} 28,38
+{29} 29,39
+{30} 30,40
+{31} 31,41
+
+SCIDB QUERY : <aggregate(DF, count(v))>
+{i} v_count
+{0} 32
+
+SCIDB QUERY : <aggregate(DF_REPL, count(v))>
+{i} v_count
+{0} 32
+
+subtest: filter
+SCIDB QUERY : <filter(DF, v%2=0)>
+i,v
+0,10
+2,12
+4,14
+6,16
+8,18
+10,20
+12,22
+14,24
+16,26
+18,28
+20,30
+22,32
+24,34
+26,36
+28,38
+30,40
+
+SCIDB QUERY : <filter(DF_REPL, v%2=0)>
+i,v
+0,10
+2,12
+4,14
+6,16
+8,18
+10,20
+12,22
+14,24
+16,26
+18,28
+20,30
+22,32
+24,34
+26,36
+28,38
+30,40
+
+SCIDB QUERY : <store(filter(_sg(flatten(build(<v:int64>[i=0:31:0:4], i+10)), 1), v%2=0), DF_OUT)>
+Query was executed successfully
+
+SCIDB QUERY : <store(filter(_sg(flatten(build(<v:int64>[i=0:31:0:4], i+10)), 1), v%2=0), DF_REPL_OUT, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF_OUT)>
+{i} schema,distribution,etcomp
+{0} 'DF_OUT<i:int64 NOT NULL,v:int64> [$inst=0:*:0:1; $seq=0:*:0:4]','dataframe','none'
+
+SCIDB QUERY : <show(DF_REPL_OUT)>
+{i} schema,distribution,etcomp
+{0} 'DF_REPL_OUT<i:int64 NOT NULL,v:int64> [$inst=0:*:0:1; $seq=0:*:0:4]','replicated','none'
+
+SCIDB QUERY : <sort(DF_OUT)>
+{$n} i,v
+{0} 0,10
+{1} 2,12
+{2} 4,14
+{3} 6,16
+{4} 8,18
+{5} 10,20
+{6} 12,22
+{7} 14,24
+{8} 16,26
+{9} 18,28
+{10} 20,30
+{11} 22,32
+{12} 24,34
+{13} 26,36
+{14} 28,38
+{15} 30,40
+
+SCIDB QUERY : <sort(DF_REPL_OUT)>
+{$n} i,v
+{0} 0,10
+{1} 2,12
+{2} 4,14
+{3} 6,16
+{4} 8,18
+{5} 10,20
+{6} 12,22
+{7} 14,24
+{8} 16,26
+{9} 18,28
+{10} 20,30
+{11} 22,32
+{12} 24,34
+{13} 26,36
+{14} 28,38
+{15} 30,40
+
+SCIDB QUERY : <aggregate(DF_OUT, count(v))>
+{i} v_count
+{0} 16
+
+SCIDB QUERY : <aggregate(DF_REPL_OUT, count(v))>
+{i} v_count
+{0} 16
+
+SCIDB QUERY : <remove(DF_OUT)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF_REPL_OUT)>
+Query was executed successfully
+
+subtest: apply
+SCIDB QUERY : <apply(DF, w, v)>
+i,v,w
+0,10,10
+1,11,11
+2,12,12
+3,13,13
+4,14,14
+5,15,15
+6,16,16
+7,17,17
+8,18,18
+9,19,19
+10,20,20
+11,21,21
+12,22,22
+13,23,23
+14,24,24
+15,25,25
+16,26,26
+17,27,27
+18,28,28
+19,29,29
+20,30,30
+21,31,31
+22,32,32
+23,33,33
+24,34,34
+25,35,35
+26,36,36
+27,37,37
+28,38,38
+29,39,39
+30,40,40
+31,41,41
+
+SCIDB QUERY : <apply(DF_REPL, w, v)>
+i,v,w
+0,10,10
+1,11,11
+2,12,12
+3,13,13
+4,14,14
+5,15,15
+6,16,16
+7,17,17
+8,18,18
+9,19,19
+10,20,20
+11,21,21
+12,22,22
+13,23,23
+14,24,24
+15,25,25
+16,26,26
+17,27,27
+18,28,28
+19,29,29
+20,30,30
+21,31,31
+22,32,32
+23,33,33
+24,34,34
+25,35,35
+26,36,36
+27,37,37
+28,38,38
+29,39,39
+30,40,40
+31,41,41
+
+SCIDB QUERY : <store(apply(flatten(build(<v:int64>[i=0:31:0:4], i+10)), w, v), DF_OUT)>
+Query was executed successfully
+
+SCIDB QUERY : <store(apply(flatten(build(<v:int64>[i=0:31:0:4], i+10)), w, v), DF_REPL_OUT, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF_OUT)>
+{i} schema,distribution,etcomp
+{0} 'DF_OUT<i:int64 NOT NULL,v:int64,w:int64> [$inst=0:*:0:1; $seq=0:*:0:4]','dataframe','none'
+
+SCIDB QUERY : <show(DF_REPL_OUT)>
+{i} schema,distribution,etcomp
+{0} 'DF_REPL_OUT<i:int64 NOT NULL,v:int64,w:int64> [$inst=0:*:0:1; $seq=0:*:0:4]','replicated','none'
+
+SCIDB QUERY : <sort(DF_OUT)>
+{$n} i,v,w
+{0} 0,10,10
+{1} 1,11,11
+{2} 2,12,12
+{3} 3,13,13
+{4} 4,14,14
+{5} 5,15,15
+{6} 6,16,16
+{7} 7,17,17
+{8} 8,18,18
+{9} 9,19,19
+{10} 10,20,20
+{11} 11,21,21
+{12} 12,22,22
+{13} 13,23,23
+{14} 14,24,24
+{15} 15,25,25
+{16} 16,26,26
+{17} 17,27,27
+{18} 18,28,28
+{19} 19,29,29
+{20} 20,30,30
+{21} 21,31,31
+{22} 22,32,32
+{23} 23,33,33
+{24} 24,34,34
+{25} 25,35,35
+{26} 26,36,36
+{27} 27,37,37
+{28} 28,38,38
+{29} 29,39,39
+{30} 30,40,40
+{31} 31,41,41
+
+SCIDB QUERY : <sort(DF_REPL_OUT)>
+{$n} i,v,w
+{0} 0,10,10
+{1} 1,11,11
+{2} 2,12,12
+{3} 3,13,13
+{4} 4,14,14
+{5} 5,15,15
+{6} 6,16,16
+{7} 7,17,17
+{8} 8,18,18
+{9} 9,19,19
+{10} 10,20,20
+{11} 11,21,21
+{12} 12,22,22
+{13} 13,23,23
+{14} 14,24,24
+{15} 15,25,25
+{16} 16,26,26
+{17} 17,27,27
+{18} 18,28,28
+{19} 19,29,29
+{20} 20,30,30
+{21} 21,31,31
+{22} 22,32,32
+{23} 23,33,33
+{24} 24,34,34
+{25} 25,35,35
+{26} 26,36,36
+{27} 27,37,37
+{28} 28,38,38
+{29} 29,39,39
+{30} 30,40,40
+{31} 31,41,41
+
+SCIDB QUERY : <aggregate(DF_OUT, count(v))>
+{i} v_count
+{0} 32
+
+SCIDB QUERY : <aggregate(DF_REPL_OUT, count(v))>
+{i} v_count
+{0} 32
+
+SCIDB QUERY : <remove(DF_OUT)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF_REPL_OUT)>
+Query was executed successfully
+
+subtest: project
+SCIDB QUERY : <project(apply(DF, w, v),w)>
+w
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+
+SCIDB QUERY : <project(apply(DF_REPL, w, v),w)>
+w
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+
+subtest: cross_join
+SCIDB QUERY : <store(build(<a:int64>[x=0:11:0:3], 20+x), ONE)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<a:int64>[x=0:4:0:5; y=1:8:0:2], x+y), TWO)>
+Query was executed successfully
+
+12 * 32 == 384
+SCIDB QUERY : <store(cross_join(ONE, DF), OUT_A_1)>
+Query was executed successfully
+
+SCIDB QUERY : <store(cross_join(ONE, DF_REPL), OUT_A_2)>
+Query was executed successfully
+
+SCIDB QUERY : <store(cross_join(DF, ONE), OUT_A_3)>
+Query was executed successfully
+
+SCIDB QUERY : <store(cross_join(DF_REPL, ONE), OUT_A_4)>
+Query was executed successfully
+
+SCIDB QUERY : <show(OUT_A_1)>
+{i} schema,distribution,etcomp
+{0} 'OUT_A_1<a:int64,i:int64 NOT NULL,v:int64> [x=0:11:0:3; $inst=0:*:0:1; $seq=0:*:0:1000000]','hashed','none'
+
+SCIDB QUERY : <show(OUT_A_2)>
+{i} schema,distribution,etcomp
+{0} 'OUT_A_2<a:int64,i:int64 NOT NULL,v:int64> [x=0:11:0:3; $inst=0:*:0:1; $seq=0:*:0:1000000]','hashed','none'
+
+SCIDB QUERY : <show(OUT_A_3)>
+{i} schema,distribution,etcomp
+{0} 'OUT_A_3<i:int64 NOT NULL,v:int64,a:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000; x=0:11:0:3]','hashed','none'
+
+SCIDB QUERY : <show(OUT_A_4)>
+{i} schema,distribution,etcomp
+{0} 'OUT_A_4<i:int64 NOT NULL,v:int64,a:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000; x=0:11:0:3]','hashed','none'
+
+SCIDB QUERY : <op_count(OUT_A_1)>
+{i} count
+{0} 384
+
+SCIDB QUERY : <op_count(OUT_A_2)>
+{i} count
+{0} 384
+
+SCIDB QUERY : <op_count(OUT_A_3)>
+{i} count
+{0} 384
+
+SCIDB QUERY : <op_count(OUT_A_4)>
+{i} count
+{0} 384
+
+SCIDB QUERY : <remove(OUT_A_1)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_A_2)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_A_3)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_A_4)>
+Query was executed successfully
+
+40 * 32 == 1280
+SCIDB QUERY : <store(cross_join(TWO, DF), OUT_B_1)>
+Query was executed successfully
+
+SCIDB QUERY : <store(cross_join(TWO, DF_REPL), OUT_B_2)>
+Query was executed successfully
+
+SCIDB QUERY : <store(cross_join(DF, TWO), OUT_B_3)>
+Query was executed successfully
+
+SCIDB QUERY : <store(cross_join(DF_REPL, TWO), OUT_B_4)>
+Query was executed successfully
+
+SCIDB QUERY : <show(OUT_B_1)>
+{i} schema,distribution,etcomp
+{0} 'OUT_B_1<a:int64,i:int64 NOT NULL,v:int64> [x=0:4:0:5; y=1:8:0:2; $inst=0:*:0:1; $seq=0:*:0:1000000]','hashed','none'
+
+SCIDB QUERY : <show(OUT_B_2)>
+{i} schema,distribution,etcomp
+{0} 'OUT_B_2<a:int64,i:int64 NOT NULL,v:int64> [x=0:4:0:5; y=1:8:0:2; $inst=0:*:0:1; $seq=0:*:0:1000000]','hashed','none'
+
+SCIDB QUERY : <show(OUT_B_3)>
+{i} schema,distribution,etcomp
+{0} 'OUT_B_3<i:int64 NOT NULL,v:int64,a:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000; x=0:4:0:5; y=1:8:0:2]','hashed','none'
+
+SCIDB QUERY : <show(OUT_B_4)>
+{i} schema,distribution,etcomp
+{0} 'OUT_B_4<i:int64 NOT NULL,v:int64,a:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000; x=0:4:0:5; y=1:8:0:2]','hashed','none'
+
+SCIDB QUERY : <op_count(OUT_B_1)>
+{i} count
+{0} 1280
+
+SCIDB QUERY : <op_count(OUT_B_2)>
+{i} count
+{0} 1280
+
+SCIDB QUERY : <op_count(OUT_B_3)>
+{i} count
+{0} 1280
+
+SCIDB QUERY : <op_count(OUT_B_4)>
+{i} count
+{0} 1280
+
+SCIDB QUERY : <remove(OUT_B_1)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_B_2)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_B_3)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_B_4)>
+Query was executed successfully
+
+32 * 32 == 1024
+SCIDB QUERY : <store(cross_join(DF, DF), OUT_C_1)>
+Query was executed successfully
+
+SCIDB QUERY : <store(cross_join(DF, DF_REPL), OUT_C_2)>
+Query was executed successfully
+
+SCIDB QUERY : <store(cross_join(DF_REPL, DF), OUT_C_3)>
+Query was executed successfully
+
+SCIDB QUERY : <store(cross_join(DF_REPL, DF_REPL), OUT_C_4)>
+Query was executed successfully
+
+SCIDB QUERY : <show(OUT_C_1)>
+{i} schema,distribution,etcomp
+{0} 'OUT_C_1<i:int64 NOT NULL,v:int64,i_2:int64 NOT NULL,v_2:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000; $inst_2=0:*:0:1; $seq_2=0:*:0:1000000]','hashed','none'
+
+SCIDB QUERY : <show(OUT_C_2)>
+{i} schema,distribution,etcomp
+{0} 'OUT_C_2<i:int64 NOT NULL,v:int64,i_2:int64 NOT NULL,v_2:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000; $inst_2=0:*:0:1; $seq_2=0:*:0:1000000]','hashed','none'
+
+SCIDB QUERY : <show(OUT_C_3)>
+{i} schema,distribution,etcomp
+{0} 'OUT_C_3<i:int64 NOT NULL,v:int64,i_2:int64 NOT NULL,v_2:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000; $inst_2=0:*:0:1; $seq_2=0:*:0:1000000]','hashed','none'
+
+SCIDB QUERY : <show(OUT_C_4)>
+{i} schema,distribution,etcomp
+{0} 'OUT_C_4<i:int64 NOT NULL,v:int64,i_2:int64 NOT NULL,v_2:int64> [$inst=0:*:0:1; $seq=0:*:0:1000000; $inst_2=0:*:0:1; $seq_2=0:*:0:1000000]','hashed','none'
+
+SCIDB QUERY : <op_count(OUT_C_1)>
+{i} count
+{0} 1024
+
+SCIDB QUERY : <op_count(OUT_C_2)>
+{i} count
+{0} 1024
+
+SCIDB QUERY : <op_count(OUT_C_3)>
+{i} count
+{0} 1024
+
+SCIDB QUERY : <op_count(OUT_C_4)>
+{i} count
+{0} 1024
+
+SCIDB QUERY : <remove(OUT_C_1)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_C_2)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_C_3)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_C_4)>
+Query was executed successfully
+
+SCIDB QUERY : <avg_rank(DF)>
+i,i_rank
+0,1
+1,2
+2,3
+3,4
+4,5
+5,6
+6,7
+7,8
+8,9
+9,10
+10,11
+11,12
+12,13
+13,14
+14,15
+15,16
+16,17
+17,18
+18,19
+19,20
+20,21
+21,22
+22,23
+23,24
+24,25
+25,26
+26,27
+27,28
+28,29
+29,30
+30,31
+31,32
+
+SCIDB QUERY : <avg_rank(DF, v)>
+v,v_rank
+10,1
+11,2
+12,3
+13,4
+14,5
+15,6
+16,7
+17,8
+18,9
+19,10
+20,11
+21,12
+22,13
+23,14
+24,15
+25,16
+26,17
+27,18
+28,19
+29,20
+30,21
+31,22
+32,23
+33,24
+34,25
+35,26
+36,27
+37,28
+38,29
+39,30
+40,31
+41,32
+
+SCIDB QUERY : <avg_rank(DF_REPL)>
+i,i_rank
+0,1
+1,2
+2,3
+3,4
+4,5
+5,6
+6,7
+7,8
+8,9
+9,10
+10,11
+11,12
+12,13
+13,14
+14,15
+15,16
+16,17
+17,18
+18,19
+19,20
+20,21
+21,22
+22,23
+23,24
+24,25
+25,26
+26,27
+27,28
+28,29
+29,30
+30,31
+31,32
+
+SCIDB QUERY : <avg_rank(DF_REPL, v)>
+v,v_rank
+10,1
+11,2
+12,3
+13,4
+14,5
+15,6
+16,7
+17,8
+18,9
+19,10
+20,11
+21,12
+22,13
+23,14
+24,15
+25,16
+26,17
+27,18
+28,19
+29,20
+30,21
+31,22
+32,23
+33,24
+34,25
+35,26
+36,27
+37,28
+38,29
+39,30
+40,31
+41,32
+
+SCIDB QUERY : <store(flatten(avg_rank(DF, v)), OUT_D_1)>
+Query was executed successfully
+
+SCIDB QUERY : <store(flatten(avg_rank(DF, v)), OUT_D_2, distribution:replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(flatten(avg_rank(DF_REPL, v)), OUT_D_3)>
+Query was executed successfully
+
+SCIDB QUERY : <store(flatten(avg_rank(DF_REPL, v)), OUT_D_4, distribution:replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <show(OUT_D_1)>
+{i} schema,distribution,etcomp
+{0} 'OUT_D_1<v:int64,v_rank:double> [$inst=0:*:0:1; $seq=0:*:0:1000000]','dataframe','none'
+
+SCIDB QUERY : <show(OUT_D_2)>
+{i} schema,distribution,etcomp
+{0} 'OUT_D_2<v:int64,v_rank:double> [$inst=0:*:0:1; $seq=0:*:0:1000000]','replicated','none'
+
+SCIDB QUERY : <show(OUT_D_3)>
+{i} schema,distribution,etcomp
+{0} 'OUT_D_3<v:int64,v_rank:double> [$inst=0:*:0:1; $seq=0:*:0:1000000]','dataframe','none'
+
+SCIDB QUERY : <show(OUT_D_4)>
+{i} schema,distribution,etcomp
+{0} 'OUT_D_4<v:int64,v_rank:double> [$inst=0:*:0:1; $seq=0:*:0:1000000]','replicated','none'
+
+SCIDB QUERY : <op_count(OUT_D_1)>
+{i} count
+{0} 32
+
+SCIDB QUERY : <op_count(OUT_D_2)>
+{i} count
+{0} 32
+
+SCIDB QUERY : <op_count(OUT_D_3)>
+{i} count
+{0} 32
+
+SCIDB QUERY : <op_count(OUT_D_4)>
+{i} count
+{0} 32
+
+SCIDB QUERY : <remove(OUT_D_1)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_D_2)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_D_3)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_D_4)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ONE)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(TWO)>
+Query was executed successfully
+

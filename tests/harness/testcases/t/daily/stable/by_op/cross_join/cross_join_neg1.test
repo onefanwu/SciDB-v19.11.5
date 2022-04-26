@@ -1,0 +1,10 @@
+# ticket no. 1443
+
+--setup
+create array A <a:int32> [x=0:2,3,0]
+
+--test
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_REGEX "cross_join(A as a1,A as a2,a1.x)"
+
+--cleanup
+remove(A)

@@ -1,0 +1,25 @@
+Query was executed successfully
+
+SCIDB QUERY : <regrid(A,1,sum(a))>
+[An error expected at this place for the query "regrid(A,1,sum(a))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT2. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT2.]
+
+SCIDB QUERY : <regrid(A,1,2,3,sum(a))>
+[An error expected at this place for the query "regrid(A,1,2,3,sum(a))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_WRONG_OPERATOR_ARGUMENT. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_WRONG_OPERATOR_ARGUMENT.]
+
+SCIDB QUERY : <regrid(A,1,2)>
+[An error expected at this place for the query "regrid(A,1,2)". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_REGEX. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_REGEX.]
+
+SCIDB QUERY : <regrid(A,sum(a),max(a))>
+[An error expected at this place for the query "regrid(A,sum(a),max(a))". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+SCIDB QUERY : <regrid(A,1,2,sum(a),42,max(a))>
+[An error expected at this place for the query "regrid(A,1,2,sum(a),42,max(a))". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+SCIDB QUERY : <regrid(A,1,2,sum(a),42)>
+[An error expected at this place for the query "regrid(A,1,2,sum(a),42)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_NUM_CHUNKSIZES_NOT_MATCH_NUM_DIMS. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_NUM_CHUNKSIZES_NOT_MATCH_NUM_DIMS.]
+
+SCIDB QUERY : <regrid(A,1,2,sum(a),42,17,1952)>
+[An error expected at this place for the query "regrid(A,1,2,sum(a),42,17,1952)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_NUM_CHUNKSIZES_NOT_MATCH_NUM_DIMS. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_NUM_CHUNKSIZES_NOT_MATCH_NUM_DIMS.]
+
+Query was executed successfully
+

@@ -1,0 +1,32 @@
+SCIDB QUERY : <create array DF < lname: string, fname: string, dept: string, course: string, gpa: float, remarks: string >>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF)>
+{i} schema,distribution,etcomp
+{0} 'DF<lname:string,fname:string,dept:string,course:string,gpa:float,remarks:string> [$inst=0:*:0:1; $seq=0:*:0:*]','dataframe','none'
+
+SCIDB QUERY : <create array DF_REPL < lname: string, fname: string, dept: string, course: string, gpa: float, remarks: string > distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF_REPL)>
+{i} schema,distribution,etcomp
+{0} 'DF_REPL<lname:string,fname:string,dept:string,course:string,gpa:float,remarks:string> [$inst=0:*:0:1; $seq=0:*:0:*]','replicated','none'
+
+"show('input(DF, <DATAFILE>, format:\'tsv:l\')','afl')"
+{i} schema,distribution,etcomp
+{0} 'DF<lname:string,fname:string,dept:string,course:string,gpa:float,remarks:string> [$inst=0:*:0:1; $seq=0:*:0:1000000]','dataframe',null
+
+"show('input(DF_REPL, <DATAFILE>, format:\'tsv:l\')','afl')"
+{i} schema,distribution,etcomp
+{0} 'DF_REPL<lname:string,fname:string,dept:string,course:string,gpa:float,remarks:string> [$inst=0:*:0:1; $seq=0:*:0:1000000]','dataframe',null
+
+Query was executed successfully
+
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+
+SCIDB QUERY : <remove(DF)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF_REPL)>
+Query was executed successfully
+

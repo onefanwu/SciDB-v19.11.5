@@ -1,0 +1,21 @@
+--setup
+--start-query-logging
+store(build(<z:uint64>[i=0:9:0:2],i),a)
+
+--test
+scan(a)
+add_attributes(a, <y:double default 3.14159>)
+scan(a)
+store(a, b)
+scan(b)
+add_attributes(b, <x:uint64 default 256>)
+scan(b)
+scan(a@1)
+scan(a@2)
+scan(b@1)
+scan(b@2)
+
+--cleanup
+remove(a)
+remove(b)
+--stop-query-logging

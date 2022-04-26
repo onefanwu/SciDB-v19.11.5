@@ -1,0 +1,48 @@
+--setup
+--start-query-logging
+
+load_library('dense_linear_algebra')
+
+# make two matrices.  one with 1 on the diagonal and one with 3 on the diagonal
+create array DIAG_SCHEMA <v:double>[r=0:4*1000-1,1000,0,c=0:4*1000-1,1000,0]
+
+store(redimension(apply(build(<v:double>[r=0:4*1000-1,1000,0], 7.0), c, r), DIAG_SCHEMA), DIAG7)
+store(redimension(apply(build(<v:double>[r=0:4*1000-1,1000,0], 1.0), c, r), DIAG_SCHEMA), DIAG1)
+create array ZEROS <v:double>[r=0:4*1000-1,1000,0,c=0:4*1000-1,1000,0]
+
+--test
+
+# if debugging, uncomment the next two lines to
+# run the command, and validate that we are doing the computation
+# we intended (which affects the flops count below)
+# sum should be 7 * num entries(4000), or 28000
+# normally commented-out because it nearly triples the test time
+# and we have other tests of gemm correctness
+# op_sum(gemm(DIAG7, DIAG1, ZEROS), gemm)
+
+# run the command, and capture the time in /tmp/ScaLAPACKFlopsTest.txt
+# use consume instead of op_sum, because op_sum adds a time-affecting redistribute
+--shell --store-all --command "TIMEFORMAT=%3R; time (iquery -naq 'consume(gemm(DIAG7,DIAG1,ZEROS))') 2>/tmp/ScaLAPACKFlopsTest.txt"
+
+# on our test servers (         @ 2.00Ghz westmere),      with MKL ~ 12 GFLOP/s, without @ 1   GFLOP/s)
+# on an older dev box (i7-3930k @ 3.20Ghz sandybridge-e), with MKL ~ 25 GFLOP/s, without @ 2   GFLOP/s)
+# on a newer dev box  (i9-7920X @ 2.90GHz skylake),       with MKL ~ 80 GFLOP/s, without @ 2.3 GFLOP/s)
+# so choose 3 GFLOP/s as the dividing line between platform BLAS and MKL BLAS, per machine
+# for 2 machines (4i2n) we can expect 6 GFLOP/s minimum
+# the gemm() above is 2 * 4000^3 flops = 128 GFLOP, @ 6 GFLOP/s min = 21s max
+
+# so now we check to see if it completed within 21s
+# output a 1 into the .out file when that is true
+--shell --store-all --command "echo "scale=3; $(cat /tmp/ScaLAPACKFlopsTest.txt) < 21" | bc"
+
+# NOTE: there will be a cost from the redistribute that might require
+# a larger test to drive down into the noise
+# So recall that all we want to know is whether this is MKL speed vs reference BLAS speed
+# not the peak GFLOPS attainable with SciDB -- this is not that.
+
+
+--cleanup
+remove(DIAG_SCHEMA)
+remove(DIAG7)
+remove(DIAG1)
+remove(ZEROS)

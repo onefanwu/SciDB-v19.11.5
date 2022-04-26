@@ -1,0 +1,64 @@
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <flatten(A)>
+0,8
+1,7
+2,6
+3,5
+4,4
+5,3
+6,2
+7,1
+
+SCIDB QUERY : <store(flatten(A), FA)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(FA)>
+0,8
+1,7
+2,6
+3,5
+4,4
+5,3
+6,2
+7,1
+
+SCIDB QUERY : <flatten(TA)>
+0,18
+1,17
+2,16
+3,15
+4,14
+5,13
+6,12
+7,11
+
+SCIDB QUERY : <store(flatten(TA), FA)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(FA)>
+0,18
+1,17
+2,16
+3,15
+4,14
+5,13
+6,12
+7,11
+
+No SG in store(flatten(A), FA)
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('store(flatten(A), FA)', 'afl')" | grep impl_sg || true>
+
+No SG in store(flatten(TA), FA)
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('store(flatten(TA), FA)', 'afl')" | grep impl_sg || true>
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

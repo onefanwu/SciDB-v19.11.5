@@ -1,0 +1,17 @@
+--setup
+--shell --command "iquery -otsv -c ${IQUERY_HOST:=localhost} -p ${IQUERY_PORT:=1239} -aq "project(apply(list('instances'),host,name+':'+string(port)),host)" > /tmp/${HPID}.hosts.txt"
+
+load_library('misc')
+load_library('system')
+
+# time required for quiescence after loading 'system' library
+--shell --command "${TEST_UTILS_DIR}/wait_for_sync.sh -q 'list()' < /tmp/${HPID}.hosts.txt"
+
+--test
+--start-igdata
+--shell --command "${TESTDIR}/sdb_5989.sh"
+--stop-igdata
+
+--cleanup
+--justrun "remove(sdb_5989_test_array)"
+--shell --command "rm -rf /tmp/${HPID}.hosts.txt"

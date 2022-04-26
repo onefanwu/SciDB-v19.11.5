@@ -1,0 +1,84 @@
+SCIDB QUERY : <store(flatten(build(<v:int64>[i=0:9:0:2], i)), DF1)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF1)>
+{i} schema,distribution,etcomp
+{0} 'DF1<i:int64 NOT NULL,v:int64> [$inst=0:*:0:1; $seq=0:*:0:2]','dataframe','none'
+
+SCIDB QUERY : <op_sum(DF1, v)>
+{i} v_sum
+{0} 45
+
+SCIDB QUERY : <store(flatten(build(<v:int64>[i=0:9:0:2], i*100)), DF1_REPL, distribution:replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF1_REPL)>
+{i} schema,distribution,etcomp
+{0} 'DF1_REPL<i:int64 NOT NULL,v:int64> [$inst=0:*:0:1; $seq=0:*:0:2]','replicated','none'
+
+SCIDB QUERY : <op_sum(DF1_REPL, v)>
+{i} v_sum
+{0} 4500
+
+SCIDB QUERY : <store(flatten(build(<v:int64>[i=0:9:0:5], i*10000)), DF2)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF2)>
+{i} schema,distribution,etcomp
+{0} 'DF2<i:int64 NOT NULL,v:int64> [$inst=0:*:0:1; $seq=0:*:0:5]','dataframe','none'
+
+SCIDB QUERY : <op_sum(DF2, v)>
+{i} v_sum
+{0} 450000
+
+SCIDB QUERY : <store(flatten(build(<v:int64>[i=0:9:0:5], i*1000000)), DF2_REPL, distribution:replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DF2_REPL)>
+{i} schema,distribution,etcomp
+{0} 'DF2_REPL<i:int64 NOT NULL,v:int64> [$inst=0:*:0:1; $seq=0:*:0:5]','replicated','none'
+
+SCIDB QUERY : <op_sum(DF2_REPL, v)>
+{i} v_sum
+{0} 45000000
+
+SCIDB QUERY : <append(DF1, DF2)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(DF2, v)>
+{i} v_sum
+{0} 450045
+
+SCIDB QUERY : <append(DF1_REPL, DF2)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(DF2, v)>
+{i} v_sum
+{0} 454545
+
+SCIDB QUERY : <append(DF2, DF1_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(DF1_REPL, v)>
+{i} v_sum
+{0} 459045
+
+SCIDB QUERY : <append(DF2_REPL, DF1_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(DF1_REPL, v)>
+{i} v_sum
+{0} 45459045
+
+SCIDB QUERY : <remove(DF1)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF1_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF2)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF2_REPL)>
+Query was executed successfully
+

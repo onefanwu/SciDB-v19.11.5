@@ -1,0 +1,64 @@
+--setup
+--start-query-logging
+
+create array S <val : double> [x=0:1,1,0]
+
+# obfuscated way to set x[0]=2, x[1]=0
+store(build(S, 2-(x*2)),S)
+scan(S)  -- Inserted by scan_doctor
+
+# expected output
+#{x} val
+#{0} 2
+#{1} 0
+
+
+--test
+
+subarray(S,0,1)
+# expected output
+#{x} val
+#{0} 2
+#{1} 0
+
+subarray(S,1,2)
+# expected output
+#{x} val
+#{0} 0
+
+join(subarray(S,0,1) as A, subarray(S,1,2) as B)
+# expected output
+#{x} A.val, B.val
+#{0} 2,     0
+
+apply(join(subarray(S,0,1) as A, subarray(S,1,2) as B), c, A.val-B.val)
+# expected output
+#{x} A.val, B.val, c
+#{0} 2,     0,     2
+
+project(apply(join(subarray(S,0,1) as A, subarray(S,1,2) as B), c, A.val-B.val),c)
+# expected output
+#{x} c
+#{0} 2
+
+
+# store(
+#       project(apply(join(
+#                          subarray(S,0,1) as A, #  same as S, x=[0:1] val <2,0>
+#                          subarray(S,1,2) as B) #  reduced to x=1:1, becomes x=[0:0] val <0>
+#                          # result of join is so [0:0] <A.val=2, B.val=0>
+#                      c,                    #  so c    <2-0> = <2>
+#                      A.val - B.val)  #
+#                c),
+#       R)
+#
+store(project(apply(join(subarray(S,0,1) as A, subarray(S,1,2) as B), c, A.val - B.val), c), R)
+scan(R)  -- Inserted by scan_doctor
+
+#expected outputs
+#{x} c
+#{0} 2
+
+--cleanup
+remove(S)
+remove(R)

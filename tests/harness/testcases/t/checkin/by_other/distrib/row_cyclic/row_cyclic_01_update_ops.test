@@ -1,0 +1,52 @@
+--setup
+--start-query-logging
+
+--test
+
+########
+# create
+########
+create array DAY_HA <daystr: string>[day=0:6,1,0] distribution hashed
+show(DAY_HA)
+
+create array DAY_RC <daystr: string>[day=0:6,1,0] distribution row_cyclic
+# show dist
+show(DAY_RC)
+
+########
+# store
+########
+store(build(DAY_HA, 'DAY'+string(day)), DAY_HA)
+show(DAY_HA)
+
+store(build(DAY_RC, 'DAY'+string(day)), DAY_RC)
+# show dist
+show(DAY_RC)
+
+store(DAY_RC, DAY_RC_COPY)
+# show dist
+show(DAY_RC_COPY)
+
+########
+# load
+########
+
+########
+# insert
+########
+show('insert(DAY_HA, DAY_HA)','afl')
+show('insert(DAY_HA, DAY_RC)','afl')
+
+show('insert(DAY_RC, DAY_HA)','afl')
+show('insert(DAY_RC, DAY_RC)','afl')
+
+########
+# delete
+########
+delete(DAY_HA, day=0)
+delete(DAY_RC, day=0)
+
+--cleanup
+remove(DAY_HA)
+remove(DAY_RC)
+remove(DAY_RC_COPY)

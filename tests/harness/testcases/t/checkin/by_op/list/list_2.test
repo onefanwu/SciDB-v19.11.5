@@ -1,0 +1,19 @@
+--setup
+--start-query-logging
+store(build(<v:uint64>[i=0:9],i),a)
+store(flatten(a),df)
+
+--test
+project(list(),name,schema)
+project(list('arrays'),name,schema)
+project(list('arrays',true),name,schema)
+_show_nodist(a)
+
+#Have to do kludgey string manipulation to remove instance count from schema, so it passes on
+#multiple instance configurations.
+project(apply(_show_nodist(df), nschema, substr(schema, 0, 39)+'-'+substr(schema, 40, 120)), nschema)
+
+--cleanup
+remove(df)
+remove(a)
+--stop-query-logging

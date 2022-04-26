@@ -1,0 +1,21 @@
+
+--test
+--start-query-logging
+
+help('show')
+
+# Has one hidden (leading underscore) keyword parameter, but no
+# unhidden ones.  Help output should give no hint that the hidden
+# keywords exist (SDB-6203).
+help('store')
+
+# Demonstrates non-trivial keyword parameters.
+help('input')
+
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT \
+    "help('input', 42, 19, 19, 'Hike!')"
+
+--stop-query-logging
+
+
+--cleanup

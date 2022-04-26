@@ -1,0 +1,23 @@
+--setup
+create array M4x4 <a:int32, b:int32> [x=0:3,4,0, y=0:3,4,0]
+--igdata "load(M4x4,'${TEST_DATA_DIR}/M4x4_1.txt')"
+
+--test
+
+--start-query-logging
+project(M4x4, a, inverse:1)
+project(M4x4, b, inverse:1)
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ILLEGAL_OPERATION \
+    "project(M4x4, a, b, inverse:1)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ILLEGAL_OPERATION \
+    "project(M4x4, b, a, inverse:1)"
+
+--error "project(M4x4, inverse:1)"
+--error "project(M4x4, c)"
+--error "project(M4x4, c, inverse:1)"
+
+--stop-query-logging
+
+--cleanup
+remove (M4x4)

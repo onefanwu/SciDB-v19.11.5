@@ -1,0 +1,65 @@
+# Append 2-D arrays, trying combinations of lower dimension bound for
+# source and destination array.
+
+--setup
+
+store( \
+  redimension( \
+    apply( \
+      build(<v:int64>[i=-7:9:0:4], i), \
+      (j, i + 7)), \
+    <v:int64>[i=-7:9:0:4; j]), \
+  A)
+
+store( \
+  redimension( \
+    apply( \
+      build(<v:int64>[i=0:15:0:4], i), \
+      (j, i - 7)), \
+    <v:int64>[i=0:15:0:5; j=-7:9:0:4]), \
+  B)
+
+create array XSHORT<v:int64>[i=5:20:0:5; j=-2:*:0:8]
+create array X<v:int64>[i=-10:25:0:5; j=-10:*:0:8]
+create array Y<v:int64>[i=-10:*:0:8; j=-12:60:0:10]
+
+--test
+--start-query-logging
+
+--echo Initial sums...
+op_sum(A, v)
+op_sum(B, v)
+
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES \
+    "append(A, XSHORT, i)"
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES \
+    "append(A, XSHORT, j)"
+
+append(A, X, i)
+op_sum(X, v)
+append(A, X, j)
+op_sum(X, v)
+
+append(B, X, i)
+op_sum(X, v)
+append(B, X, j)
+op_sum(X, v)
+
+append(A, Y, i)
+op_sum(Y, v)
+append(A, Y, j)
+op_sum(Y, v)
+
+append(B, Y, i)
+op_sum(Y, v)
+append(B, Y, j)
+op_sum(Y, v)
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(B)
+remove(XSHORT)
+remove(X)
+remove(Y)

@@ -1,0 +1,95 @@
+# Test new semantics of cast() intended to make casting easy.
+
+--setup
+create temp array CASTME < chr : char, \
+			   i16 : int16 not null, \
+			   str : string, \
+			   i64 : int64, \
+			   u64 : uint64, \
+			   dbl : double, \
+			   flt : float > \
+			 [ i=0:3:0:4; j=0:9 ]
+
+store( \
+  redimension( \
+    apply( \
+      build( <i64: int64>[i=0:3], i ), \
+      (chr, char(int8(39))), \
+      (str, 'Yikes!'), \
+      (u64, uint64(500 + i)), \
+      (dbl, 6.674e-11), \
+      (flt, float(2.718281)), \
+      (i16, int16(13013)), \
+      (j, i+4)), \
+    CASTME), \
+  CASTME)
+
+--test
+
+_show_nodist(CASTME)
+
+--start-query-logging
+
+--echo Cast NOT NULL to nullable.
+cast(CASTME, (str, bar), <i16 : int16>[_r=0:0])
+_show2_nodist('cast(CASTME, (str, bar), <i16 : int16>[_r=0:0])', 'afl')
+
+--echo Cast nullable to NOT NULL?  Nope.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_FLAG_MISMATCH \
+    "_show2_nodist('cast(CASTME, (str, baz), <i64 : int64 not null>[_r=0:0])', 'afl')"
+
+--echo Rename i16, then try to use it.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_SCHEMA_NOT_USED \
+    "_show2_nodist('cast(CASTME, (i16, bar), <i16 : int16>[_r=0:0])', 'afl')"
+
+--echo Change low dimension bound?  Ignored.
+cast(CASTME, <_foo : int16>[i=-5:3])
+_show2_nodist('cast(CASTME, <_foo : int16>[i=-5:3])', 'afl')
+
+--echo Change high dimension bound?  Works.
+cast(CASTME, <_foo : int16>[i=0:99])
+_show2_nodist('cast(CASTME, <_foo : int16>[i=0:99])', 'afl')
+
+--echo Change high dimension bound so data won't fit?  Nope.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_BAD_DIMENSION_LENGTH \
+    "cast(CASTME, <_foo : int16>[i=0:2])"
+
+--echo Got int64 --> double conversion?
+cast(CASTME, <i64: double>[_i=0:0])
+_show2_nodist('cast(CASTME, <i64: double>[_i=0:0])', 'afl')
+
+--echo Got double --> int64 conversion?
+cast(CASTME, <dbl: int64>[_i=0:0])
+_show2_nodist('cast(CASTME, <dbl: int64>[_i=0:0])', 'afl')
+
+--echo Got int64 --> uint64 conversion?  Hmmm, may be unsafe for negative values...
+cast(CASTME, <i64: uint64>[_i=0:0])
+_show2_nodist('cast(CASTME, <i64: uint64>[_i=0:0])', 'afl')
+
+--echo Got int64 --> int16 conversion?  (SDB-2708 not fixed yet, so yeah.)
+cast(CASTME, <i64: int16>[_i=0:0])
+_show2_nodist('cast(CASTME, <i64: int16>[_i=0:0])', 'afl')
+
+--echo String-to-char fails (using an exemplar array)
+create temp array T1 < str:char, i16:uint64>[i=0:100]
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_BAD_TYPE_CONVERSION \
+    "_show2_nodist('cast(CASTME, T1)', 'afl')"
+
+--echo Cannot cast away nullability (using an exemplar array)
+create temp array T2 <str: string not null, i16:uint64>[i=0:100]
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_FLAG_MISMATCH \
+    "_show2_nodist('cast(CASTME, T2)', 'afl')"
+
+--echo Absorb several changes at once from an exemplar array schema.
+create temp array T3 <i16:int16 null, u64:double, unrelated:char> \
+                     [i=0:100; also_unrelated=-5:5]
+cast(CASTME, T3)
+_show2_nodist('cast(CASTME, T3)', 'afl')
+
+--stop-query-logging
+
+--cleanup
+remove(CASTME)
+remove(T1)
+remove(T2)
+remove(T3)

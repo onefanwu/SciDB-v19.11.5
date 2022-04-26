@@ -1,0 +1,39 @@
+# ticket no. 1013
+
+--setup
+--start-query-logging
+create array Ts <a:string> [x=-2:3,2,1]
+create array Tsn <a:string  default 'test' compression 'no compression'> [x=-2:3,2,1]
+create array Ts_rle <a:string compression 'bzlib'> [x=-2:3,2,1]
+create array Ts_d <a:int32 compression 'zlib'> [x=-2:3,2,1]
+create array Ts_ns <a:int64 compression 'zlib'> [x=-2:3,2,1]
+create array Ts_be <a:bool compression 'zlib'> [x=-2:3,2,1]
+create array Ts_z <a:float compression 'zlib'> [x=-2:3,2,1]
+create array Ts_bz <a:double compression 'bzlib'> [x=-2:3,2,1]
+create array Ts_nf <a:string compression 'bzlib'> [x=-2:3,2,1]
+create array T2 <a:string, b:int32 compression 'zlib'> [x=-2:3,2,1]
+
+--test
+_show_nodist(Ts)
+_show_nodist(Tsn)
+_show_nodist(Ts_rle)
+_show_nodist(Ts_d)
+_show_nodist(Ts_ns)
+_show_nodist(Ts_be)
+_show_nodist(Ts_z)
+_show_nodist(Ts_bz)
+_show_nodist(Ts_nf)
+_show_nodist(T2)
+
+--cleanup
+remove(Ts)
+remove(Tsn)
+remove(Ts_rle)
+remove(Ts_d)
+remove(Ts_ns)
+remove(Ts_be)
+remove(Ts_z)
+remove(Ts_bz)
+remove(Ts_nf)
+remove(T2)
+--stop-query-logging

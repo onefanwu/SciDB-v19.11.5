@@ -1,0 +1,16 @@
+--setup
+--start-query-logging
+create array f<v:int64>[i=0:4:0:1]
+store(build(f, i), f)
+
+--test
+add_attributes(f, <w:int64>)
+scan(f)
+store(project(apply(f, wnew, 2*v+1), v, wnew), f)
+scan(f)
+delete(f, v=2)
+scan(f)
+
+--cleanup
+remove(f)
+--stop-query-logging

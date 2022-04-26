@@ -1,0 +1,21 @@
+SCIDB QUERY : <disable.py --config ${TESTDIR}/disable.ini --build Assert ${TESTDIR}/disable.tests ->
+ok.always
+ok.equal
+ok.not_equal
+ok.less_than
+ok.greater_than
+ok.and
+ok.or.both
+ok.or.left
+ok.or.right
+ok.unless
+ok.instances
+ok.servers
+ok.redundancy
+ok.build
+ok.security
+ok.x-dflt-dist-root
+ok.x-dflt-dist-input
+ok.x-dflt-dist-other
+ok.if_inst_8_and_dist_9
+

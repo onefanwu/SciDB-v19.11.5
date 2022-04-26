@@ -1,0 +1,20 @@
+Query was executed successfully
+
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(POINTS, sum(v))>
+{i} v_sum
+{0} 4499998500000
+
+SCIDB QUERY : <store(flatten(POINTS), FPOINTS)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(project(FPOINTS, v), sum(v))>
+{i} v_sum
+{0} 4499998500000
+
+
+Query was executed successfully
+
+Query was executed successfully
+

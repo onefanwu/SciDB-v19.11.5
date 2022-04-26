@@ -1,0 +1,23 @@
+--setup
+--start-query-logging
+# Need to store the array before using apply for apply
+# to take the (_mode & TILE_MODE) path in getItem.
+# Of course, if tile-size=0 then tile mode is not used
+# in any case.
+store(build(<v:int64>[i=0:9999999:0:1000],i),ar)
+
+--test
+# When the new attribute is based-on an dimension, then
+# the input iterator is used to fetch a tile from which
+# the coordinates are grabbed as the input to the expression
+# for the new attribute.
+consume(apply(ar,w,i,x,2*i,y,3*i))
+# Repeat the same query a few times in an attempt to
+# reduce noise and minimize other effects (e.g. caching)
+consume(apply(ar,w,i,x,2*i,y,3*i))
+consume(apply(ar,w,i,x,2*i,y,3*i))
+consume(apply(ar,w,i,x,2*i,y,3*i))
+
+--cleanup
+remove(ar)
+--stop-query-logging

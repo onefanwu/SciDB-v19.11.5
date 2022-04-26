@@ -1,0 +1,17 @@
+Query was executed successfully
+
+Query was executed successfully
+
+{i} v_sum
+{0} 190
+
+{i} v_sum
+{0} 435
+
+{i} v_sum
+{0} 435
+
+[An error expected at this place for the query "aggregate(flatten(TWO_D), sum(v), $seq)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+Query was executed successfully
+

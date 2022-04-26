@@ -1,0 +1,63 @@
+SCIDB QUERY : <store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(HASH, HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(ROWC, ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(COLC, COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(REPL, REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <sort(filter(project(list('arrays', true), name, distribution), regex(name, '(COLC|HASH|REPL|ROWC)(@[0-9]+)*')), name)>
+{$n} name,distribution
+{0} 'COLC','col_cyclic'
+{1} 'COLC@1','col_cyclic'
+{2} 'COLC@2','col_cyclic'
+{3} 'HASH','hashed'
+{4} 'HASH@1','hashed'
+{5} 'HASH@2','hashed'
+{6} 'REPL','replicated'
+{7} 'REPL@1','replicated'
+{8} 'REPL@2','replicated'
+{9} 'ROWC','row_cyclic'
+{10} 'ROWC@1','row_cyclic'
+{11} 'ROWC@2','row_cyclic'
+
+SCIDB QUERY : <store(HASH, HASH, distribution: row_cyclic)>
+[An error expected at this place for the query "store(HASH, HASH, distribution: row_cyclic)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT.]
+
+SCIDB QUERY : <store(ROWC, ROWC, distribution: col_cyclic)>
+[An error expected at this place for the query "store(ROWC, ROWC, distribution: col_cyclic)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT.]
+
+SCIDB QUERY : <store(COLC, COLC, distribution: replicated)>
+[An error expected at this place for the query "store(COLC, COLC, distribution: replicated)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT.]
+
+SCIDB QUERY : <store(REPL, REPL, distribution: hashed)>
+[An error expected at this place for the query "store(REPL, REPL, distribution: hashed)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT.]
+
+SCIDB QUERY : <remove(HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL)>
+Query was executed successfully
+

@@ -1,0 +1,19 @@
+SCIDB QUERY : <create temp array DF <v:int64>>
+Query was executed successfully
+
+SCIDB QUERY : <store( project( flatten(build(<v:int64>[i=0:19], i)), v), DF)>
+Query was executed successfully
+
+SCIDB QUERY : <bernoulli(DF, 0.5, 42)>
+2
+3
+4
+6
+10
+13
+16
+18
+
+SCIDB QUERY : <remove(DF)>
+Query was executed successfully
+

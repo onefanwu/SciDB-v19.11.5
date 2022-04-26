@@ -1,0 +1,3 @@
+SCIDB QUERY : <_fold(build(<v:int64>[i=0:9;j=0:1:0:1],i+j+1))>
+[An error expected at this place for the query "_fold(build(<v:int64>[i=0:9;j=0:1:0:1],i+j+1))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_CHUNK_INTERVAL_TOO_SMALL. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_CHUNK_INTERVAL_TOO_SMALL.]
+

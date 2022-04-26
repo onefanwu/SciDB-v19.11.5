@@ -1,0 +1,2 @@
+--test
+--shell --command "${TESTDIR}/append_ar_2.py --test-dir ${TESTDIR}"

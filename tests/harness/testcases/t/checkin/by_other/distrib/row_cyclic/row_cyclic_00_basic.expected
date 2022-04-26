@@ -1,0 +1,567 @@
+SCIDB QUERY : <create array DAY_STR_DFLT <daystr: string>[day=0:6,1,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array DAY_STR_RCYC <daystr: string>[day=0:6,1,0] distribution row_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <create array WEEK_STR_DFLT <weekstr: string>[week=0:3,1,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array WEEK_STR_RCYC <weekstr: string>[week=0:3,1,0] distribution row_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(DAY_STR_DFLT, 'DAY'+string(day)), DAY_STR_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(DAY_STR_DFLT)>
+{day} daystr
+{0} 'DAY0'
+{1} 'DAY1'
+{2} 'DAY2'
+{3} 'DAY3'
+{4} 'DAY4'
+{5} 'DAY5'
+{6} 'DAY6'
+
+SCIDB QUERY : <store(build(WEEK_STR_DFLT, 'WEEK'+string(week)), WEEK_STR_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(WEEK_STR_DFLT)>
+{week} weekstr
+{0} 'WEEK0'
+{1} 'WEEK1'
+{2} 'WEEK2'
+{3} 'WEEK3'
+
+SCIDB QUERY : <create array DMONTH_DFLT <date:int64>[week=0:3; day=0:6,1,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(DMONTH_DFLT, week*7+day), DMONTH_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(DMONTH_DFLT)>
+{week,day} date
+{0,0} 0
+{1,0} 7
+{2,0} 14
+{3,0} 21
+{0,1} 1
+{1,1} 8
+{2,1} 15
+{3,1} 22
+{0,2} 2
+{1,2} 9
+{2,2} 16
+{3,2} 23
+{0,3} 3
+{1,3} 10
+{2,3} 17
+{3,3} 24
+{0,4} 4
+{1,4} 11
+{2,4} 18
+{3,4} 25
+{0,5} 5
+{1,5} 12
+{2,5} 19
+{3,5} 26
+{0,6} 6
+{1,6} 13
+{2,6} 20
+{3,6} 27
+
+SCIDB QUERY : <store(WEEK_STR_DFLT, WEEK_STR_RCYC)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(WEEK_STR_RCYC)>
+{week} weekstr
+{0} 'WEEK0'
+{1} 'WEEK1'
+{2} 'WEEK2'
+{3} 'WEEK3'
+
+SCIDB QUERY : <store(WEEK_STR_DFLT, WEEK_STR_RCYC_KEY1, distribution:row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(WEEK_STR_RCYC_KEY1)>
+{week} weekstr
+{0} 'WEEK0'
+{1} 'WEEK1'
+{2} 'WEEK2'
+{3} 'WEEK3'
+
+SCIDB QUERY : <store(build(WEEK_STR_DFLT, 'WEEK'+string(week)), WEEK_STR_RCYC)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(WEEK_STR_RCYC)>
+{week} weekstr
+{0} 'WEEK0'
+{1} 'WEEK1'
+{2} 'WEEK2'
+{3} 'WEEK3'
+
+SCIDB QUERY : <store(build(WEEK_STR_DFLT, 'WEEK'+string(week)), WEEK_STR_RCYC_KEY2, distribution:row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(WEEK_STR_RCYC_KEY2)>
+{week} weekstr
+{0} 'WEEK0'
+{1} 'WEEK1'
+{2} 'WEEK2'
+{3} 'WEEK3'
+
+SCIDB QUERY : <store(DAY_STR_DFLT, DAY_STR_RCYC)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(DAY_STR_RCYC)>
+{day} daystr
+{0} 'DAY0'
+{1} 'DAY1'
+{2} 'DAY2'
+{3} 'DAY3'
+{4} 'DAY4'
+{5} 'DAY5'
+{6} 'DAY6'
+
+SCIDB QUERY : <store(DMONTH_DFLT, DMONTH_RCYC)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(DMONTH_RCYC)>
+{week,day} date
+{0,0} 0
+{1,0} 7
+{2,0} 14
+{3,0} 21
+{0,1} 1
+{1,1} 8
+{2,1} 15
+{3,1} 22
+{0,2} 2
+{1,2} 9
+{2,2} 16
+{3,2} 23
+{0,3} 3
+{1,3} 10
+{2,3} 17
+{3,3} 24
+{0,4} 4
+{1,4} 11
+{2,4} 18
+{3,4} 25
+{0,5} 5
+{1,5} 12
+{2,5} 19
+{3,5} 26
+{0,6} 6
+{1,6} 13
+{2,6} 20
+{3,6} 27
+
+SCIDB QUERY : <aggregate(DAY_STR_DFLT, count(*))>
+{i} count
+{0} 7
+
+SCIDB QUERY : <aggregate(DAY_STR_RCYC, count(*))>
+{i} count
+{0} 7
+
+SCIDB QUERY : <project(apply(join(aggregate(summarize(DAY_STR_RCYC, by_instance:1), max(chunks)),aggregate(summarize(DAY_STR_RCYC, by_instance:1), min(chunks))),check_good, chunks_max <= (chunks_min+2)),check_good)>
+{i} check_good
+{0} true
+
+SCIDB QUERY : <cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week)>
+{week,day} date,weekstr
+{0,0} 0,'WEEK0'
+{1,0} 7,'WEEK1'
+{2,0} 14,'WEEK2'
+{3,0} 21,'WEEK3'
+{0,1} 1,'WEEK0'
+{1,1} 8,'WEEK1'
+{2,1} 15,'WEEK2'
+{3,1} 22,'WEEK3'
+{0,2} 2,'WEEK0'
+{1,2} 9,'WEEK1'
+{2,2} 16,'WEEK2'
+{3,2} 23,'WEEK3'
+{0,3} 3,'WEEK0'
+{1,3} 10,'WEEK1'
+{2,3} 17,'WEEK2'
+{3,3} 24,'WEEK3'
+{0,4} 4,'WEEK0'
+{1,4} 11,'WEEK1'
+{2,4} 18,'WEEK2'
+{3,4} 25,'WEEK3'
+{0,5} 5,'WEEK0'
+{1,5} 12,'WEEK1'
+{2,5} 19,'WEEK2'
+{3,5} 26,'WEEK3'
+{0,6} 6,'WEEK0'
+{1,6} 13,'WEEK1'
+{2,6} 20,'WEEK2'
+{3,6} 27,'WEEK3'
+
+SCIDB QUERY : <cross_join(DMONTH_DFLT as A, WEEK_STR_RCYC as B, A.week, B.week)>
+{week,day} date,weekstr
+{0,0} 0,'WEEK0'
+{1,0} 7,'WEEK1'
+{2,0} 14,'WEEK2'
+{3,0} 21,'WEEK3'
+{0,1} 1,'WEEK0'
+{1,1} 8,'WEEK1'
+{2,1} 15,'WEEK2'
+{3,1} 22,'WEEK3'
+{0,2} 2,'WEEK0'
+{1,2} 9,'WEEK1'
+{2,2} 16,'WEEK2'
+{3,2} 23,'WEEK3'
+{0,3} 3,'WEEK0'
+{1,3} 10,'WEEK1'
+{2,3} 17,'WEEK2'
+{3,3} 24,'WEEK3'
+{0,4} 4,'WEEK0'
+{1,4} 11,'WEEK1'
+{2,4} 18,'WEEK2'
+{3,4} 25,'WEEK3'
+{0,5} 5,'WEEK0'
+{1,5} 12,'WEEK1'
+{2,5} 19,'WEEK2'
+{3,5} 26,'WEEK3'
+{0,6} 6,'WEEK0'
+{1,6} 13,'WEEK1'
+{2,6} 20,'WEEK2'
+{3,6} 27,'WEEK3'
+
+SCIDB QUERY : <cross_join(DMONTH_RCYC as A, WEEK_STR_DFLT as B, A.week, B.week)>
+{week,day} date,weekstr
+{0,0} 0,'WEEK0'
+{1,0} 7,'WEEK1'
+{2,0} 14,'WEEK2'
+{3,0} 21,'WEEK3'
+{0,1} 1,'WEEK0'
+{1,1} 8,'WEEK1'
+{2,1} 15,'WEEK2'
+{3,1} 22,'WEEK3'
+{0,2} 2,'WEEK0'
+{1,2} 9,'WEEK1'
+{2,2} 16,'WEEK2'
+{3,2} 23,'WEEK3'
+{0,3} 3,'WEEK0'
+{1,3} 10,'WEEK1'
+{2,3} 17,'WEEK2'
+{3,3} 24,'WEEK3'
+{0,4} 4,'WEEK0'
+{1,4} 11,'WEEK1'
+{2,4} 18,'WEEK2'
+{3,4} 25,'WEEK3'
+{0,5} 5,'WEEK0'
+{1,5} 12,'WEEK1'
+{2,5} 19,'WEEK2'
+{3,5} 26,'WEEK3'
+{0,6} 6,'WEEK0'
+{1,6} 13,'WEEK1'
+{2,6} 20,'WEEK2'
+{3,6} 27,'WEEK3'
+
+SCIDB QUERY : <cross_join(DMONTH_RCYC as A, WEEK_STR_RCYC as B, A.week, B.week)>
+{week,day} date,weekstr
+{0,0} 0,'WEEK0'
+{1,0} 7,'WEEK1'
+{2,0} 14,'WEEK2'
+{3,0} 21,'WEEK3'
+{0,1} 1,'WEEK0'
+{1,1} 8,'WEEK1'
+{2,1} 15,'WEEK2'
+{3,1} 22,'WEEK3'
+{0,2} 2,'WEEK0'
+{1,2} 9,'WEEK1'
+{2,2} 16,'WEEK2'
+{3,2} 23,'WEEK3'
+{0,3} 3,'WEEK0'
+{1,3} 10,'WEEK1'
+{2,3} 17,'WEEK2'
+{3,3} 24,'WEEK3'
+{0,4} 4,'WEEK0'
+{1,4} 11,'WEEK1'
+{2,4} 18,'WEEK2'
+{3,4} 25,'WEEK3'
+{0,5} 5,'WEEK0'
+{1,5} 12,'WEEK1'
+{2,5} 19,'WEEK2'
+{3,5} 26,'WEEK3'
+{0,6} 6,'WEEK0'
+{1,6} 13,'WEEK1'
+{2,6} 20,'WEEK2'
+{3,6} 27,'WEEK3'
+
+SCIDB QUERY : <cross_join(cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week) as C, DAY_STR_DFLT as W, C.day, W.day)>
+{week,day} date,weekstr,daystr
+{0,0} 0,'WEEK0','DAY0'
+{1,0} 7,'WEEK1','DAY0'
+{2,0} 14,'WEEK2','DAY0'
+{3,0} 21,'WEEK3','DAY0'
+{0,1} 1,'WEEK0','DAY1'
+{1,1} 8,'WEEK1','DAY1'
+{2,1} 15,'WEEK2','DAY1'
+{3,1} 22,'WEEK3','DAY1'
+{0,2} 2,'WEEK0','DAY2'
+{1,2} 9,'WEEK1','DAY2'
+{2,2} 16,'WEEK2','DAY2'
+{3,2} 23,'WEEK3','DAY2'
+{0,3} 3,'WEEK0','DAY3'
+{1,3} 10,'WEEK1','DAY3'
+{2,3} 17,'WEEK2','DAY3'
+{3,3} 24,'WEEK3','DAY3'
+{0,4} 4,'WEEK0','DAY4'
+{1,4} 11,'WEEK1','DAY4'
+{2,4} 18,'WEEK2','DAY4'
+{3,4} 25,'WEEK3','DAY4'
+{0,5} 5,'WEEK0','DAY5'
+{1,5} 12,'WEEK1','DAY5'
+{2,5} 19,'WEEK2','DAY5'
+{3,5} 26,'WEEK3','DAY5'
+{0,6} 6,'WEEK0','DAY6'
+{1,6} 13,'WEEK1','DAY6'
+{2,6} 20,'WEEK2','DAY6'
+{3,6} 27,'WEEK3','DAY6'
+
+SCIDB QUERY : <cross_join(cross_join(DMONTH_DFLT as A, WEEK_STR_RCYC as B, A.week, B.week) as C, DAY_STR_DFLT as W, C.day, W.day)>
+{week,day} date,weekstr,daystr
+{0,0} 0,'WEEK0','DAY0'
+{1,0} 7,'WEEK1','DAY0'
+{2,0} 14,'WEEK2','DAY0'
+{3,0} 21,'WEEK3','DAY0'
+{0,1} 1,'WEEK0','DAY1'
+{1,1} 8,'WEEK1','DAY1'
+{2,1} 15,'WEEK2','DAY1'
+{3,1} 22,'WEEK3','DAY1'
+{0,2} 2,'WEEK0','DAY2'
+{1,2} 9,'WEEK1','DAY2'
+{2,2} 16,'WEEK2','DAY2'
+{3,2} 23,'WEEK3','DAY2'
+{0,3} 3,'WEEK0','DAY3'
+{1,3} 10,'WEEK1','DAY3'
+{2,3} 17,'WEEK2','DAY3'
+{3,3} 24,'WEEK3','DAY3'
+{0,4} 4,'WEEK0','DAY4'
+{1,4} 11,'WEEK1','DAY4'
+{2,4} 18,'WEEK2','DAY4'
+{3,4} 25,'WEEK3','DAY4'
+{0,5} 5,'WEEK0','DAY5'
+{1,5} 12,'WEEK1','DAY5'
+{2,5} 19,'WEEK2','DAY5'
+{3,5} 26,'WEEK3','DAY5'
+{0,6} 6,'WEEK0','DAY6'
+{1,6} 13,'WEEK1','DAY6'
+{2,6} 20,'WEEK2','DAY6'
+{3,6} 27,'WEEK3','DAY6'
+
+SCIDB QUERY : <cross_join(cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week) as C, DAY_STR_RCYC as W, C.day, W.day)>
+{week,day} date,weekstr,daystr
+{0,0} 0,'WEEK0','DAY0'
+{1,0} 7,'WEEK1','DAY0'
+{2,0} 14,'WEEK2','DAY0'
+{3,0} 21,'WEEK3','DAY0'
+{0,1} 1,'WEEK0','DAY1'
+{1,1} 8,'WEEK1','DAY1'
+{2,1} 15,'WEEK2','DAY1'
+{3,1} 22,'WEEK3','DAY1'
+{0,2} 2,'WEEK0','DAY2'
+{1,2} 9,'WEEK1','DAY2'
+{2,2} 16,'WEEK2','DAY2'
+{3,2} 23,'WEEK3','DAY2'
+{0,3} 3,'WEEK0','DAY3'
+{1,3} 10,'WEEK1','DAY3'
+{2,3} 17,'WEEK2','DAY3'
+{3,3} 24,'WEEK3','DAY3'
+{0,4} 4,'WEEK0','DAY4'
+{1,4} 11,'WEEK1','DAY4'
+{2,4} 18,'WEEK2','DAY4'
+{3,4} 25,'WEEK3','DAY4'
+{0,5} 5,'WEEK0','DAY5'
+{1,5} 12,'WEEK1','DAY5'
+{2,5} 19,'WEEK2','DAY5'
+{3,5} 26,'WEEK3','DAY5'
+{0,6} 6,'WEEK0','DAY6'
+{1,6} 13,'WEEK1','DAY6'
+{2,6} 20,'WEEK2','DAY6'
+{3,6} 27,'WEEK3','DAY6'
+
+SCIDB QUERY : <cross_join(cross_join(DMONTH_DFLT as A, WEEK_STR_RCYC as B, A.week, B.week) as C, DAY_STR_RCYC as W, C.day, W.day)>
+{week,day} date,weekstr,daystr
+{0,0} 0,'WEEK0','DAY0'
+{1,0} 7,'WEEK1','DAY0'
+{2,0} 14,'WEEK2','DAY0'
+{3,0} 21,'WEEK3','DAY0'
+{0,1} 1,'WEEK0','DAY1'
+{1,1} 8,'WEEK1','DAY1'
+{2,1} 15,'WEEK2','DAY1'
+{3,1} 22,'WEEK3','DAY1'
+{0,2} 2,'WEEK0','DAY2'
+{1,2} 9,'WEEK1','DAY2'
+{2,2} 16,'WEEK2','DAY2'
+{3,2} 23,'WEEK3','DAY2'
+{0,3} 3,'WEEK0','DAY3'
+{1,3} 10,'WEEK1','DAY3'
+{2,3} 17,'WEEK2','DAY3'
+{3,3} 24,'WEEK3','DAY3'
+{0,4} 4,'WEEK0','DAY4'
+{1,4} 11,'WEEK1','DAY4'
+{2,4} 18,'WEEK2','DAY4'
+{3,4} 25,'WEEK3','DAY4'
+{0,5} 5,'WEEK0','DAY5'
+{1,5} 12,'WEEK1','DAY5'
+{2,5} 19,'WEEK2','DAY5'
+{3,5} 26,'WEEK3','DAY5'
+{0,6} 6,'WEEK0','DAY6'
+{1,6} 13,'WEEK1','DAY6'
+{2,6} 20,'WEEK2','DAY6'
+{3,6} 27,'WEEK3','DAY6'
+
+SCIDB QUERY : <cross_join(DAY_STR_DFLT as W, cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week) as C, W.day, C.day)>
+{day,week} daystr,date,weekstr
+{0,0} 'DAY0',0,'WEEK0'
+{0,1} 'DAY0',7,'WEEK1'
+{0,2} 'DAY0',14,'WEEK2'
+{0,3} 'DAY0',21,'WEEK3'
+{1,0} 'DAY1',1,'WEEK0'
+{1,1} 'DAY1',8,'WEEK1'
+{1,2} 'DAY1',15,'WEEK2'
+{1,3} 'DAY1',22,'WEEK3'
+{2,0} 'DAY2',2,'WEEK0'
+{2,1} 'DAY2',9,'WEEK1'
+{2,2} 'DAY2',16,'WEEK2'
+{2,3} 'DAY2',23,'WEEK3'
+{3,0} 'DAY3',3,'WEEK0'
+{3,1} 'DAY3',10,'WEEK1'
+{3,2} 'DAY3',17,'WEEK2'
+{3,3} 'DAY3',24,'WEEK3'
+{4,0} 'DAY4',4,'WEEK0'
+{4,1} 'DAY4',11,'WEEK1'
+{4,2} 'DAY4',18,'WEEK2'
+{4,3} 'DAY4',25,'WEEK3'
+{5,0} 'DAY5',5,'WEEK0'
+{5,1} 'DAY5',12,'WEEK1'
+{5,2} 'DAY5',19,'WEEK2'
+{5,3} 'DAY5',26,'WEEK3'
+{6,0} 'DAY6',6,'WEEK0'
+{6,1} 'DAY6',13,'WEEK1'
+{6,2} 'DAY6',20,'WEEK2'
+{6,3} 'DAY6',27,'WEEK3'
+
+SCIDB QUERY : <cross_join(DAY_STR_DFLT as W, cross_join(DMONTH_DFLT as A, WEEK_STR_RCYC as B, A.week, B.week) as C, W.day, C.day)>
+{day,week} daystr,date,weekstr
+{0,0} 'DAY0',0,'WEEK0'
+{0,1} 'DAY0',7,'WEEK1'
+{0,2} 'DAY0',14,'WEEK2'
+{0,3} 'DAY0',21,'WEEK3'
+{1,0} 'DAY1',1,'WEEK0'
+{1,1} 'DAY1',8,'WEEK1'
+{1,2} 'DAY1',15,'WEEK2'
+{1,3} 'DAY1',22,'WEEK3'
+{2,0} 'DAY2',2,'WEEK0'
+{2,1} 'DAY2',9,'WEEK1'
+{2,2} 'DAY2',16,'WEEK2'
+{2,3} 'DAY2',23,'WEEK3'
+{3,0} 'DAY3',3,'WEEK0'
+{3,1} 'DAY3',10,'WEEK1'
+{3,2} 'DAY3',17,'WEEK2'
+{3,3} 'DAY3',24,'WEEK3'
+{4,0} 'DAY4',4,'WEEK0'
+{4,1} 'DAY4',11,'WEEK1'
+{4,2} 'DAY4',18,'WEEK2'
+{4,3} 'DAY4',25,'WEEK3'
+{5,0} 'DAY5',5,'WEEK0'
+{5,1} 'DAY5',12,'WEEK1'
+{5,2} 'DAY5',19,'WEEK2'
+{5,3} 'DAY5',26,'WEEK3'
+{6,0} 'DAY6',6,'WEEK0'
+{6,1} 'DAY6',13,'WEEK1'
+{6,2} 'DAY6',20,'WEEK2'
+{6,3} 'DAY6',27,'WEEK3'
+
+SCIDB QUERY : <cross_join(DAY_STR_RCYC as W, cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week) as C, W.day, C.day)>
+{day,week} daystr,date,weekstr
+{0,0} 'DAY0',0,'WEEK0'
+{0,1} 'DAY0',7,'WEEK1'
+{0,2} 'DAY0',14,'WEEK2'
+{0,3} 'DAY0',21,'WEEK3'
+{1,0} 'DAY1',1,'WEEK0'
+{1,1} 'DAY1',8,'WEEK1'
+{1,2} 'DAY1',15,'WEEK2'
+{1,3} 'DAY1',22,'WEEK3'
+{2,0} 'DAY2',2,'WEEK0'
+{2,1} 'DAY2',9,'WEEK1'
+{2,2} 'DAY2',16,'WEEK2'
+{2,3} 'DAY2',23,'WEEK3'
+{3,0} 'DAY3',3,'WEEK0'
+{3,1} 'DAY3',10,'WEEK1'
+{3,2} 'DAY3',17,'WEEK2'
+{3,3} 'DAY3',24,'WEEK3'
+{4,0} 'DAY4',4,'WEEK0'
+{4,1} 'DAY4',11,'WEEK1'
+{4,2} 'DAY4',18,'WEEK2'
+{4,3} 'DAY4',25,'WEEK3'
+{5,0} 'DAY5',5,'WEEK0'
+{5,1} 'DAY5',12,'WEEK1'
+{5,2} 'DAY5',19,'WEEK2'
+{5,3} 'DAY5',26,'WEEK3'
+{6,0} 'DAY6',6,'WEEK0'
+{6,1} 'DAY6',13,'WEEK1'
+{6,2} 'DAY6',20,'WEEK2'
+{6,3} 'DAY6',27,'WEEK3'
+
+SCIDB QUERY : <cross_join(DAY_STR_RCYC as W, cross_join(DMONTH_DFLT as A, WEEK_STR_RCYC as B, A.week, B.week) as C, W.day, C.day)>
+{day,week} daystr,date,weekstr
+{0,0} 'DAY0',0,'WEEK0'
+{0,1} 'DAY0',7,'WEEK1'
+{0,2} 'DAY0',14,'WEEK2'
+{0,3} 'DAY0',21,'WEEK3'
+{1,0} 'DAY1',1,'WEEK0'
+{1,1} 'DAY1',8,'WEEK1'
+{1,2} 'DAY1',15,'WEEK2'
+{1,3} 'DAY1',22,'WEEK3'
+{2,0} 'DAY2',2,'WEEK0'
+{2,1} 'DAY2',9,'WEEK1'
+{2,2} 'DAY2',16,'WEEK2'
+{2,3} 'DAY2',23,'WEEK3'
+{3,0} 'DAY3',3,'WEEK0'
+{3,1} 'DAY3',10,'WEEK1'
+{3,2} 'DAY3',17,'WEEK2'
+{3,3} 'DAY3',24,'WEEK3'
+{4,0} 'DAY4',4,'WEEK0'
+{4,1} 'DAY4',11,'WEEK1'
+{4,2} 'DAY4',18,'WEEK2'
+{4,3} 'DAY4',25,'WEEK3'
+{5,0} 'DAY5',5,'WEEK0'
+{5,1} 'DAY5',12,'WEEK1'
+{5,2} 'DAY5',19,'WEEK2'
+{5,3} 'DAY5',26,'WEEK3'
+{6,0} 'DAY6',6,'WEEK0'
+{6,1} 'DAY6',13,'WEEK1'
+{6,2} 'DAY6',20,'WEEK2'
+{6,3} 'DAY6',27,'WEEK3'
+
+SCIDB QUERY : <remove(DMONTH_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DMONTH_RCYC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(WEEK_STR_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(WEEK_STR_RCYC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(WEEK_STR_RCYC_KEY1)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(WEEK_STR_RCYC_KEY2)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DAY_STR_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DAY_STR_RCYC)>
+Query was executed successfully
+

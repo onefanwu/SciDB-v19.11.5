@@ -1,0 +1,33 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+No repart() in first append()
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('append(flatten(A5), DF)', 'afl')" | grep physicalRepart || true>
+
+SCIDB QUERY : <append(flatten(A5), DF)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(DF, val)>
+{i} val_sum
+{0} 45
+
+Automatic repart() in second append()
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('append(flatten(A8), DF)', 'afl')" | awk '/physicalRepart/ { print "Found physicalRepart in pPlan" }' || true>
+Found physicalRepart in pPlan
+
+SCIDB QUERY : <append(flatten(A8), DF)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(DF, val)>
+{i} val_sum
+{0} 235
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

@@ -1,0 +1,243 @@
+SCIDB QUERY : <store(project(flatten(build(<v:int64>[i=0:7], 8-i)),v), DF)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64 not null>[i=0:7], i), INDEX)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(apply(DF, new, v+7), v)>
+{i} v_sum
+{0} 36
+
+SCIDB QUERY : <attributes(DF)>
+{No} name,type_id,nullable
+{0} 'v','int64',true
+
+SCIDB QUERY : <op_sum(avg_rank(DF), v)>
+{i} v_sum
+{0} 36
+
+SCIDB QUERY : <op_sum(bernoulli(DF, 1.0), v)>
+{i} v_sum
+{0} 28
+
+SCIDB QUERY : <between(DF, 0, 0, 2, 2)>
+[An error expected at this place for the query "between(DF, 0, 0, 2, 2)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <build(DF, 9-i)>
+[An error expected at this place for the query "build(DF, 9-i)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_BUILD_ERROR3. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_BUILD_ERROR3.]
+
+SCIDB QUERY : <op_sum(cast(DF, <v:double>), v)>
+{i} v_sum
+{0} 36
+
+SCIDB QUERY : <consume(DF)>
+Query was executed successfully
+
+SCIDB QUERY : <cross_between(DF, INDEX)>
+[An error expected at this place for the query "cross_between(DF, INDEX)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <op_count(cross_join(DF as l, DF as r))>
+{i} count
+{0} 64
+
+SCIDB QUERY : <op_count(cross_join(INDEX as l, DF as r))>
+{i} count
+{0} 64
+
+SCIDB QUERY : <op_count(cross_join(DF as l, INDEX as r))>
+{i} count
+{0} 64
+
+SCIDB QUERY : <cross_join(DF as l, INDEX as r, $inst, i)>
+[An error expected at this place for the query "cross_join(DF as l, INDEX as r, $inst, i)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+SCIDB QUERY : <cross_join(INDEX as l, DF as r, i, $inst)>
+[An error expected at this place for the query "cross_join(INDEX as l, DF as r, i, $inst)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+SCIDB QUERY : <cross_join(DF as l, DF as r, l.$inst, r.$inst)>
+[An error expected at this place for the query "cross_join(DF as l, DF as r, l.$inst, r.$inst)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+SCIDB QUERY : <cumulate(DF, sum(v))>
+[An error expected at this place for the query "cumulate(DF, sum(v))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <delete(DF, v=4)>
+Query was executed successfully
+
+SCIDB QUERY : <delete(DF, $seq=4)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(DF), length, low, high, inverse:true)>
+{No} name,start,chunk_interval,chunk_overlap,type
+{0} '$inst',0,1,0,'int64'
+{1} '$seq',0,1000000,0,'int64'
+
+SCIDB QUERY : <op_sum(filter(DF, v=4), v)>
+{i} v_sum
+{0} 0
+
+SCIDB QUERY : <filter(DF, $seq=4)>
+v
+
+SCIDB QUERY : <index_lookup(DF, INDEX, DF.v)>
+[An error expected at this place for the query "index_lookup(DF, INDEX, DF.v)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <save(DF, 'savefile')>
+v
+
+SCIDB QUERY : <op_sum(input(DF, 'savefile'), v)>
+{i} v_sum
+{0} 32
+
+SCIDB QUERY : <insert(DF, DF)>
+[An error expected at this place for the query "insert(DF, DF)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <join(DF, project(apply(DF, w, v), w))>
+[An error expected at this place for the query "join(DF, project(apply(DF, w, v), w))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <op_count(limit(DF, count: 3))>
+{i} count
+{0} 3
+
+SCIDB QUERY : <load(DF, 'savefile')>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(DF, v)>
+{i} v_sum
+{0} 32
+
+SCIDB QUERY : <merge(DF,DF)>
+[An error expected at this place for the query "merge(DF,DF)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <op_sum(project(DF, v), v)>
+{i} v_sum
+{0} 32
+
+SCIDB QUERY : <quantile(DF, 4)>
+{quantile} percentage,v_quantile
+{0} 0,1
+{1} 0.25,2
+{2} 0.5,5
+{3} 0.75,7
+{4} 1,8
+
+SCIDB QUERY : <op_sum(rank(DF), v)>
+{i} v_sum
+{0} 32
+
+SCIDB QUERY : <redimension(apply(DF, w, v+10), <w:int64>[v=0:*])>
+{v} w
+{1} 11
+{2} 12
+{3} 13
+{5} 15
+{6} 16
+{7} 17
+{8} 18
+
+SCIDB QUERY : <rename(DF, DF2)>
+Query was executed successfully
+
+SCIDB QUERY : <rename(DF2, DF)>
+Query was executed successfully
+
+SCIDB QUERY : <reshape(DF, <v:int64>[i=0:1; j=1:4])>
+[An error expected at this place for the query "reshape(DF, <v:int64>[i=0:1; j=1:4])". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <op_sum(scan(DF), v)>
+{i} v_sum
+{0} 32
+
+SCIDB QUERY : <project(apply(show(DF), nschema, substr(schema, 0, 21)+'-'+substr(schema, 22, 100)), nschema)>
+{i} nschema
+{0} 'DF<v:int64> [$inst=0:-:0:1; $seq=0:*:0:1000000]'
+
+SCIDB QUERY : <slice(DF)>
+[An error expected at this place for the query "slice(DF)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <sort(DF)>
+{$n} v
+{0} 1
+{1} 2
+{2} 3
+{3} 5
+{4} 6
+{5} 7
+{6} 8
+
+SCIDB QUERY : <store(DF, DF3)>
+Query was executed successfully
+
+SCIDB QUERY : <subarray(DF, 0, 0, 2, 2)>
+[An error expected at this place for the query "subarray(DF, 0, 0, 2, 2)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <op_sum(substitute(DF, build(<v:int64 NOT NULL>[i=0:0],99)), v)>
+{i} v_sum
+{0} 32
+
+SCIDB QUERY : <summarize(DF)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',7,200,2,7,7,7,72,100,128
+
+SCIDB QUERY : <transpose(DF)>
+[An error expected at this place for the query "transpose(DF)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <unfold(DF)>
+8
+7
+6
+5
+3
+2
+1
+
+SCIDB QUERY : <uniq(DF)>
+[An error expected at this place for the query "uniq(DF)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <unpack(DF, foo)>
+{foo} v
+{0} 8
+{1} 7
+{2} 6
+{3} 5
+{4} 3
+{5} 2
+{6} 1
+
+SCIDB QUERY : <project(versions(DF), version_id)>
+{VersionNo} version_id
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+
+SCIDB QUERY : <xgrid(DF, 5)>
+[An error expected at this place for the query "xgrid(DF, 5)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <remove_versions(DF, 1)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(DF, sum(v))>
+{i} v_sum
+{0} 32
+
+SCIDB QUERY : <aggregate(DF, sum(v), $inst)>
+[An error expected at this place for the query "aggregate(DF, sum(v), $inst)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <regrid(DF, 4, sum(v))>
+[An error expected at this place for the query "regrid(DF, 4, sum(v))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <variable_window(DF, $inst, 0, 5, sum(v))>
+[An error expected at this place for the query "variable_window(DF, $inst, 0, 5, sum(v))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <window(DF, 0, 5, sum(v))>
+[An error expected at this place for the query "window(DF, 0, 5, sum(v))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+SCIDB QUERY : <remove(DF)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF3)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(INDEX)>
+Query was executed successfully
+

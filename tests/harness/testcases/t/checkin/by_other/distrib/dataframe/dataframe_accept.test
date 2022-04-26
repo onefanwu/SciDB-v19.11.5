@@ -1,0 +1,138 @@
+
+# a test that shows that about 33 operators currently accept dataframes
+# about 3 operators could accept them, but can't as written
+# (pearson, spearman, kendall)
+# and those where dataframe input seems inapplicable at this time
+# (commented with NA)
+
+# once all the applicable operators have proper testing in place in the
+# by_op test heirarchy, this cross-operator group test can be dismantled
+# but for now, this serves a purpose much like the list('operators') test
+
+--setup
+--start-query-logging
+
+store(project(flatten(build(<v:int64>[i=0:7], 8-i)),v), DF)
+
+store(build(<v:int64 not null>[i=0:7], i), INDEX)
+
+--test
+
+--set-format dcsv
+
+#NA add_instances
+op_sum(apply(DF, new, v+7), v)
+attributes(DF)
+op_sum(avg_rank(DF), v)
+# probability 1.0 outputs all input, so not dependent on seed
+op_sum(bernoulli(DF, 1.0), v)
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "between(DF, 0, 0, 2, 2)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_BUILD_ERROR3 "build(DF, 9-i)"
+#NA cancel
+op_sum(cast(DF, <v:double>), v)
+consume(DF)
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "cross_between(DF, INDEX)"
+
+op_count(cross_join(DF as l, DF as r))
+op_count(cross_join(INDEX as l, DF as r))
+op_count(cross_join(DF as l, INDEX as r))
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "cross_join(DF as l, INDEX as r, \$inst, i)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "cross_join(INDEX as l, DF as r, i, \$inst)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "cross_join(DF as l, DF as r, l.\$inst, r.\$inst)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "cumulate(DF, sum(v))"
+
+delete(DF, v=4)
+# No strong reason to disallow DF cell deletion by dimension.
+delete(DF, $seq=4)
+# project removes items that vary depending on the number of instances
+# NOCHECKIN filter(, name!='$inst') might be needed?
+project(dimensions(DF), length, low, high, inverse:true)
+op_sum(filter(DF, v=4), v)
+filter(DF, $seq=4)
+
+#NA gemm
+#NA gesvd
+#NA glm
+#NA help
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "index_lookup(DF, INDEX, DF.v)"
+save(DF, 'savefile')
+op_sum(input(DF, 'savefile'), v)
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "insert(DF, DF)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "join(DF, project(apply(DF, w, v), w))"
+
+#NA kendall(DF,DF)   #no kendall() in CE
+op_count(limit(DF, count: 3))
+#NA list
+#NA list_array_residency(DF)
+#NA list_instances
+
+load(DF, 'savefile')
+op_sum(DF, v)
+
+#NA load_library
+#NA load_module
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "merge(DF,DF)"
+#NA mpi_init
+#pearson(DF,DF)   #no pearson() in CE
+op_sum(project(DF, v), v)
+quantile(DF, 4)
+op_sum(rank(DF), v)
+redimension(apply(DF, w, v+10), <w:int64>[v=0:*])
+#NA redistribute(DF)
+#NA, later remove(DF)
+#NA, remove_instances
+rename(DF, DF2)
+rename(DF2, DF)
+# repart(DF, <v:int64>, phys_chunk_size:5000)  not working yet, could in theory
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "reshape(DF, <v:int64>[i=0:1; j=1:4])"
+#NA rng_uniform
+op_sum(scan(DF), v)
+
+#show command with upper dimension bound remove, so it runs on various instance configs.
+project(apply(show(DF), nschema, substr(schema, 0, 21)+'-'+substr(schema, 22, 100)), nschema)
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "slice(DF)"
+sort(DF)
+#NA spearman(DF,DF) #no spearman in CE
+#NA spgemm
+store(DF, DF3)
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "subarray(DF, 0, 0, 2, 2)"
+op_sum(substitute(DF, build(<v:int64 NOT NULL>[i=0:0],99)), v)
+summarize(DF)
+#NA sync
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "transpose(DF)"
+#NA tsvd #no tsvd in CE
+--set-format csv
+unfold(DF)
+
+--reset-format
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "uniq(DF)"
+
+#NA unload_library
+unpack(DF, foo)
+#NA unregister_instances
+project(versions(DF), version_id)
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "xgrid(DF, 5)"
+remove_versions(DF, 1)
+
+#
+# aggregates
+#
+aggregate(DF, sum(v))
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "aggregate(DF, sum(v), \$inst)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "regrid(DF, 4, sum(v))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "variable_window(DF, \$inst, 0, 5, sum(v))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED "window(DF, 0, 5, sum(v))"
+
+--cleanup
+remove(DF)
+remove(DF3)
+remove(INDEX)

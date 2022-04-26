@@ -1,0 +1,38 @@
+SCIDB QUERY : <create array DMONTH_DFLT <date:int64>[week=1:20*52,10,0; day=1:7,7,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(DMONTH_DFLT, week*7+day), DMONTH_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <create array WEEK_STR_DFLT <weekstr: string>[week=1:20*52,10,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array WEEK_STR_REPL <weekstr: string>[week=1:20*52,10,0] distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(WEEK_STR_DFLT, 'WEEK'+string(week)), WEEK_STR_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <store(WEEK_STR_DFLT, WEEK_STR_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <TIMEFORMAT=%3R; time (iquery -naq 'cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week)') 2>/tmp/replication99.1.txt>
+Query was executed successfully
+
+SCIDB QUERY : <TIMEFORMAT=%3R; time (iquery -naq 'cross_join(DMONTH_DFLT as A, WEEK_STR_REPL as B, A.week, B.week)') 2>/tmp/replication99.2.txt>
+Query was executed successfully
+
+SCIDB QUERY : <echo "scale=3; $(cat /tmp/replication99.1.txt) > $(cat /tmp/replication99.2.txt)" | bc>
+1
+
+SCIDB QUERY : <remove(DMONTH_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(WEEK_STR_DFLT)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(WEEK_STR_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <rm /tmp/replication99.1.txt /tmp/replication99.2.txt>
+

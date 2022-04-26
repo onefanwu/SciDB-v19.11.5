@@ -1,0 +1,122 @@
+--setup
+--start-query-logging
+
+--echo setup inputs
+
+# SCHEMAs are named for the operator they supply
+# BINOP means join or cross_join (colocated vs non colocated binary operators)
+#
+# ATTENTION: cross_join will have to have its right input replicated when avoiding an sg there
+#
+
+create array SCHEMA_BINOP  <v:double>[r=0:1,1,0, c=0:1,1,0]
+create array SCHEMA_REPART <v:double>[r=0:1,2,0, c=0:1,2,0]
+
+# we need some operators with certain properties
+
+# example binary operator that does not require colocation -> cross_join()
+# true because cross_join is a many-cells-to-many-cells operation
+
+# example binary operator that requires colocation -> join()
+# true because join is a 1-1 matching of cells
+
+store(build(SCHEMA_BINOP, 1), A_BINOP_HA, distribution: hashed)
+store(build(SCHEMA_BINOP, 1), A_BINOP_RC, distribution: row_cyclic)
+store(build(SCHEMA_BINOP, 1), A_BINOP_CC, distribution: col_cyclic)
+store(build(SCHEMA_BINOP, 1), A_BINOP_RE, distribution: replicated)
+
+--test
+
+--echo check assumptions that can be checked:
+# example operator with outputFullChunks() false -> re{dim,part,shape}, subarray, uniq, unpack
+# repart(build(SCHEMA_REPART, 1.), SCHEMA_BINOP) -- cannot be checked at this time
+
+# validate build(literal) produces dtLocalInstance?
+# dtLocalInstance is not visible to the user, but at least we see null instead of hashed, etc
+--echo should be null distribution
+show('build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true)','afl')
+
+# establish the correct result for the joins and cross_joins with fullChunk dtHashed inputs
+--echo check vanilla case (hashed (except cross_join replicated on right), no sg insertions required:
+join  (A_BINOP_HA, A_BINOP_HA)
+cross_join(A_BINOP_HA, A_BINOP_RE)
+
+--echo sg count should be 0
+_sgcount('join  (A_BINOP_HA, A_BINOP_HA)')
+_sgcount('cross_join(A_BINOP_HA, A_BINOP_RE)')
+
+--echo exercise sg insertion cases by code path:
+
+--echo cases sg for lhs required, regardless of the rhs
+
+# left dtLocal or !fullChunks,     (right don't care), coloc required(e.g. join) = Habilis case 2c1a
+join  (build(SCHEMA_BINOP, '[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]',true), A_BINOP_HA)
+join  (repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP),                 A_BINOP_HA)
+
+--echo sg count should be 1, Habilis case 2c1a
+_sgcount('join  (build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true), A_BINOP_HA)')
+_sgcount('join  (repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP),                   A_BINOP_HA)')
+
+# left dtLocal or !fullChunks,     (right don't care), coloc not required(e.g. cross_join) = Habilis case 2c1b
+cross_join(build(SCHEMA_BINOP, '[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]',true), A_BINOP_RE)
+cross_join(repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP),                 A_BINOP_RE)
+--echo sg count should be 1, Habilis case 2c1b
+_sgcount('cross_join(build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true), A_BINOP_RE)')
+_sgcount('cross_join(repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP),                   A_BINOP_RE)')
+
+--echo cases sg for rhs required, regardless of the lhs
+
+# (left don't care), right dtLocal or !fullChunks,     coloc required(e.g. join) = Habilis case 2c2a
+join  (A_BINOP_HA, build(SCHEMA_BINOP, '[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]',true))
+join  (A_BINOP_HA, repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP))
+
+--echo sg count should be 1, Habilis case 2c2a
+_sgcount('join  (A_BINOP_HA, build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true))')
+_sgcount('join  (A_BINOP_HA, repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP))')
+
+# (left don't care), right dtLocal or !fullChunks,     coloc not required(e.g. cross_join) = Habilis case 2c2b
+cross_join(A_BINOP_HA, build(SCHEMA_BINOP, '[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]',true))
+cross_join(A_BINOP_HA, repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP))
+
+--echo sg count should be 1, Habilis case 2c2b
+_sgcount('cross_join(A_BINOP_HA, build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true))')
+_sgcount('cross_join(A_BINOP_HA, repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP))')
+
+# sg required for both, not resolved by case handling for the above unequal or one is dtUndefined
+# note that dtUndefined can be created with ... slice? (find a full list)
+
+--echo cases where colocation requested, but can be resolved by sending one to the other
+join(A_BINOP_RC, A_BINOP_CC)
+--echo sg count should be 1, because lhs or rhs can be sent to the other
+_sgcount('join(A_BINOP_RC, A_BINOP_CC)')
+
+join(A_BINOP_CC, A_BINOP_CC)
+--echo cases no sg required (SDB-6542) since already colocated (an optimization, not for correctness)
+_sgcount('join(A_BINOP_CC, A_BINOP_CC)')
+
+--echo cases whoere colocation not requested, so the lhs and rhs choices are independent
+
+cross_join(A_BINOP_HA, A_BINOP_RE)
+--echo 0 sg required on the left
+_sgcount('cross_join(A_BINOP_HA, A_BINOP_RE)')
+
+cross_join(A_BINOP_RE, A_BINOP_RE)
+--echo 0 sg required on the left (because RE is handled by a reducer, not an sg)
+_sgcount('cross_join(A_BINOP_RE, A_BINOP_RE)')
+
+cross_join(A_BINOP_RC, A_BINOP_RE)
+--echo 0 sg required on the left
+_sgcount('cross_join(A_BINOP_RC, A_BINOP_RE)')
+
+cross_join(A_BINOP_CC, A_BINOP_RE)
+--echo 0 sg required on the left
+_sgcount('cross_join(A_BINOP_CC, A_BINOP_RE)')
+
+--cleanup
+remove (SCHEMA_BINOP)
+remove (SCHEMA_REPART)
+remove (A_BINOP_HA)
+remove (A_BINOP_RC)
+remove (A_BINOP_CC)
+remove (A_BINOP_RE)
+

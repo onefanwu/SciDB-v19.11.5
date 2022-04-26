@@ -1,0 +1,120 @@
+SCIDB QUERY : <create array MEGACHUNK_HA <val:int64> [i=0:1000*1000,1,0] distribution hashed>
+Query was executed successfully
+
+SCIDB QUERY : <create array MEGACHUNK_RE <val:int64> [i=0:1000*1000,1,0] distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <create array MEGACHUNK_RC <val:int64> [i=0:1000*1000,1,0] distribution row_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <create array MEGACHUNK_CC <val:int64> [i=0:1000,1,0;j=0:1000,1,0] distribution col_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <create array TERACHUNK_HA <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0] distribution hashed>
+Query was executed successfully
+
+SCIDB QUERY : <create array TERACHUNK_RE <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0] distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <create array TERACHUNK_RC <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0] distribution row_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <create array TERACHUNK_CC <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0] distribution col_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <create array EXACHUNK_HA  <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0, k=0:1000*1000,1,0] distribution hashed>
+Query was executed successfully
+
+SCIDB QUERY : <create array EXACHUNK_RE  <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0, k=0:1000*1000,1,0] distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <create array EXACHUNK_RC  <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0, k=0:1000*1000,1,0] distribution row_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <create array EXACHUNK_CC  <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0, k=0:1000*1000,1,0] distribution col_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <between(build(MEGACHUNK_HA,i), 500*1000, 500*1000)>
+{i} val
+{500000} 500000
+
+SCIDB QUERY : <between(build(MEGACHUNK_RE,i), 500*1000, 500*1000)>
+{i} val
+{500000} 500000
+
+SCIDB QUERY : <between(build(MEGACHUNK_RC,i), 500*1000, 500*1000)>
+{i} val
+{500000} 500000
+
+SCIDB QUERY : <between(build(MEGACHUNK_CC,i), 500, 500, 500, 500)>
+{i,j} val
+{500,500} 500
+
+SCIDB QUERY : <between(build(TERACHUNK_HA,i), 500*1000, 500*1000, 500*1000, 500*1000)>
+{i,j} val
+{500000,500000} 500000
+
+SCIDB QUERY : <between(build(TERACHUNK_RE,i), 500*1000, 500*1000, 500*1000, 500*1000)>
+{i,j} val
+{500000,500000} 500000
+
+SCIDB QUERY : <between(build(TERACHUNK_RC,i), 500*1000, 500*1000, 500*1000, 500*1000)>
+{i,j} val
+{500000,500000} 500000
+
+SCIDB QUERY : <between(build(TERACHUNK_CC,i), 500*1000, 500*1000, 500*1000, 500*1000)>
+{i,j} val
+{500000,500000} 500000
+
+SCIDB QUERY : <between(build(EXACHUNK_HA,i),  500*1000, 500*1000, 500*1000, 500*1000, 500*1000, 500*1000)>
+{i,j,k} val
+{500000,500000,500000} 500000
+
+SCIDB QUERY : <between(build(EXACHUNK_RE,i),  500*1000, 500*1000, 500*1000, 500*1000, 500*1000, 500*1000)>
+{i,j,k} val
+{500000,500000,500000} 500000
+
+SCIDB QUERY : <between(build(EXACHUNK_RC,i),  500*1000, 500*1000, 500*1000, 500*1000, 500*1000, 500*1000)>
+{i,j,k} val
+{500000,500000,500000} 500000
+
+SCIDB QUERY : <between(build(EXACHUNK_CC,i),  500*1000, 500*1000, 500*1000, 500*1000, 500*1000, 500*1000)>
+{i,j,k} val
+{500000,500000,500000} 500000
+
+SCIDB QUERY : <remove(MEGACHUNK_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(MEGACHUNK_RE)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(MEGACHUNK_RC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(MEGACHUNK_CC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(TERACHUNK_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(TERACHUNK_RE)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(TERACHUNK_RC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(TERACHUNK_CC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(EXACHUNK_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(EXACHUNK_RE)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(EXACHUNK_RC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(EXACHUNK_CC)>
+Query was executed successfully
+

@@ -1,0 +1,41 @@
+--setup
+--start-query-logging
+create array DATA <name:string> [i=1:2000,10,0]
+store(build(DATA, string(i%100)), DATA)
+
+create array INDEX <name:string NOT NULL> [i=0:*,10,0]
+store(uniq(sort(project(DATA, name))), INDEX)
+
+create array INDEX_REPL <name:string NOT NULL> [i=0:*,10,0] distribution replicated
+store(INDEX, INDEX_REPL)
+
+# using short data increases the percentage difference
+# in timing due to redistribution of INDEX
+create array DATA_SHORT <name:string> [i=1:20,100,0]
+store(build(DATA_SHORT, string(i%100)), DATA_SHORT)
+
+
+--test
+
+
+# right default
+--shell --store-all --command "TIMEFORMAT=%3R; time(iquery -naq 'index_lookup(DATA_SHORT, INDEX, DATA_SHORT.name, index_sorted: true)') 2>/tmp/replication99.1.txt"
+
+# right replicated
+--shell --store-all --command "TIMEFORMAT=%3R; time(iquery -naq 'index_lookup(DATA_SHORT, INDEX_REPL, DATA_SHORT.name, index_sorted: true)') 2>/tmp/replication99.2.txt"
+
+# output times taken on terminal without affecting the .out file (developer feedback)
+--shell --command "cat /tmp/replication99.1.txt >&2"
+--shell --command "cat /tmp/replication99.2.txt >&2"
+
+# to make the test pass/fail, ensure that the time for the first query is longer than the second
+# outputs a 1 into the .out file when that is true
+--shell --store-all --command "echo "scale=3; $(cat /tmp/replication99.1.txt) > $(cat /tmp/replication99.2.txt)" | bc"
+
+--cleanup
+
+--shell --store-all --command "rm /tmp/replication99.1.txt /tmp/replication99.2.txt"
+remove(DATA)
+remove(DATA_SHORT)
+remove(INDEX)
+remove(INDEX_REPL)

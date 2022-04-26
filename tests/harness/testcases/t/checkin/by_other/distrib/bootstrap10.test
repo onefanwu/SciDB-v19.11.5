@@ -1,0 +1,424 @@
+--setup
+--start-query-logging
+--test
+
+build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)
+
+# create
+create array HASH <v:int64>[i=0:2,1,0,j=0:2,1,0] distribution hashed
+create array ROWC <v:int64>[i=0:2,1,0,j=0:2,1,0] distribution row_cyclic
+create array COLC <v:int64>[i=0:2,1,0,j=0:2,1,0] distribution col_cyclic
+create array REPL <v:int64>[i=0:2,1,0,j=0:2,1,0] distribution replicated
+    # show
+    show(HASH)
+    show(ROWC)
+    show(COLC)
+    show(REPL)
+
+# store to created
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), HASH)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), ROWC)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), COLC)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), REPL)
+    # show -- again, yes, it should not have changed
+    show(HASH)
+    show(ROWC)
+    show(COLC)
+    show(REPL)
+    # summarize
+    summarize(HASH, by_instance: true)
+    summarize(ROWC, by_instance: true)
+    summarize(COLC, by_instance: true)
+    summarize(REPL, by_instance: true)
+    # scan
+    scan(HASH)
+    scan(ROWC)
+    scan(COLC)
+    scan(REPL)
+    # remove
+    remove(HASH)
+    remove(ROWC)
+    remove(COLC)
+    remove(REPL)
+
+# store with creation
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), HASH, distribution: hashed)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), ROWC, distribution: row_cyclic)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), COLC, distribution: col_cyclic)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), REPL, distribution: replicated)
+    # show
+    show(HASH)
+    show(ROWC)
+    show(COLC)
+    show(REPL)
+    # summarize
+    summarize(HASH, by_instance: true)
+    summarize(ROWC, by_instance: true)
+    summarize(COLC, by_instance: true)
+    summarize(REPL, by_instance: true)
+    # scan
+    scan(HASH)
+    scan(ROWC)
+    scan(COLC)
+    scan(REPL)
+
+# filter
+#     handles input dists
+filter(HASH, v%2=0)
+filter(ROWC, v%2=0)
+filter(COLC, v%2=0)
+filter(REPL, v%2=0)
+#     prepares good inheritance
+store(filter(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), v%2=0), HASH_OUT, distribution: hashed)
+store(filter(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), v%2=0), ROWC_OUT, distribution: row_cyclic)
+store(filter(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), v%2=0), COLC_OUT, distribution: col_cyclic)
+store(filter(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), v%2=0), REPL_OUT, distribution: replicated)
+    # show
+    show(HASH_OUT)
+    show(ROWC_OUT)
+    show(COLC_OUT)
+    show(REPL_OUT)
+    # summarize
+    summarize(HASH_OUT, by_instance: true)
+    summarize(ROWC_OUT, by_instance: true)
+    summarize(COLC_OUT, by_instance: true)
+    summarize(REPL_OUT, by_instance: true)
+    # scan
+    scan(HASH_OUT)
+    scan(ROWC_OUT)
+    scan(COLC_OUT)
+    scan(REPL_OUT)
+    # remove
+    remove(HASH_OUT)
+    remove(ROWC_OUT)
+    remove(COLC_OUT)
+    remove(REPL_OUT)
+
+# apply
+#     handle input dists
+apply(HASH, w, v)
+apply(ROWC, w, v)
+apply(COLC, w, v)
+apply(REPL, w, v)
+#     prepares good inheritance
+store(apply(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), w, v), HASH_OUT, distribution: hashed)
+store(apply(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), w, v), ROWC_OUT, distribution: row_cyclic)
+store(apply(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), w, v), COLC_OUT, distribution: col_cyclic)
+store(apply(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), w, v), REPL_OUT, distribution: replicated)
+    # show
+    show(HASH_OUT)
+    show(ROWC_OUT)
+    show(COLC_OUT)
+    show(REPL_OUT)
+    # summarize
+    summarize(HASH_OUT, by_instance: true)
+    summarize(ROWC_OUT, by_instance: true)
+    summarize(COLC_OUT, by_instance: true)
+    summarize(REPL_OUT, by_instance: true)
+    # scan
+    scan(HASH_OUT)
+    scan(ROWC_OUT)
+    scan(COLC_OUT)
+    scan(REPL_OUT)
+    # remove
+    remove(HASH_OUT)
+    remove(ROWC_OUT)
+    remove(COLC_OUT)
+    remove(REPL_OUT)
+
+# aggregate  NOTE: i,j are necessary to produce multi-dimension output for the col_cyclic distribution to use
+#     handle input dists
+aggregate(HASH, sum(v))
+aggregate(ROWC, sum(v))
+aggregate(REPL, sum(v))
+aggregate(COLC, sum(v),i,j)
+#     prepares good inheritance
+store(aggregate(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), sum(v)), HASH_OUT, distribution: hashed)
+store(aggregate(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), sum(v)), ROWC_OUT, distribution: row_cyclic)
+store(aggregate(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), sum(v),i,j), COLC_OUT, distribution: col_cyclic)
+store(aggregate(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), sum(v)), REPL_OUT, distribution: replicated)
+    # show
+    show(HASH_OUT)
+    show(ROWC_OUT)
+    show(COLC_OUT)
+    show(REPL_OUT)
+    # summarize
+    summarize(HASH_OUT, by_instance: true)
+    summarize(ROWC_OUT, by_instance: true)
+    summarize(COLC_OUT, by_instance: true)
+    summarize(REPL_OUT, by_instance: true)
+    # scan
+    scan(HASH_OUT)
+    scan(ROWC_OUT)
+    scan(COLC_OUT)
+    scan(REPL_OUT)
+    # remove
+    remove(HASH_OUT)
+    remove(ROWC_OUT)
+    remove(COLC_OUT)
+    remove(REPL_OUT)
+
+# cumulate
+#     handle input dists
+cumulate(HASH, sum(v))
+cumulate(ROWC, sum(v))
+cumulate(REPL, sum(v))
+cumulate(COLC, sum(v))
+#     prepares good inheritance
+store(cumulate(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), sum(v)), HASH_OUT, distribution: hashed)
+store(cumulate(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), sum(v)), ROWC_OUT, distribution: row_cyclic)
+store(cumulate(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), sum(v)), COLC_OUT, distribution: col_cyclic)
+store(cumulate(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), sum(v)), REPL_OUT, distribution: replicated)
+    # show
+    show(HASH_OUT)
+    show(ROWC_OUT)
+    show(COLC_OUT)
+    show(REPL_OUT)
+    # summarize
+    summarize(HASH_OUT, by_instance: true)
+    summarize(ROWC_OUT, by_instance: true)
+    summarize(COLC_OUT, by_instance: true)
+    summarize(REPL_OUT, by_instance: true)
+    # scan
+    scan(HASH_OUT)
+    scan(ROWC_OUT)
+    scan(COLC_OUT)
+    scan(REPL_OUT)
+    # remove
+    remove(HASH_OUT)
+    remove(ROWC_OUT)
+    remove(COLC_OUT)
+    remove(REPL_OUT)
+    # experience bug not covered by regular testing above
+    # resulted in collison
+    cumulate(filter(build(<v:int64>[i=0:1,1,0],i),i=0), sum(v), i)
+    # would cumulate(build()) above have caught it?
+
+# project
+project(apply(HASH, w, v),w)
+project(apply(ROWC, w, v),w)
+project(apply(COLC, w, v),w)
+project(apply(REPL, w, v),w)
+
+
+
+# join 4 lefts x 4 rights x 1 inherited = 16 combos
+# (dist2_multi.test has   x 4 inherited = 64 combos
+store(join(HASH, HASH), HASH_HASH_HASH, distribution: hashed)
+store(join(HASH, ROWC), HASH_ROWC_HASH, distribution: hashed)
+store(join(HASH, COLC), HASH_COLC_HASH, distribution: hashed)
+store(join(HASH, REPL), HASH_REPL_HASH, distribution: hashed)
+store(join(ROWC, HASH), ROWC_HASH_HASH, distribution: hashed)
+store(join(ROWC, ROWC), ROWC_ROWC_HASH, distribution: hashed)
+store(join(ROWC, COLC), ROWC_COLC_HASH, distribution: hashed)
+store(join(ROWC, REPL), ROWC_REPL_HASH, distribution: hashed)
+store(join(COLC, HASH), COLC_HASH_HASH, distribution: hashed)
+store(join(COLC, ROWC), COLC_ROWC_HASH, distribution: hashed)
+store(join(COLC, COLC), COLC_COLC_HASH, distribution: hashed)
+store(join(COLC, REPL), COLC_REPL_HASH, distribution: hashed)
+store(join(REPL, HASH), REPL_HASH_HASH, distribution: hashed)
+store(join(REPL, ROWC), REPL_ROWC_HASH, distribution: hashed)
+store(join(REPL, COLC), REPL_COLC_HASH, distribution: hashed)
+store(join(REPL, REPL), REPL_REPL_HASH, distribution: hashed)
+    # show
+    show(HASH_HASH_HASH)
+    show(HASH_ROWC_HASH)
+    show(HASH_COLC_HASH)
+    show(HASH_REPL_HASH)
+    show(ROWC_HASH_HASH)
+    show(ROWC_ROWC_HASH)
+    show(ROWC_COLC_HASH)
+    show(ROWC_REPL_HASH)
+    show(COLC_HASH_HASH)
+    show(COLC_ROWC_HASH)
+    show(COLC_COLC_HASH)
+    show(COLC_REPL_HASH)
+    show(REPL_HASH_HASH)
+    show(REPL_ROWC_HASH)
+    show(REPL_COLC_HASH)
+    show(REPL_REPL_HASH)
+
+    # summarize
+    summarize(HASH_HASH_HASH, by_instance: true)
+    summarize(HASH_ROWC_HASH, by_instance: true)
+    summarize(HASH_COLC_HASH, by_instance: true)
+    summarize(HASH_REPL_HASH, by_instance: true)
+    summarize(ROWC_HASH_HASH, by_instance: true)
+    summarize(ROWC_ROWC_HASH, by_instance: true)
+    summarize(ROWC_COLC_HASH, by_instance: true)
+    summarize(ROWC_REPL_HASH, by_instance: true)
+    summarize(COLC_HASH_HASH, by_instance: true)
+    summarize(COLC_ROWC_HASH, by_instance: true)
+    summarize(COLC_COLC_HASH, by_instance: true)
+    summarize(COLC_REPL_HASH, by_instance: true)
+    summarize(REPL_HASH_HASH, by_instance: true)
+    summarize(REPL_ROWC_HASH, by_instance: true)
+    summarize(REPL_COLC_HASH, by_instance: true)
+    summarize(REPL_REPL_HASH, by_instance: true)
+
+    # scan
+    scan(HASH_HASH_HASH)
+    scan(HASH_ROWC_HASH)
+    scan(HASH_COLC_HASH)
+    scan(HASH_REPL_HASH)
+    scan(ROWC_HASH_HASH)
+    scan(ROWC_ROWC_HASH)
+    scan(ROWC_COLC_HASH)
+    scan(ROWC_REPL_HASH)
+    scan(COLC_HASH_HASH)
+    scan(COLC_ROWC_HASH)
+    scan(COLC_COLC_HASH)
+    scan(COLC_REPL_HASH)
+    scan(REPL_HASH_HASH)
+    scan(REPL_ROWC_HASH)
+    scan(REPL_COLC_HASH)
+    scan(REPL_REPL_HASH)
+
+
+
+# transpose
+#iquery -aq "transpose(build( <v:double>[r=0:4,2,0, c=0:4,2,0], r+100*c))"
+# transpose is too hard at the moment
+#iquery -aq "build(<v:double>[r=0:4,2,0, c=0:4,2,0], 100*r+c)"
+#iquery -aq "build(<v:double>[r=0:4,2,0, c=0:4,2,0], r+100*c)"
+#iquery -aq "store(transpose(build( <v:double>[r=0:4,2,0, c=0:4,2,0], r+100*c)), T)"
+
+# avg_rank
+#     handle input dists
+avg_rank(HASH)
+avg_rank(ROWC)
+avg_rank(COLC)
+avg_rank(REPL)
+#     prepares good inheritance
+store(avg_rank(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)), HASH_OUT, distribution: hashed)
+store(avg_rank(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)), ROWC_OUT, distribution: row_cyclic)
+store(avg_rank(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)), COLC_OUT, distribution: col_cyclic)
+store(avg_rank(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)), REPL_OUT, distribution: replicated)
+    # show
+    show(HASH_OUT)
+    show(ROWC_OUT)
+    show(COLC_OUT)
+    show(REPL_OUT)
+    # summarize
+    summarize(HASH_OUT, by_instance: true)
+    summarize(ROWC_OUT, by_instance: true)
+    summarize(COLC_OUT, by_instance: true)
+    summarize(REPL_OUT, by_instance: true)
+    # scan
+    scan(HASH_OUT)
+    scan(ROWC_OUT)
+    scan(COLC_OUT)
+    scan(REPL_OUT)
+    # remove
+    remove(HASH_OUT)
+    remove(ROWC_OUT)
+    remove(COLC_OUT)
+    remove(REPL_OUT)
+    # original trouble:
+    consume(avg_rank(build(<attr1:double>[i=0:99,100,0,j=0:99,100,0],random())))
+
+# flatten to dataframe
+#     setup
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), CELLS_HASH, distribution: hashed)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), CELLS_ROWC, distribution: row_cyclic)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), CELLS_COLC, distribution: col_cyclic)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), CELLS_REPL, distribution: replicated)
+#     handle input dists
+flatten(CELLS_HASH)
+flatten(CELLS_ROWC)
+flatten(CELLS_COLC)
+# if flatten is passed CELLS_REPL, its output would change order because its getDistRequirement
+# will reduce the CELLS_REPL to defaultDistType() and the chunks will be output in an order that
+# varies with the configuration
+# so we wrap this one case in sort to unify the output
+sort(flatten(CELLS_REPL),v)
+
+
+#
+# TODOs
+#
+
+#
+#     prepares good inheritance
+#     -- cannot be tested using store because
+#        distribution not specifiable on store of dataframe (SDB-6465)
+#     TODO: Is there another way to test flatten inheritance?
+#           Can't do it with default-distribution, either, see SDB-6462.
+#           Perhaps a test operator, like consume, could be enhanced?
+#store(flatten(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)), HASH_DF_OUT, distribution: hashed)
+#store(flatten(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)), ROWC_DF_OUT, distribution: row_cyclic)
+#store(flatten(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)), COLC_DF_OUT, distribution: col_cyclic)
+#store(flatten(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)), REPL_DF_OUT, distribution: replicated)
+
+#
+# the following tests were not necessary to have in the bootstrap
+# when modifying the distribution code.
+# TODO:
+#   turn this into a more general set of tests by
+#   continuing the progressin in this and the
+#   other bootstrapNN.test files
+
+# list('datastores') output is order-dependent
+#list('datastores')
+    #project(list('datastores'), file_bytes)
+    # original trouble:
+    #sort(project(list('datastores'), file_bytes), file_bytes)
+
+# scalapack
+
+# sort
+#iquery -aq "sort(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j))"
+# these hang
+#iquery -aq "sort(build(<v:int64>[i=0:0,1,0],0))"
+#iquery -aq "sort(build(<v:int64>[i=0:1,1,0],0))"
+#iquery -aq "sort(build(<v:int64>[i=0:10,2,0],0))"
+
+# uniq
+
+#
+# second tier
+#
+
+# add attributes
+#iquery -aq "create array ARRAY_DFLT <v:int64>[i=0:9:0:2]"
+#iquery -aq "store(build(ARRAY_DFLT, i), ARRAY)"
+#iquery -aq "add_attributes(ARRAY_DFLT, <w:int64>)"
+#iquery -aq "scan(ARRAY_DFLT)"
+#iquery -aq "store(project(ARRAY_DFLT, v), ARRAY_DFLT)"
+#iquery -aq "remove(ARRAY_DFLT)"
+
+#iquery -aq "_explain_physical('sort(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)','afl')"
+
+--cleanup
+remove(HASH)
+remove(ROWC)
+remove(COLC)
+remove(REPL)
+
+remove(CELLS_HASH)
+remove(CELLS_ROWC)
+remove(CELLS_COLC)
+remove(CELLS_REPL)
+
+--justrun "remove(HASH_OUT)"
+--justrun "remove(ROWC_OUT)"
+--justrun "remove(COLC_OUT)"
+--justrun "remove(REPL_OUT)"
+
+# join results
+remove(HASH_HASH_HASH)
+remove(HASH_ROWC_HASH)
+remove(HASH_COLC_HASH)
+remove(HASH_REPL_HASH)
+remove(ROWC_HASH_HASH)
+remove(ROWC_ROWC_HASH)
+remove(ROWC_COLC_HASH)
+remove(ROWC_REPL_HASH)
+remove(COLC_HASH_HASH)
+remove(COLC_ROWC_HASH)
+remove(COLC_COLC_HASH)
+remove(COLC_REPL_HASH)
+remove(REPL_HASH_HASH)
+remove(REPL_ROWC_HASH)
+remove(REPL_COLC_HASH)
+remove(REPL_REPL_HASH)

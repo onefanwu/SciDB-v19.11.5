@@ -1,0 +1,25 @@
+--setup
+# Ensure chunks on every instance.
+store(build(<v:int64>[i=1:10:0:1], i), dskeys_test_array, distribution:replicated)
+store(build(<v:int64>[i=1:10:0:1], 2*i+1), other_dskeys_test_array, distribution:replicated)
+
+--test
+# Create an array containing the unversioned array IDs of the current
+# arrays on disk.
+store(project(list(), uaid), uaids, distribution:replicated)
+
+# Use the array of unversioned IDs as input to _dskeys.
+project(_dskeys(uaids), $ndims, $attid, $coords)
+
+# Exercise unexpected array input.
+--error --code scidb::SCIDB_SE_INTERNAL::SCIDB_LE_ILLEGAL_OPERATION "_dskeys(list())"
+--error --code scidb::SCIDB_SE_INTERNAL::SCIDB_LE_ILLEGAL_OPERATION "_dskeys(build(<v:double>[i=1:1],i))"
+
+# Remove the test arrays and verify that rocksdb has no entries.  The
+# op_opcount of the _dskeys output must be zero in this case.
+remove(dskeys_test_array)
+remove(other_dskeys_test_array)
+op_count(_dskeys(uaids))
+
+--cleanup
+remove(uaids)

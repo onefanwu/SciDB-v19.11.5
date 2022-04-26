@@ -1,0 +1,93 @@
+SCIDB QUERY : <create array f <v:int64>[i=1:*]>
+Query was executed successfully
+
+SCIDB QUERY : <create array g <v:int64>[i=1:*]>
+Query was executed successfully
+
+SCIDB QUERY : <create array h <v:int64>[i=1:*]>
+Query was executed successfully
+
+SCIDB QUERY : <create array i <v:int64>[i=1:*]>
+Query was executed successfully
+
+SCIDB QUERY : <create array j <v:int64>[i=1:*]>
+Query was executed successfully
+
+SCIDB QUERY : <mquery(insert(build(<v:int64>[i=1:9],1*i),f), insert(build(<v:int64>[i=1:9],2*i),g), insert(build(<v:int64>[i=1:9],3*i),h), insert(build(<v:int64>[i=1:9],4*i),i), insert(build(<v:int64>[i=1:9],5*i),j))>
+Query was executed successfully
+
+SCIDB QUERY : <scan(f)>
+{i} v
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+{5} 5
+{6} 6
+{7} 7
+{8} 8
+{9} 9
+
+SCIDB QUERY : <scan(g)>
+{i} v
+{1} 2
+{2} 4
+{3} 6
+{4} 8
+{5} 10
+{6} 12
+{7} 14
+{8} 16
+{9} 18
+
+SCIDB QUERY : <scan(h)>
+{i} v
+{1} 3
+{2} 6
+{3} 9
+{4} 12
+{5} 15
+{6} 18
+{7} 21
+{8} 24
+{9} 27
+
+SCIDB QUERY : <scan(i)>
+{i} v
+{1} 4
+{2} 8
+{3} 12
+{4} 16
+{5} 20
+{6} 24
+{7} 28
+{8} 32
+{9} 36
+
+SCIDB QUERY : <scan(j)>
+{i} v
+{1} 5
+{2} 10
+{3} 15
+{4} 20
+{5} 25
+{6} 30
+{7} 35
+{8} 40
+{9} 45
+
+SCIDB QUERY : <remove(f)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(g)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(h)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(i)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(j)>
+Query was executed successfully
+

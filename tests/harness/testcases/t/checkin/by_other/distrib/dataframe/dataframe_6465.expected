@@ -1,0 +1,224 @@
+SCIDB QUERY : <create array SCHEMA <v:int64>[i=0:7;j=0:7]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(apply(build(<v:int64>[i=0:7], i),j,i), SCHEMA), DATA)>
+Query was executed successfully
+
+SCIDB QUERY : <store(flatten(build(DATA, i)), DF)>
+Query was executed successfully
+
+SCIDB QUERY : <store(DATA, DATA_EXISTS)>
+Query was executed successfully
+
+SCIDB QUERY : <store(DF, DF_EXISTS)>
+Query was executed successfully
+
+SCIDB QUERY : <store(DATA, OUT_HA, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <show(OUT_HA)>
+{i} schema,distribution,etcomp
+{0} 'OUT_HA<v:int64> [i=0:7:0:8; j=0:7:0:8]','hashed','none'
+
+SCIDB QUERY : <scan(OUT_HA)>
+{i,j} v
+{0,0} 0
+{1,1} 1
+{2,2} 2
+{3,3} 3
+{4,4} 4
+{5,5} 5
+{6,6} 6
+{7,7} 7
+
+SCIDB QUERY : <store(DATA, OUT_RC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <show(OUT_RC)>
+{i} schema,distribution,etcomp
+{0} 'OUT_RC<v:int64> [i=0:7:0:8; j=0:7:0:8]','row_cyclic','none'
+
+SCIDB QUERY : <scan(OUT_RC)>
+{i,j} v
+{0,0} 0
+{1,1} 1
+{2,2} 2
+{3,3} 3
+{4,4} 4
+{5,5} 5
+{6,6} 6
+{7,7} 7
+
+SCIDB QUERY : <store(DATA, OUT_RE, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <show(OUT_RE)>
+{i} schema,distribution,etcomp
+{0} 'OUT_RE<v:int64> [i=0:7:0:8; j=0:7:0:8]','replicated','none'
+
+SCIDB QUERY : <scan(OUT_RE)>
+{i,j} v
+{0,0} 0
+{1,1} 1
+{2,2} 2
+{3,3} 3
+{4,4} 4
+{5,5} 5
+{6,6} 6
+{7,7} 7
+
+SCIDB QUERY : <store(DATA, OUT_CC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <show(OUT_CC)>
+{i} schema,distribution,etcomp
+{0} 'OUT_CC<v:int64> [i=0:7:0:8; j=0:7:0:8]','col_cyclic','none'
+
+SCIDB QUERY : <scan(OUT_CC)>
+{i,j} v
+{0,0} 0
+{1,1} 1
+{2,2} 2
+{3,3} 3
+{4,4} 4
+{5,5} 5
+{6,6} 6
+{7,7} 7
+
+SCIDB QUERY : <store(DF, NOT_EXISTS, distribution: hashed)>
+[An error expected at this place for the query "store(DF, NOT_EXISTS, distribution: hashed)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+SCIDB QUERY : <store(DF, NOT_EXISTS, distribution: row_cyclic)>
+[An error expected at this place for the query "store(DF, NOT_EXISTS, distribution: row_cyclic)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+SCIDB QUERY : <store(DF, NOT_EXISTS, distribution: col_cyclic)>
+[An error expected at this place for the query "store(DF, NOT_EXISTS, distribution: col_cyclic)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+SCIDB QUERY : <store(DF, OUT_RDF, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <show(OUT_RDF)>
+{i} schema,distribution,etcomp
+{0} 'OUT_RDF<i:int64 NOT NULL,j:int64 NOT NULL,v:int64> [$inst=0:*:0:1; $seq=0:*:0:64]','replicated','none'
+
+SCIDB QUERY : <scan(OUT_RDF)>
+i,j,v
+0,0,0
+0,1,0
+0,2,0
+0,3,0
+0,4,0
+0,5,0
+0,6,0
+0,7,0
+1,0,1
+1,1,1
+1,2,1
+1,3,1
+1,4,1
+1,5,1
+1,6,1
+1,7,1
+2,0,2
+2,1,2
+2,2,2
+2,3,2
+2,4,2
+2,5,2
+2,6,2
+2,7,2
+3,0,3
+3,1,3
+3,2,3
+3,3,3
+3,4,3
+3,5,3
+3,6,3
+3,7,3
+4,0,4
+4,1,4
+4,2,4
+4,3,4
+4,4,4
+4,5,4
+4,6,4
+4,7,4
+5,0,5
+5,1,5
+5,2,5
+5,3,5
+5,4,5
+5,5,5
+5,6,5
+5,7,5
+6,0,6
+6,1,6
+6,2,6
+6,3,6
+6,4,6
+6,5,6
+6,6,6
+6,7,6
+7,0,7
+7,1,7
+7,2,7
+7,3,7
+7,4,7
+7,5,7
+7,6,7
+7,7,7
+
+SCIDB QUERY : <store(DF, DF_EXISTS, distribution: hashed)>
+[An error expected at this place for the query "store(DF, DF_EXISTS, distribution: hashed)". And it failed.]
+
+SCIDB QUERY : <store(DF, DF_EXISTS, distribution: row_cyclic)>
+[An error expected at this place for the query "store(DF, DF_EXISTS, distribution: row_cyclic)". And it failed.]
+
+SCIDB QUERY : <store(DF, DF_EXISTS, distribution: replicated)>
+[An error expected at this place for the query "store(DF, DF_EXISTS, distribution: replicated)". And it failed.]
+
+SCIDB QUERY : <store(DF, DF_EXISTS, distribution: col_cyclic)>
+[An error expected at this place for the query "store(DF, DF_EXISTS, distribution: col_cyclic)". And it failed.]
+
+SCIDB QUERY : <store(DF, DATA_EXISTS, distribution: hashed)>
+[An error expected at this place for the query "store(DF, DATA_EXISTS, distribution: hashed)". And it failed.]
+
+SCIDB QUERY : <store(DF, DATA_EXISTS, distribution: row_cyclic)>
+[An error expected at this place for the query "store(DF, DATA_EXISTS, distribution: row_cyclic)". And it failed.]
+
+SCIDB QUERY : <store(DF, DATA_EXISTS, distribution: replicated)>
+[An error expected at this place for the query "store(DF, DATA_EXISTS, distribution: replicated)". And it failed.]
+
+SCIDB QUERY : <store(DF, DATA_EXISTS, distribution: col_cyclic)>
+[An error expected at this place for the query "store(DF, DATA_EXISTS, distribution: col_cyclic)". And it failed.]
+
+SCIDB QUERY : <remove(SCHEMA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DATA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DATA_EXISTS)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF_EXISTS)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_RC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_RE)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_CC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(OUT_RDF)>
+Query was executed successfully
+

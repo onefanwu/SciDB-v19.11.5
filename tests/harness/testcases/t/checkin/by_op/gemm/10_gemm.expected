@@ -1,0 +1,375 @@
+SCIDB QUERY : <load_library('dense_linear_algebra')>
+Query was executed successfully
+
+SCIDB QUERY : <create array ident11c32<a: double >   [r=0:0,32,0, c=0:0,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array ident22c32<a: double >   [r=0:1,32,0, c=0:1,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(ident11c32, IIF(r=c, 1, 0)), ident11c32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(ident11c32)  -- Inserted by scan_doctor>
+{r,c} a
+{0,0} 1
+
+SCIDB QUERY : <store(build(ident22c32, IIF(r=c, 1, 0)), ident22c32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(ident22c32)  -- Inserted by scan_doctor>
+{r,c} a
+{0,0} 1
+{0,1} 0
+{1,0} 0
+{1,1} 1
+
+SCIDB QUERY : <create array ident11nzc32<a: double >   [r=3:3,32,0, c=5:5,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array ident22nzc32<a: double >   [r=3:4,32,0, c=5:6,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(ident11nzc32, IIF(r+2=c, 1, 0)), ident11nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(ident11nzc32)  -- Inserted by scan_doctor>
+{r,c} a
+{3,5} 1
+
+SCIDB QUERY : <store(build(ident22nzc32, IIF(r+2=c, 1, 0)), ident22nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(ident22nzc32)  -- Inserted by scan_doctor>
+{r,c} a
+{3,5} 1
+{3,6} 0
+{4,5} 0
+{4,6} 1
+
+SCIDB QUERY : <create array intRows11c32<a: double > [r=0:0,32,0, c=0:0,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array intRows22c32<a: double > [r=0:1,32,0, c=0:1,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(intRows11c32, 1+r*1+c),      intRows11c32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(intRows11c32)  -- Inserted by scan_doctor>
+{r,c} a
+{0,0} 1
+
+SCIDB QUERY : <store(build(intRows22c32, 1+r*2+c),      intRows22c32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(intRows22c32)  -- Inserted by scan_doctor>
+{r,c} a
+{0,0} 1
+{0,1} 2
+{1,0} 3
+{1,1} 4
+
+SCIDB QUERY : <create array intRows11nzc32<a: double > [r=7:7,32,0, c=11:11,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array intRows22nzc32<a: double > [r=7:8,32,0, c=11:12,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(intRows11nzc32, 1+(r-7)*1+(c-11)),      intRows11nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(intRows11nzc32)  -- Inserted by scan_doctor>
+{r,c} a
+{7,11} 1
+
+SCIDB QUERY : <store(build(intRows22nzc32, 1+(r-7)*2+(c-11)),      intRows22nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(intRows22nzc32)  -- Inserted by scan_doctor>
+{r,c} a
+{7,11} 1
+{7,12} 2
+{8,11} 3
+{8,12} 4
+
+SCIDB QUERY : <create array intRows12c32<a: double > [r=0:0,32,0, c=0:1,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array intRows21c32<a: double > [r=0:1,32,0, c=0:0,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(intRows12c32, 1+r*2+c),      intRows12c32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(intRows12c32)  -- Inserted by scan_doctor>
+{r,c} a
+{0,0} 1
+{0,1} 2
+
+SCIDB QUERY : <store(build(intRows21c32, 1+r*1+c),      intRows21c32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(intRows21c32)  -- Inserted by scan_doctor>
+{r,c} a
+{0,0} 1
+{1,0} 2
+
+SCIDB QUERY : <create array intRows12nzc32<a: double > [r=13:13,32,0, c=17:18,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array intRows21nzc32<a: double > [r=13:14,32,0, c=17:17,32,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(intRows12nzc32, 1+(r-13)*2+(c-17)),      intRows12nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(intRows12nzc32)  -- Inserted by scan_doctor>
+{r,c} a
+{13,17} 1
+{13,18} 2
+
+SCIDB QUERY : <store(build(intRows21nzc32, 1+(r-13)*1+(c-17)),      intRows21nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(intRows21nzc32)  -- Inserted by scan_doctor>
+{r,c} a
+{13,17} 1
+{14,17} 2
+
+SCIDB QUERY : <create array fileDense66c33 <a: double >   [r=0:5,3,0, c=0:5,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "load(fileDense66c33,'${TEST_DATA_DIR}/dense.txt')">
+Query was executed successfully
+
+SCIDB QUERY : <scan(fileDense66c33)  -- Inserted by scan_doctor>
+{r,c} a
+{0,0} 11
+{0,1} 12
+{0,2} 13
+{1,0} 21
+{1,1} 22
+{1,2} 23
+{2,0} 31
+{2,1} 32
+{2,2} 33
+{0,3} 14
+{0,4} 15
+{0,5} 16
+{1,3} 24
+{1,4} 25
+{1,5} 26
+{2,3} 34
+{2,4} 35
+{2,5} 36
+{3,0} 41
+{3,1} 42
+{3,2} 43
+{4,0} 51
+{4,1} 52
+{4,2} 53
+{5,0} 61
+{5,1} 62
+{5,2} 63
+{3,3} 44
+{3,4} 45
+{3,5} 46
+{4,3} 54
+{4,4} 55
+{4,5} 56
+{5,3} 64
+{5,4} 65
+{5,5} 66
+
+SCIDB QUERY : <create array output66c66 <a: double > [r=0:5,6,0, c=0:5,6,0]>
+Query was executed successfully
+
+SCIDB QUERY : <load_library('dense_linear_algebra')>
+Query was executed successfully
+
+SCIDB QUERY : <gemm(ident11c32,   ident11c32, build(ident11c32,0))>
+{r,c} gemm
+{0,0} 1
+
+SCIDB QUERY : <remove(tmp)>
+[SciDB query execution failed. But continuing, as it was intended to just run.]
+
+SCIDB QUERY : <store(gemm(ident11c32,   ident11c32, build(ident11c32,0)), tmp)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(tmp)  -- Inserted by scan_doctor>
+{r,c} gemm
+{0,0} 1
+
+SCIDB QUERY : <_show_nodist(tmp)>
+{i} schema
+{0} 'tmp<gemm:double NOT NULL> [r=0:0:0:32; c=0:0:0:32]'
+
+SCIDB QUERY : <scan(tmp)>
+{r,c} gemm
+{0,0} 1
+
+SCIDB QUERY : <remove(tmp)>
+Query was executed successfully
+
+SCIDB QUERY : <gemm(intRows11c32,   ident11c32, build(ident11c32,0))>
+{r,c} gemm
+{0,0} 1
+
+SCIDB QUERY : <gemm(ident11c32,   intRows11c32, build(ident11c32,0))>
+{r,c} gemm
+{0,0} 1
+
+SCIDB QUERY : <gemm(intRows11c32, intRows11c32, build(ident11c32,0))>
+{r,c} gemm
+{0,0} 1
+
+SCIDB QUERY : <gemm(intRows22c32,   ident22c32, build(ident22c32,0))>
+{r,c} gemm
+{0,0} 1
+{0,1} 2
+{1,0} 3
+{1,1} 4
+
+SCIDB QUERY : <gemm(ident22c32,   intRows22c32, build(ident22c32,0))>
+{r,c} gemm
+{0,0} 1
+{0,1} 2
+{1,0} 3
+{1,1} 4
+
+SCIDB QUERY : <gemm(intRows22c32, intRows22c32, build(ident22c32,0))>
+{r,c} gemm
+{0,0} 7
+{0,1} 10
+{1,0} 15
+{1,1} 22
+
+next 4 results should be identical -- the number 5
+SCIDB QUERY : <gemm(intRows12c32, intRows21c32, build(ident11c32,0))>
+{r,c} gemm
+{0,0} 5
+
+SCIDB QUERY : <gemm(intRows21c32, intRows21c32, build(ident11c32,0), transa:1)>
+{r,c} gemm
+{0,0} 5
+
+SCIDB QUERY : <gemm(intRows12c32, intRows12c32, build(ident11c32,0), transb:1)>
+{r,c} gemm
+{0,0} 5
+
+SCIDB QUERY : <gemm(intRows21c32, intRows12c32, build(ident11c32,0),transa:1, transb:1)>
+{r,c} gemm
+{0,0} 5
+
+SCIDB QUERY : <gemm(intRows21c32, intRows12c32, build(ident11c32,0), transa: 'no-way')>
+[An error expected at this place for the query "gemm(intRows21c32, intRows12c32, build(ident11c32,0), transa: 'no-way')". And it failed with error code = scidb::SCIDB_SE_TYPE::SCIDB_LE_CANT_FIND_CONVERTER. Expected error code = scidb::SCIDB_SE_TYPE::SCIDB_LE_CANT_FIND_CONVERTER.]
+
+SCIDB QUERY : <gemm(intRows21c32, intRows12c32, build(ident11c32,0), no_way: jose)>
+[An error expected at this place for the query "gemm(intRows21c32, intRows12c32, build(ident11c32,0), no_way: jose)". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_UNRECOGNIZED_KEYWORD_PARAM. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_UNRECOGNIZED_KEYWORD_PARAM.]
+
+next 4 results should be identical -- the matrix [[1,2],[2,4]]
+SCIDB QUERY : <gemm(intRows21c32, intRows12c32, build(ident22c32,0))>
+{r,c} gemm
+{0,0} 1
+{0,1} 2
+{1,0} 2
+{1,1} 4
+
+SCIDB QUERY : <gemm(intRows12c32, intRows12c32, build(ident22c32,0), transa:1)>
+{r,c} gemm
+{0,0} 1
+{0,1} 2
+{1,0} 2
+{1,1} 4
+
+SCIDB QUERY : <gemm(intRows21c32, intRows21c32, build(ident22c32,0), transb:1)>
+{r,c} gemm
+{0,0} 1
+{0,1} 2
+{1,0} 2
+{1,1} 4
+
+SCIDB QUERY : <gemm(intRows12c32, intRows21c32, build(ident22c32,0), transa:1, transb:1)>
+{r,c} gemm
+{0,0} 1
+{0,1} 2
+{1,0} 2
+{1,1} 4
+
+next output should be [13]
+SCIDB QUERY : <gemm(intRows21c32, intRows12c32, build(ident11c32,1), transa:1, transb:1, alpha:2.0, beta:3.0)>
+{r,c} gemm
+{0,0} 13
+
+next output should be [[5,7],[7,11]]
+SCIDB QUERY : <gemm(intRows12c32, intRows21c32, build(ident22c32,1), transa:1, transb:1, alpha:2.0, beta:3.0)>
+{r,c} gemm
+{0,0} 5
+{0,1} 7
+{1,0} 7
+{1,1} 11
+
+SCIDB QUERY : <gemm(gemm(intRows21c32, intRows12c32, build(ident22c32,1)), intRows21c32, build(intRows21c32,0))>
+{r,c} gemm
+{0,0} 8
+{1,0} 13
+
+next output (by rows) should be 7, 15, 10, 22
+SCIDB QUERY : <transpose(gemm(intRows22c32, intRows22c32, build(ident22c32,0)))>
+{c,r} gemm
+{0,0} 7
+{0,1} 15
+{1,0} 10
+{1,1} 22
+
+SCIDB QUERY : <join(join(gemm(intRows22c32, intRows22c32, build(ident22c32,0)), gemm(intRows22c32, intRows22c32, build(ident22c32,0))), join(gemm(intRows22c32, intRows22c32, build(ident22c32,0)), gemm(intRows22c32, intRows22c32, build(ident22c32,0))))>
+{r,c} gemm,gemm,gemm,gemm
+{0,0} 7,7,7,7
+{0,1} 10,10,10,10
+{1,0} 15,15,15,15
+{1,1} 22,22,22,22
+
+SCIDB QUERY : <remove(ident11c32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ident22c32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ident11nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ident22nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(intRows11c32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(intRows22c32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(intRows11nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(intRows22nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(intRows12c32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(intRows21c32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(intRows12nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(intRows21nzc32)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fileDense66c33)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(output66c66)>
+Query was executed successfully
+

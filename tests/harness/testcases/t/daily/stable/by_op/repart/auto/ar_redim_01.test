@@ -1,0 +1,13 @@
+# SDB-5110.  An optimizer-inserted redimension (for purposes of
+# repartitioning to a schema whose high bound changed) can't find the
+# name of a destination attribute in the source array.
+
+--setup
+--test
+store(build(<a:int64>[x=0:2:0:3], x+10), A)
+scan(A)  -- Inserted by scan_doctor
+store(build(<v:int64>[x=0:0:0:1], 42), A)
+scan(A)  -- Inserted by scan_doctor
+
+--cleanup
+remove(A)

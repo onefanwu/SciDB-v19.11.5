@@ -1,0 +1,40 @@
+--setup
+--start-query-logging
+
+create array DMONTH_DFLT <date:int64>[week=1:20*52,10,0; day=1:7,7,0]
+store(build(DMONTH_DFLT, week*7+day), DMONTH_DFLT)
+#scan(DMONTH_DFLT)
+
+create array WEEK_STR_DFLT <weekstr: string>[week=1:20*52,10,0]
+create array WEEK_STR_REPL <weekstr: string>[week=1:20*52,10,0] distribution replicated
+store(build(WEEK_STR_DFLT, 'WEEK'+string(week)), WEEK_STR_DFLT)
+#scan(WEEK_STR_DFLT)
+
+
+# replicate by copying
+store(WEEK_STR_DFLT, WEEK_STR_REPL)
+#scan(WEEK_STR_REPL)
+
+
+--test
+
+
+# right default
+--shell --store-all --command "TIMEFORMAT=%3R; time (iquery -naq 'cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week)') 2>/tmp/replication99.1.txt"
+
+# right replicated
+--shell --store-all --command "TIMEFORMAT=%3R; time (iquery -naq 'cross_join(DMONTH_DFLT as A, WEEK_STR_REPL as B, A.week, B.week)') 2>/tmp/replication99.2.txt"
+
+# output times taken on terminal without affecting the .out file (developer feedback)
+--shell --command "cat /tmp/replication99.1.txt >&2"
+--shell --command "cat /tmp/replication99.2.txt >&2"
+
+# to make the test pass/fail, ensure that the time for the first query is longer than the second
+# outputs a 1 into the .out file when that is true
+--shell --store-all --command "echo "scale=3; $(cat /tmp/replication99.1.txt) > $(cat /tmp/replication99.2.txt)" | bc"
+
+--cleanup
+remove(DMONTH_DFLT)
+remove(WEEK_STR_DFLT)
+remove(WEEK_STR_REPL)
+--shell --store-all --command "rm /tmp/replication99.1.txt /tmp/replication99.2.txt"

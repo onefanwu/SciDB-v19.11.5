@@ -1,0 +1,72 @@
+# Verify that the sort() chunk_size option works.
+
+--setup
+create array S1<i:int64, s:string, d:double>[z=0:49]
+create array S2<i:int64, s:string, d:double>[x=0:99; y=-90:0]
+
+store( \
+  redimension( \
+    apply(build(<i:int64>[z=0:49], z), \
+	  (s, iif(bool(z % 2), string(z*10), 'Hi there')), \
+	  (d, double(z) - 0.5) \
+    ), \
+    S1), \
+  S1)
+
+store( \
+  redimension( \
+    apply(build(<i:int64>[x=0:49], x), \
+	  (s, iif(bool(x % 2), string(x*10), 'Hi there')), \
+	  (d, double(x) - 0.5), \
+	  (y, x - 90) \
+    ), \
+    S2), \
+  S2)
+
+--test
+
+--start-igdata
+store(sort(S1, 42), S1_SORTED)
+store(sort(S2, 42), S2_SORTED)
+--stop-igdata
+project(dimensions(S1_SORTED), chunk_interval)
+project(dimensions(S2_SORTED), chunk_interval)
+
+# Else stored chunk intervals are frozen!
+remove(S1_SORTED)
+remove(S2_SORTED)
+
+--start-igdata
+store(sort(S1, int64(sqrt(100))), S1_SORTED)
+store(sort(S2, int64(sqrt(100))), S2_SORTED)
+--stop-igdata
+project(dimensions(S1_SORTED), chunk_interval)
+project(dimensions(S2_SORTED), chunk_interval)
+
+# Else stored chunk intervals are frozen!
+remove(S1_SORTED)
+remove(S2_SORTED)
+
+--start-igdata
+store(sort(S1, s desc, chunk_size:42), S1_SORTED)
+store(sort(S2, i asc, chunk_size:42), S2_SORTED)
+--stop-igdata
+project(dimensions(S1_SORTED), chunk_interval)
+project(dimensions(S2_SORTED), chunk_interval)
+
+# Else stored chunk intervals are frozen!
+remove(S1_SORTED)
+remove(S2_SORTED)
+
+--start-igdata
+store(sort(S1, s desc, chunk_size: int64(sqrt(144))), S1_SORTED)
+store(sort(S2, i asc, chunk_size: int64(sqrt(144))), S2_SORTED)
+--stop-igdata
+project(dimensions(S1_SORTED), chunk_interval)
+project(dimensions(S2_SORTED), chunk_interval)
+
+--cleanup
+remove(S1)
+remove(S1_SORTED)
+remove(S2)
+remove(S2_SORTED)

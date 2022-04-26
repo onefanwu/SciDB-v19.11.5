@@ -1,0 +1,28 @@
+--setup
+--start-query-logging
+create array f <v:int64>[i=1:*]
+create array g <v:int64>[i=1:*]
+create array h <v:int64>[i=1:*]
+create array i <v:int64>[i=1:*]
+create array j <v:int64>[i=1:*]
+
+--test
+mquery(insert(build(<v:int64>[i=1:9],1*i),f), \
+               insert(build(<v:int64>[i=1:9],2*i),g), \
+               insert(build(<v:int64>[i=1:9],3*i),h), \
+               insert(build(<v:int64>[i=1:9],4*i),i), \
+               insert(build(<v:int64>[i=1:9],5*i),j))
+
+scan(f)
+scan(g)
+scan(h)
+scan(i)
+scan(j)
+
+--cleanup
+remove(f)
+remove(g)
+remove(h)
+remove(i)
+remove(j)
+--stop-query-logging

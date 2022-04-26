@@ -1,0 +1,11 @@
+--setup
+--start-query-logging
+create array create_array_neg <v:int64>[i=0:9]
+--test
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_ALREADY_EXISTS \
+    "create array create_array_neg <v:int64>[i=0:9]"
+
+--cleanup
+remove(create_array_neg)
+--stop-query-logging

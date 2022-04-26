@@ -1,0 +1,17 @@
+# SDB-6298: Make sure flatten() can handle input chunks not descended
+# from class Chunk (e.g. DelegateChunk).
+
+--setup
+store(build(<v:int64>[i=0:9], i), A)
+
+--test
+--start-query-logging
+--set-format tsv
+flatten(A)
+store(flatten(apply(A, x, i*i)), DF)
+scan(DF)
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(DF)

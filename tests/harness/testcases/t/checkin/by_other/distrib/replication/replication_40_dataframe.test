@@ -1,0 +1,121 @@
+# Cloned from replication_00_basic, this test uses dataframes for one
+# or both sides of the cross_join().
+
+--setup
+--start-query-logging
+
+# These temp arrays are just used as shorthand schema templates.
+create temp array DAY_STR_SCHEMA  <daystr: string>  [day=0:6,1,0]
+create temp array WEEK_STR_SCHEMA <weekstr: string> [week=0:3,1,0]
+create temp array DMONTH_SCHEMA   <date: int64>     [week=0:3; day=0:6,1,0]
+
+# sort not scan because dataframe cells ordered differently on different cluster configs
+store(flatten(build(DAY_STR_SCHEMA, 'DAY'+string(day))), DAY_STR_DFLT)
+sort(DAY_STR_DFLT)
+create array DAY_STR_REPL <day:int64, daystr:string> distribution replicated
+
+store(flatten(build(WEEK_STR_SCHEMA, 'WEEK'+string(week))), WEEK_STR_DFLT)
+sort(WEEK_STR_DFLT)
+
+store(flatten(build(DMONTH_SCHEMA, week*7+day)), DMONTH_DFLT)
+sort(DMONTH_DFLT, week, day, date)
+
+# Replicated dataframe to eventually hold flattened DMONTH_DFLT.
+create array DMONTH_REPL <week:int64, day:int64, date:int64> distribution replicated
+
+--test
+
+# replicate by copying, as a test
+create array WEEK_STR_REPL <week:int64, weekstr:string> distribution replicated
+store(WEEK_STR_DFLT, WEEK_STR_REPL)
+sort(WEEK_STR_REPL)
+
+# replicate by copy, new array with keyword
+store(WEEK_STR_DFLT, WEEK_STR_REPL_KEY1, distribution:replicated)
+sort(WEEK_STR_REPL_KEY1)
+
+# replicate by building, test is that it is the same as copy
+store(flatten(build(<weekstr: string>[week=0:3,1,0], 'WEEK'+string(week))), WEEK_STR_REPL)
+sort(WEEK_STR_REPL)
+
+# Equivalent dataframe test not possible: build() can't take a
+# dataframe schema because those are unbounded.
+#       replicate by copy, new array with keyword
+#       store(build(WEEK_STR_DFLT, 'WEEK'+string(week)), WEEK_STR_REPL_KEY2)
+#       scan(WEEK_STR_REPL_KEY2)
+
+# replicate two more by copying
+store(DMONTH_DFLT, DMONTH_REPL)
+show(DMONTH_REPL)
+sort(DMONTH_REPL, week, day, date)
+store(DAY_STR_DFLT, DAY_STR_REPL)
+show(DAY_STR_REPL)
+sort(DAY_STR_REPL)
+
+# For these cross_join tests, note we cannot specify join-along
+# dimensions when using dataframes.  Also, we sort() the output
+# because otherwise the dataframe dimensions are exposed, and their
+# values will vary greatly depending on cluster configuration.  There
+# is nothing special about the choice of sort attributes, I'm just
+# trying to visually check that all 7*4*7*4 == 784 tuples are present.
+
+--echo cross join not replicated
+sort(cross_join(DMONTH_DFLT as L, WEEK_STR_DFLT as R), L.week, day, date, R.week)
+
+--echo cross join right replicated
+sort(cross_join(DMONTH_DFLT as L, WEEK_STR_REPL as R), L.week, day, date, R.week)
+
+--echo cross join left replicated
+sort(cross_join(DMONTH_REPL as L, WEEK_STR_DFLT as R), L.week, day, date, R.week)
+
+--echo cross join right, left replicated
+sort(cross_join(DMONTH_REPL as L, WEEK_STR_REPL as R), L.week, day, date, R.week)
+
+###
+
+--echo triple cross join deeper on left, no replication
+sort(cross_join(cross_join(DMONTH_DFLT as M, WEEK_STR_DFLT as W) as L, DAY_STR_DFLT as R), \
+     M.week, M.day, W.week, date, R.day)
+
+--echo triple cross join deeper on left, WEEK_STRING replicated
+sort(cross_join(cross_join(DMONTH_DFLT as M, WEEK_STR_REPL as W) as L, DAY_STR_DFLT as R), \
+     M.week, M.day, W.week, date, R.day)
+
+--echo triple cross join deeper on left, WEEK_STRING replicated
+sort(cross_join(cross_join(DMONTH_DFLT as M, WEEK_STR_DFLT as W) as L, DAY_STR_REPL as R), \
+     M.week, M.day, W.week, date, R.day)
+
+--echo triple cross join deeper on left, WEEK_STRING, WEEK_STRING replicated
+sort(cross_join(cross_join(DMONTH_DFLT as M, WEEK_STR_REPL as W) as L, DAY_STR_REPL as R), \
+     M.week, M.day, W.week, date, R.day)
+
+###
+
+--echo triple cross join deeper on right, no replication
+sort(cross_join(DAY_STR_DFLT as L, cross_join(DMONTH_DFLT as M, WEEK_STR_DFLT as W) as R), \
+     L.day, M.week, M.day, W.week, date)
+
+--echo triple cross join deeper on right, WEEK_STRING replicated
+sort(cross_join(DAY_STR_DFLT as L, cross_join(DMONTH_DFLT as M, WEEK_STR_REPL as W) as R), \
+     L.day, M.week, M.day, W.week, date)
+
+--echo triple cross join deeper on right, DAY_STRING replicated
+sort(cross_join(DAY_STR_REPL as L, cross_join(DMONTH_DFLT as M, WEEK_STR_DFLT as W) as R), \
+     L.day, M.week, M.day, W.week, date)
+
+--echo triple cross join deeper on right, DAY_STRING, WEEK_STRING replicated
+sort(cross_join(DAY_STR_REPL as L, cross_join(DMONTH_DFLT as M, WEEK_STR_REPL as W) as R), \
+     L.day, M.week, M.day, W.week, date)
+
+--cleanup
+remove(DAY_STR_SCHEMA)
+remove(WEEK_STR_SCHEMA)
+remove(DMONTH_SCHEMA)
+
+remove(DMONTH_DFLT)
+remove(DMONTH_REPL)
+remove(WEEK_STR_DFLT)
+remove(WEEK_STR_REPL)
+remove(WEEK_STR_REPL_KEY1)
+remove(DAY_STR_DFLT)
+remove(DAY_STR_REPL)

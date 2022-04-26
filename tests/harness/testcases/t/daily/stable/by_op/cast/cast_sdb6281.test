@@ -1,0 +1,14 @@
+# Verify that SDB-6281 is fixed.
+
+--setup
+create array Cell_Labels < label : string > [ Cell_NDX=0:19 ]
+store(build(Cell_Labels, 'frobnitz'), Cell_Labels)
+
+--test
+cast( project( apply( aggregate( filter(Cell_Labels, Cell_NDX<10), count(*) AS C ), \
+                      CNT, float(C) ), \
+               CNT ), \
+     <CNT:float>[AllNewDimName=0:0:0:1])
+
+--cleanup
+remove(Cell_Labels)

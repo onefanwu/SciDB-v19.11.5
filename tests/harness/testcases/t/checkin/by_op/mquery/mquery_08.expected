@@ -1,0 +1,50 @@
+SCIDB QUERY : <create array a<v:int64>[i=12:24:0:1]>
+Query was executed successfully
+
+SCIDB QUERY : <mquery(insert(build(a,2*i+1),a), delete(a,i%2=0), insert(project(apply(a,vnew,5*v+3),vnew),a), delete(a,v%3=0))>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a@1)>
+{i} v
+{12} 25
+{13} 27
+{14} 29
+{15} 31
+{16} 33
+{17} 35
+{18} 37
+{19} 39
+{20} 41
+{21} 43
+{22} 45
+{23} 47
+{24} 49
+
+SCIDB QUERY : <scan(a@2)>
+{i} v
+{13} 27
+{15} 31
+{17} 35
+{19} 39
+{21} 43
+{23} 47
+
+SCIDB QUERY : <scan(a@3)>
+{i} v
+{13} 138
+{15} 158
+{17} 178
+{19} 198
+{21} 218
+{23} 238
+
+SCIDB QUERY : <scan(a@4)>
+{i} v
+{15} 158
+{17} 178
+{21} 218
+{23} 238
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+

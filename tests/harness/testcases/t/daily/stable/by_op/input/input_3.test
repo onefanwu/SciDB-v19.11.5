@@ -1,0 +1,45 @@
+# SDB-6278.  Test for the (little-used) feature of loading and saving
+# by physical instance id.  More typically, either -2 (use the
+# coordinator) or -1 (parallel) is used for the instance id parameter.
+
+--setup
+create temp array A<v:int64>[i=0:19:0:5; j=0:9:0:5]
+store(build(A, i+j), A)
+
+--test
+--start-query-logging
+
+--echo Save to s0-i1, input from same instance.
+save(A, 'input_3.tsv', instance:(0, 1), format:'tsv+')
+store( \
+  redimension( \
+    input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', (0,1), 'tsv'), \
+    A), \
+  B)
+filter(join(A, B), A.v <> B.v)
+
+--echo Same thing with load() macro...
+create array C<i:int64, j:int64, v:int64>[dummy]
+load(C, 'input_3.tsv', (0,1), 'tsv')
+remove(B)
+store( redimension( C, A ), B )
+filter(join(A, B), A.v <> B.v)
+
+--echo Bad instance parameter tests...
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INSTANCE_OFFLINE \
+    "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', (0,42), 'tsv')"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INSTANCE_OFFLINE \
+    "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', instance:(42,0))"
+--error --code=scidb::SCIDB_SE_SYSCAT::SCIDB_LE_PARAMETER_OUT_OF_RANGE \
+    "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', instance:(-1,0))"
+--error --code=scidb::SCIDB_SE_SYSCAT::SCIDB_LE_PARAMETER_OUT_OF_RANGE \
+    "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', (0,-1))"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_INSTANCE_OFFLINE \
+    "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', 42)"
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(B)
+remove(C)

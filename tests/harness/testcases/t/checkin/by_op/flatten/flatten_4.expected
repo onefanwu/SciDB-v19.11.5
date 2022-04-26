@@ -1,0 +1,33 @@
+Query was executed successfully
+
+SCIDB QUERY : <flatten(A)>
+0	0
+1	1
+2	2
+3	3
+4	4
+5	5
+6	6
+7	7
+8	8
+9	9
+
+SCIDB QUERY : <store(flatten(apply(A, x, i*i)), DF)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(DF)>
+0	0	0
+1	1	1
+2	2	4
+3	3	9
+4	4	16
+5	5	25
+6	6	36
+7	7	49
+8	8	64
+9	9	81
+
+Query was executed successfully
+
+Query was executed successfully
+

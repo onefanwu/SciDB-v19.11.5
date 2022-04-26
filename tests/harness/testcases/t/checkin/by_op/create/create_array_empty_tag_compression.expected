@@ -1,0 +1,56 @@
+SCIDB QUERY : <create array arr <v:int64>[i=0:9]>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays'), distribution, etcomp)>
+{No} distribution,etcomp
+{0} 'hashed','none'
+
+SCIDB QUERY : <project(show(arr), etcomp)>
+{i} etcomp
+{0} 'none'
+
+SCIDB QUERY : <remove(arr)>
+Query was executed successfully
+
+SCIDB QUERY : <create array arr <v:int64>[i=0:9] distribution hashed>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays'), distribution, etcomp)>
+{No} distribution,etcomp
+{0} 'hashed','none'
+
+SCIDB QUERY : <project(show(arr), etcomp)>
+{i} etcomp
+{0} 'none'
+
+SCIDB QUERY : <remove(arr)>
+Query was executed successfully
+
+SCIDB QUERY : <create array arr <v:int64>[i=0:9] distribution default emptytag compression 'zlib'>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays'), distribution, etcomp)>
+{No} distribution,etcomp
+{0} 'hashed','zlib'
+
+SCIDB QUERY : <project(show(arr), etcomp)>
+{i} etcomp
+{0} 'zlib'
+
+SCIDB QUERY : <store(show('show(arr)','afl'), no_ebm)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(arr)>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays'), distribution, etcomp)>
+{No} distribution,etcomp
+{0} 'hashed',null
+
+SCIDB QUERY : <project(show(no_ebm), etcomp)>
+{i} etcomp
+{0} null
+
+SCIDB QUERY : <remove(no_ebm)>
+Query was executed successfully
+

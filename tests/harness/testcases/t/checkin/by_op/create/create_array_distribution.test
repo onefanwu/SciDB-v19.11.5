@@ -1,0 +1,58 @@
+--setup
+--test
+--start-query-logging
+
+
+# vary distribution
+create array dist_default    <v:uint64>[i=0:9]
+create array dist_hashed     <v:uint64>[i=0:9] distribution hashed
+create array dist_replicated <v:uint64>[i=0:9] distribution replicated
+create array dist_row_cyclic  <v:uint64>[i=0:9] distribution row_cyclic
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT "create array dist_col_cyclic  <v:uint64>[i=0:9] distribution col_cyclic"
+create array dist_col_cyclic  <v:uint64>[dummy=0:0,1,0, i=0:9] distribution col_cyclic
+
+# same, afl instead of aql
+create_array(dist_default_afl,   <v:uint64>[i=0:9],false)
+create_array(dist_hashed_afl,    <v:uint64>[i=0:9],false,hashed)
+create_array(dist_replicated_afl,<v:uint64>[i=0:9],false,replicated)
+create_array(dist_row_cyclic_afl, <v:uint64>[i=0:9],false,row_cyclic)
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT "create_array(dist_col_cyclic_afl, <v:uint64>[i=0:9],false,col_cyclic)"
+create_array(dist_col_cyclic_afl, <v:uint64>[dummy=0:0,1,0, i=0:9],false,col_cyclic)
+
+# same, temp instead of persistent
+create_array(dist_default_afl_temp,   <v:uint64>[i=0:9],true)
+create_array(dist_hashed_afl_temp,    <v:uint64>[i=0:9],true,hashed)
+create_array(dist_replicated_afl_temp,<v:uint64>[i=0:9],true,replicated)
+create_array(dist_row_cyclic_afl_temp,<v:uint64>[i=0:9],true,row_cyclic)
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT "create_array(dist_col_cyclic_afl_temp,<v:uint64>[i=0:9],true,col_cyclic)"
+create_array(dist_col_cyclic_afl_temp,<v:uint64>[dummy=0:0,1,0, i=0:9],true,col_cyclic)
+
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION "create array bad_distribution <v:uint64>[i=0:9] distribution no_such_distribution"
+--error --code=scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR "create array bad_distribution <v:uint64>[i=0:9] distribution"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION "create temp array bad_distribution <v:uint64>[i=0:9] distribution no_such_distribution"
+--error --code=scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR "create temp array bad_distribution <v:uint64>[i=0:9] distribution"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION "create_array(bad_distribution,<v:uint64>[i=0:9],false,no_such_distribution)"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION "create_array(bad_distribution,<v:uint64>[i=0:9],true,no_such_distribution)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 "create_array(wrong_args_count,<v:uint64>[i=0:9],true,replicated,replicated)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 "create_array(wrong_args_count,<v:uint64>[i=0:9],true,row_cyclic,row_cyclic)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 "create_array(wrong_args_count,<v:uint64>[i=0:9],true,col_cyclic,col_cyclic)"
+--stop-query-logging
+
+--cleanup
+remove(dist_default)
+remove(dist_hashed)
+remove(dist_replicated)
+remove(dist_row_cyclic)
+remove(dist_col_cyclic)
+
+remove(dist_default_afl)
+remove(dist_hashed_afl)
+remove(dist_replicated_afl)
+remove(dist_row_cyclic_afl)
+remove(dist_col_cyclic_afl)
+
+remove(dist_default_afl_temp)
+remove(dist_hashed_afl_temp)
+remove(dist_replicated_afl_temp)
+remove(dist_row_cyclic_afl_temp)
+remove(dist_col_cyclic_afl_temp)

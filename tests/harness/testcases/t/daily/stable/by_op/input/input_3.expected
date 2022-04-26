@@ -1,0 +1,52 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Save to s0-i1, input from same instance.
+SCIDB QUERY : <save(A, 'input_3.tsv', instance:(0, 1), format:'tsv+')>
+{i,j} v
+
+SCIDB QUERY : <store( redimension( input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', (0,1), 'tsv'), A), B)>
+Query was executed successfully
+
+SCIDB QUERY : <filter(join(A, B), A.v <> B.v)>
+{i,j} v,v
+
+Same thing with load() macro...
+SCIDB QUERY : <create array C<i:int64, j:int64, v:int64>[dummy]>
+Query was executed successfully
+
+SCIDB QUERY : <load(C, 'input_3.tsv', (0,1), 'tsv')>
+Query was executed successfully
+
+SCIDB QUERY : <remove(B)>
+Query was executed successfully
+
+SCIDB QUERY : <store( redimension( C, A ), B )>
+Query was executed successfully
+
+SCIDB QUERY : <filter(join(A, B), A.v <> B.v)>
+{i,j} v,v
+
+Bad instance parameter tests...
+SCIDB QUERY : <input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', (0,42), 'tsv')>
+[An error expected at this place for the query "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', (0,42), 'tsv')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INSTANCE_OFFLINE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INSTANCE_OFFLINE.]
+
+SCIDB QUERY : <input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', instance:(42,0))>
+[An error expected at this place for the query "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', instance:(42,0))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INSTANCE_OFFLINE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INSTANCE_OFFLINE.]
+
+SCIDB QUERY : <input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', instance:(-1,0))>
+[An error expected at this place for the query "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', instance:(-1,0))". And it failed with error code = scidb::SCIDB_SE_SYSCAT::SCIDB_LE_PARAMETER_OUT_OF_RANGE. Expected error code = scidb::SCIDB_SE_SYSCAT::SCIDB_LE_PARAMETER_OUT_OF_RANGE.]
+
+SCIDB QUERY : <input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', (0,-1))>
+[An error expected at this place for the query "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', (0,-1))". And it failed with error code = scidb::SCIDB_SE_SYSCAT::SCIDB_LE_PARAMETER_OUT_OF_RANGE. Expected error code = scidb::SCIDB_SE_SYSCAT::SCIDB_LE_PARAMETER_OUT_OF_RANGE.]
+
+SCIDB QUERY : <input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', 42)>
+[An error expected at this place for the query "input(<i:int64, j:int64, v:int64>[dummy], 'input_3.tsv', 42)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_INSTANCE_OFFLINE. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_INSTANCE_OFFLINE.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

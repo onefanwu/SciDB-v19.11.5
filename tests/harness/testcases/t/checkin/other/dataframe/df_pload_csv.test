@@ -1,0 +1,40 @@
+# Test parallel CSV input()/load() into dataframes.
+--setup
+store(apply(build(<v:int64>[i=0:199:0:10], i), (w, 2*i)), A)
+save(A, 'df_pload_csv.csv', -1, format:'csv')
+
+--test
+--echo Baseline sums.
+op_sum(A, v)
+op_sum(A, w)
+
+--echo Sums from input()
+--igdata "input(<v:int64, w:int64>, 'df_pload_csv.csv', -1, format:'csv')"
+op_sum(input(<v:int64, w:int64>, 'df_pload_csv.csv', -1, format:'csv'), v)
+op_sum(input(<v:int64, w:int64>, 'df_pload_csv.csv', -1, format:'csv'), w)
+
+store(input(<v:int64, w:int64>, 'df_pload_csv.csv', -1, format:'csv'), DF)
+#show(DF)
+project(apply(show(DF), nschema, substr(schema, 0, 29)+'-'+substr(schema, 30, 100)), nschema)
+op_sum(DF, v)
+op_sum(DF, w)
+
+--echo No SG reloading a dataframe
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'store(input(<v:int64, w:int64>, \'df_pload_csv.csv\', -1, format:\'csv\'), DF)', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+
+create temp array B<v:int64, w:int64>[row=0:*]
+--echo SG found reloading an array
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'store(input(<v:int64, w:int64>[dummy], \'df_pload_csv.csv\', -1, format:\'csv\'), B)', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+
+--cleanup
+remove(A)
+remove(B)
+remove(DF)

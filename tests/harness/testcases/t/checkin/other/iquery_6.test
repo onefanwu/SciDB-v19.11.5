@@ -1,0 +1,11 @@
+--setup
+--start-query-logging
+
+--test
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -C -naq "list()""
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -C -naq "list('arrays',true)""
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT --confirm -naq "list()""
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT --confirm -naq "list('arrays',true)""
+
+--cleanup
+--stop-query-logging

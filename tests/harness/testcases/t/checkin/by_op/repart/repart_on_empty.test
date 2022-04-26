@@ -1,0 +1,12 @@
+--setup
+create array a <base:int32> [position=0:19,20,0]
+create array b <base:int32> [position=0:19,10,0]
+
+--test
+load(a,'${TEST_DATA_DIR}/repart_on_empty.txt')
+scan(a)  -- Inserted by scan_doctor
+store(repart(a, b), b)
+scan(b)  -- Inserted by scan_doctor
+--cleanup
+remove(a)
+remove(b)

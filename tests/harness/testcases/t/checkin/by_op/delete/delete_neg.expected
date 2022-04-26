@@ -1,0 +1,14 @@
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[An error expected at this place for the query "delete(A@2, i < 7 and i > 3)". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_CANT_ACCESS_ARRAY_VERSION. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_CANT_ACCESS_ARRAY_VERSION.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Query was executed successfully
+

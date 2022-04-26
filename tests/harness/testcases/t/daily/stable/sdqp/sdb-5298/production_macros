@@ -1,0 +1,46 @@
+/**
+ *  Run parallel load of binary file, and redimension to final schema. User still needs to wrap this with `store` or `insert`
+ *  https://trac.paradigm4.com/browser/poc/trunk/poc/pdq/pdq-git-clones/p4tools/load/PRODUCTION_MACROS
+ */
+
+input_and_redimension(_BINARY_FILENAME_) =
+cast(
+  project(
+    apply(
+      redimension(
+        apply(
+            input(< rownumber: int64, date: int64, timestamp: int64, exchange_index: int8, ticker_index: uint32, source_index: int8, condition: int32, trade_flag: bool, price_size: int64, bid_price1_bid_size1: int64, trade_side: int8, bid_price2_bid_size2: int64, bid_price3_bid_size3: int64, bid_price4_bid_size4: int64, bid_price5_bid_size5: int64, ask_price1_ask_size1: int64, ask_price2_ask_size2: int64, ask_price3_ask_size3: int64, ask_price4_ask_size4: int64, ask_price5_ask_size5: int64 > [i=0:*,1000000,0], _BINARY_FILENAME_,
+              -1,
+              '( int64, int64, int64, int8, uint32, int8, int32, bool, int64, int64, int8, int64, int64, int64, int64, int64, int64, int64, int64, int64 )'),
+          nt1, ntuple_12(price_size, price_size, bid_price1_bid_size1, bid_price2_bid_size2, bid_price3_bid_size3, bid_price4_bid_size4, bid_price5_bid_size5, ask_price1_ask_size1, ask_price2_ask_size2, ask_price3_ask_size3, ask_price4_ask_size4, ask_price5_ask_size5, timestamp )
+        ),
+        < source_index: int8 NULL DEFAULT null COMPRESSION 'zlib', exchange_index: int8 NULL DEFAULT null COMPRESSION 'zlib', condition: int32 NULL DEFAULT null COMPRESSION 'zlib', trade_flag: bool NULL DEFAULT null COMPRESSION 'zlib', nt1: ntuple NULL DEFAULT null COMPRESSION 'zlib', trade_side: int8 NULL DEFAULT null COMPRESSION 'zlib' >
+        [date=0:*,1,0, rownumber=0:*,400000,0, ticker_index=0:*,50,0]
+      ),
+      price, nth_tupleval_uint32(nt1,0),
+      size, nth_tupleval_uint32(nt1,1),
+      bid_price1, nth_tupleval_uint32(nt1,2),
+      bid_size1, nth_tupleval_uint32(nt1,3),
+      bid_price2, nth_tupleval_uint32(nt1,4),
+      bid_size2, nth_tupleval_uint32(nt1,5),
+      bid_price3, nth_tupleval_uint32(nt1,6),
+      bid_size3, nth_tupleval_uint32(nt1,7),
+      bid_price4, nth_tupleval_uint32(nt1,8),
+      bid_size4, nth_tupleval_uint32(nt1,9),
+      bid_price5, nth_tupleval_uint32(nt1,10),
+      bid_size5, nth_tupleval_uint32(nt1,11),
+      ask_price1, nth_tupleval_uint32(nt1,12),
+      ask_size1, nth_tupleval_uint32(nt1,13),
+      ask_price2, nth_tupleval_uint32(nt1,14),
+      ask_size2, nth_tupleval_uint32(nt1,15),
+      ask_price3, nth_tupleval_uint32(nt1,16),
+      ask_size3, nth_tupleval_uint32(nt1,17),
+      ask_price4, nth_tupleval_uint32(nt1,18),
+      ask_size4, nth_tupleval_uint32(nt1,19),
+      ask_price5, nth_tupleval_uint32(nt1,20),
+      ask_size5, nth_tupleval_uint32(nt1,21),
+      timestamp, int64(nth_tupleval(nt1, 11))
+    ),
+    timestamp,source_index,exchange_index,condition,trade_flag,price,size,bid_price1,bid_size1,trade_side,bid_price2,bid_size2,bid_price3,bid_size3,bid_price4,bid_size4,bid_price5,bid_size5,ask_price1,ask_size1,ask_price2,ask_size2,ask_price3,ask_size3,ask_price4,ask_size4,ask_price5,ask_size5
+  ),
+  <timestamp:int64 NULL DEFAULT null COMPRESSION 'zlib', source_index:int8 NULL DEFAULT null COMPRESSION 'zlib', exchange_index:int8 NULL DEFAULT null COMPRESSION 'zlib', condition:int32 NULL DEFAULT null COMPRESSION 'zlib', trade_flag:bool NULL DEFAULT null COMPRESSION 'zlib', price:uint32 NULL DEFAULT null COMPRESSION 'zlib', size:uint32 NULL DEFAULT null COMPRESSION 'zlib', bid_price1:uint32 NULL DEFAULT null COMPRESSION 'zlib', bid_size1:uint32 NULL DEFAULT null COMPRESSION 'zlib', trade_side:int8 NULL DEFAULT null COMPRESSION 'zlib', bid_price2:uint32 NULL DEFAULT null COMPRESSION 'zlib', bid_size2:uint32 NULL DEFAULT null COMPRESSION 'zlib', bid_price3:uint32 NULL DEFAULT null COMPRESSION 'zlib', bid_size3:uint32 NULL DEFAULT null COMPRESSION 'zlib', bid_price4:uint32 NULL DEFAULT null COMPRESSION 'zlib', bid_size4:uint32 NULL DEFAULT null COMPRESSION 'zlib', bid_price5:uint32 NULL DEFAULT null COMPRESSION 'zlib', bid_size5:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_price1:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_size1:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_price2:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_size2:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_price3:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_size3:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_price4:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_size4:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_price5:uint32 NULL DEFAULT null COMPRESSION 'zlib', ask_size5:uint32 NULL DEFAULT null COMPRESSION 'zlib'> [date=0:*,1,0, rownumber=0:*,400000,0, ticker_index=0:*,50,0] );

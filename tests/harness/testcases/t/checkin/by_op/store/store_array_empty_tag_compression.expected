@@ -1,0 +1,120 @@
+SCIDB QUERY : <create array arr <v:int64>[i=0:9] distribution default emptytag compression 'zlib'>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(arr, i), arr)>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays', true), name, etcomp)>
+{No} name,etcomp
+{0} 'arr','zlib'
+{1} 'arr@1','zlib'
+
+SCIDB QUERY : <store(build(arr, i), arr, etcomp:'zlib')>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays', true), name, etcomp)>
+{No} name,etcomp
+{0} 'arr','zlib'
+{1} 'arr@1','zlib'
+{2} 'arr@2','zlib'
+
+SCIDB QUERY : <store(build(arr, i), arr, etcomp:'bzlib')>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays', true), name, etcomp)>
+{No} name,etcomp
+{0} 'arr','zlib'
+{1} 'arr@1','zlib'
+{2} 'arr@2','zlib'
+{3} 'arr@3','bzlib'
+
+SCIDB QUERY : <store(build(arr, i), arr, etcomp:'none')>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays', true), name, etcomp)>
+{No} name,etcomp
+{0} 'arr','zlib'
+{1} 'arr@1','zlib'
+{2} 'arr@2','zlib'
+{3} 'arr@3','bzlib'
+{4} 'arr@4','none'
+
+SCIDB QUERY : <store(arr, uncompressed_ebm)>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays', true), name, etcomp)>
+{No} name,etcomp
+{0} 'arr','zlib'
+{1} 'arr@1','zlib'
+{2} 'arr@2','zlib'
+{3} 'arr@3','bzlib'
+{4} 'arr@4','none'
+{5} 'uncompressed_ebm','none'
+{6} 'uncompressed_ebm@1','none'
+
+SCIDB QUERY : <store(arr@3, bzlib_compressed_ebm)>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays', true), name, etcomp)>
+{No} name,etcomp
+{0} 'arr','zlib'
+{1} 'arr@1','zlib'
+{2} 'arr@2','zlib'
+{3} 'arr@3','bzlib'
+{4} 'arr@4','none'
+{5} 'bzlib_compressed_ebm','bzlib'
+{6} 'bzlib_compressed_ebm@1','bzlib'
+{7} 'uncompressed_ebm','none'
+{8} 'uncompressed_ebm@1','none'
+
+SCIDB QUERY : <store(arr@2, zlib_compressed_ebm)>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays', true), name, etcomp)>
+{No} name,etcomp
+{0} 'arr','zlib'
+{1} 'arr@1','zlib'
+{2} 'arr@2','zlib'
+{3} 'arr@3','bzlib'
+{4} 'arr@4','none'
+{5} 'bzlib_compressed_ebm','bzlib'
+{6} 'bzlib_compressed_ebm@1','bzlib'
+{7} 'uncompressed_ebm','none'
+{8} 'uncompressed_ebm@1','none'
+{9} 'zlib_compressed_ebm','zlib'
+{10} 'zlib_compressed_ebm@1','zlib'
+
+SCIDB QUERY : <store(show(arr), no_ebm_array, etcomp:'zlib')>
+Query was executed successfully
+
+SCIDB QUERY : <project(list('arrays', true), name, etcomp)>
+{No} name,etcomp
+{0} 'arr','zlib'
+{1} 'arr@1','zlib'
+{2} 'arr@2','zlib'
+{3} 'arr@3','bzlib'
+{4} 'arr@4','none'
+{5} 'bzlib_compressed_ebm','bzlib'
+{6} 'bzlib_compressed_ebm@1','bzlib'
+{7} 'no_ebm_array',null
+{8} 'no_ebm_array@1',null
+{9} 'uncompressed_ebm','none'
+{10} 'uncompressed_ebm@1','none'
+{11} 'zlib_compressed_ebm','zlib'
+{12} 'zlib_compressed_ebm@1','zlib'
+
+SCIDB QUERY : <remove(arr)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(uncompressed_ebm)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(bzlib_compressed_ebm)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(zlib_compressed_ebm)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(no_ebm_array)>
+Query was executed successfully
+

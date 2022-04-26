@@ -1,0 +1,9 @@
+SCIDB QUERY : <create array create_array_neg <v:int64>[i=0:9]>
+Query was executed successfully
+
+SCIDB QUERY : <create array create_array_neg <v:int64>[i=0:9]>
+[An error expected at this place for the query "create array create_array_neg <v:int64>[i=0:9]". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_ALREADY_EXISTS. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_ALREADY_EXISTS.]
+
+SCIDB QUERY : <remove(create_array_neg)>
+Query was executed successfully
+

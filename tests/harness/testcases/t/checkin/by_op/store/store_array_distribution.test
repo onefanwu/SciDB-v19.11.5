@@ -1,0 +1,53 @@
+--setup
+--test
+--start-query-logging
+
+# positive basic tests
+
+store(build(<v:uint64>[i=0:9],i),dist_dflt)
+store(build(<v:uint64>[i=0:9],i),dist_dflt_fetcht,                          _fetch:true)
+store(build(<v:uint64>[i=0:9],i),dist_dflt_fetchf,                          _fetch:false)
+
+store(build(<v:uint64>[i=0:9],i),dist_hash,        distribution:hashed)
+store(build(<v:uint64>[i=0:9],i),dist_hash_fetchf, distribution:hashed,     _fetch:false)
+store(build(<v:uint64>[i=0:9],i),dist_hash_fetcht, distribution:hashed,     _fetch:true)
+
+store(build(<v:uint64>[i=0:9],i),dist_repl,        distribution:replicated)
+store(build(<v:uint64>[i=0:9],i),dist_repl_fetchf, distribution:replicated, _fetch:false)
+store(build(<v:uint64>[i=0:9],i),dist_repl_fetcht, distribution:replicated, _fetch:true)
+
+store(build(<v:uint64>[i=0:9],i),dist_rcyc,       distribution:row_cyclic)
+store(build(<v:uint64>[i=0:9],i),dist_rcyc_fetchf,distribution:row_cyclic, _fetch:false)
+store(build(<v:uint64>[i=0:9],i),dist_rcyc_fetcht,distribution:row_cyclic, _fetch:true)
+
+store(build(<v:uint64>[i=0:9;j=0:9],i),dist_ccyc,       distribution:col_cyclic)
+store(build(<v:uint64>[i=0:9;j=0:9],i),dist_ccyc_fetchf,distribution:col_cyclic, _fetch:false)
+store(build(<v:uint64>[i=0:9;j=0:9],i),dist_ccyc_fetcht,distribution:col_cyclic, _fetch:true)
+
+# negative basic tests
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT "store(build(<v:uint64>[i=0:9],i),dist_repl,hashed)"
+--stop-query-logging
+--cleanup
+
+remove(dist_dflt)
+remove(dist_dflt_fetchf)
+remove(dist_dflt_fetcht)
+
+remove(dist_hash)
+remove(dist_hash_fetchf)
+remove(dist_hash_fetcht)
+
+remove(dist_repl)
+remove(dist_repl_fetchf)
+remove(dist_repl_fetcht)
+
+remove(dist_rcyc)
+remove(dist_rcyc_fetchf)
+remove(dist_rcyc_fetcht)
+
+remove(dist_ccyc)
+remove(dist_ccyc_fetchf)
+remove(dist_ccyc_fetcht)
+
+
+

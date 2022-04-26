@@ -1,0 +1,13 @@
+--setup
+--start-query-logging
+
+--test
+
+_fold(apply(build(<v:int64>[i=3:5;j=7:9],i+j+1),w,10*v,x,100*v))
+_fold(apply(build(<v:int64>[i=3:5:0:3;j=7:9],i+j+1),w,10*v,x,100*v))
+_fold(apply(build(<v:int64>[i=3:5:0:2;j=7:9],i+j+1),w,10*v,x,100*v))
+_fold(apply(build(<v:int64>[i=3:5:0:1;j=7:9],i+j+1),w,10*v,x,100*v))
+_fold(apply(build(<v:int64>[i=3:5:0:1;j=7:9:0:3],i+j+1),w,10*v,x,100*v))
+
+--cleanup
+--stop-query-logging

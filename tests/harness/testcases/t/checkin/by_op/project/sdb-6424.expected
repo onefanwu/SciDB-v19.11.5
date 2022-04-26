@@ -1,0 +1,63 @@
+SCIDB QUERY : <store(build(<v:int64>[i=0:9], i), f)>
+Query was executed successfully
+
+SCIDB QUERY : <store(project(f, EmptyTag), z)>
+[An error expected at this place for the query "store(project(f, EmptyTag), z)". And it failed with error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR. Expected error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR.]
+
+SCIDB QUERY : <store(project(f, EmptyTag, inverse:1), z)>
+[An error expected at this place for the query "store(project(f, EmptyTag, inverse:1), z)". And it failed with error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR. Expected error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR.]
+
+SCIDB QUERY : <project(show(f), schema, distribution, etcomp, inverse:1)>
+[An error expected at this place for the query "project(show(f), schema, distribution, etcomp, inverse:1)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ILLEGAL_OPERATION. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ILLEGAL_OPERATION.]
+
+SCIDB QUERY : <store(project(show(f), distribution, inverse:1), g, _fetch:true)>
+{i} schema,etcomp
+{0} 'f<v:int64> [i=0:9:0:1000000]','none'
+
+SCIDB QUERY : <_show_nodist(g)>
+{i} schema
+{0} 'not empty g<schema:string NOT NULL,etcomp:string> [i=0:0:0:1]'
+
+SCIDB QUERY : <store(op_count(project(show(f), schema, inverse:1)), h, _fetch:true)>
+{i} count
+{0} 1
+
+SCIDB QUERY : <_show_nodist(h)>
+{i} schema
+{0} 'not empty h<count:uint64> [i=0:0:0:1]'
+
+SCIDB QUERY : <store(op_count(project(show(f), distribution)), i, _fetch:true)>
+{i} count
+{0} 1
+
+SCIDB QUERY : <_show_nodist(i)>
+{i} schema
+{0} 'not empty i<count:uint64> [i=0:0:0:1]'
+
+SCIDB QUERY : <store(project(show(f), schema), j, _fetch:true)>
+{i} schema
+{0} 'f<v:int64> [i=0:9:0:1000000]'
+
+SCIDB QUERY : <_show_nodist(j)>
+{i} schema
+{0} 'not empty j<schema:string NOT NULL> [i=0:0:0:1]'
+
+SCIDB QUERY : <_show2_nodist('project(f, v)', 'afl')>
+{i} schema
+{0} 'f@1<v:int64> [i=0:9:0:1000000]'
+
+SCIDB QUERY : <remove(f)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(g)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(h)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(i)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(j)>
+Query was executed successfully
+

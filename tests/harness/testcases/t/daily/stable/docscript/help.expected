@@ -1,0 +1,26 @@
+SCIDB QUERY : <help('show')>
+{i} help
+{0} 'Operator: show
+Usage: show(<array name | anonymous schema | query string [, \'aql\' | \'afl\']>)'
+
+SCIDB QUERY : <help('store')>
+{i} help
+{0} 'Operator: store
+Parameters: <input>, <array_name_out>
+            [, distribution: <distribution> ]
+            [, etcomp: <constant:string> ]'
+
+SCIDB QUERY : <help('input')>
+{i} help
+{0} 'Operator: input
+Parameters: <schema>, <constant:string>, ( ( <constant:int64> | "("
+            <constant:int32>, <constant:int32> ")" ), ( <constant:string>, (
+            <constant:int64>, <constant:bool>? )? )? )?
+            [, format: <constant:string> ]
+            [, instance: ( <constant:int64> | "(" <constant:int32>, <constant:int32> ")" ) ]
+            [, max_errors: <constant:int64> ]
+            [, strict: <constant:bool> ]'
+
+SCIDB QUERY : <help('input', 42, 19, 19, 'Hike!')>
+[An error expected at this place for the query "help('input', 42, 19, 19, 'Hike!')". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT.]
+

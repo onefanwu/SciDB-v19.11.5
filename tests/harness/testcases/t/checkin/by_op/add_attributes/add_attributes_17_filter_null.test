@@ -1,0 +1,16 @@
+--setup
+--start-query-logging
+store(build(<x:uint64>[i=0:9:0:2],i),a)
+
+--test
+scan(a)
+add_attributes(a, <y:int64>)
+filter(a, i>3 and i<6)
+add_attributes(a, <z:int64 default 83>)
+filter(a, i>4 and i<7)
+store(project(apply(filter(a, i>5 and i<8), yprime, 2*i+1, zprime, 3*i+2), x, yprime, zprime), a)
+scan(a)
+
+--cleanup
+remove(a)
+--stop-query-logging

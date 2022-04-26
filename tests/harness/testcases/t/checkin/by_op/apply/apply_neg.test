@@ -1,0 +1,10 @@
+--setup
+create temp array APPLYNEG <v:int64>[i=0:3]
+store(build(APPLYNEG, i), APPLYNEG)
+--test
+--error "apply(APPLYNEG)"
+--error "apply(APPLYNEG, w)"
+--error "apply(APPLYNEG, w, 5, x)"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT2 "apply()"
+--cleanup
+remove(APPLYNEG)

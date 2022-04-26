@@ -1,0 +1,21 @@
+# ticket no. 732
+
+--setup
+create array A <a:int32> [x=0:2,3,0]
+
+--test
+--error --code=scidb::SCIDB_SE_TYPESYSTEM::SCIDB_LE_FAILED_PARSE_STRING "store(filter(build(A,'test'),1),B)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_DOESNT_EXIST "scan(B)"
+--error --code=scidb::SCIDB_SE_TYPESYSTEM::SCIDB_LE_FAILED_PARSE_STRING "store(build(A,'test'),C)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_DOESNT_EXIST "scan(C)"
+
+--start-igdata
+store(build(A, 1), A)
+store(build(A, 2), A)
+store(build(A, 3), A)
+--stop-igdata
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_CANT_ACCESS_ARRAY_VERSION \
+    "store(build(A, 42), A@2)"
+
+--cleanup
+remove(A)

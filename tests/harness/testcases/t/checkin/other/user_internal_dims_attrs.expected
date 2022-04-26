@@ -1,0 +1,160 @@
+SCIDB QUERY : <build(<$a:int32>[x=0:9],x)>
+[An error expected at this place for the query "build(<$a:int32>[x=0:9],x)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <build(<a:int32>[$x=0:9],x)>
+[An error expected at this place for the query "build(<a:int32>[$x=0:9],x)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <build(<$a:int32>[$x=0:9],x)>
+[An error expected at this place for the query "build(<$a:int32>[$x=0:9],x)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <apply(build(<$a:int32>[x=0:9],x),b,2*a+1)>
+[An error expected at this place for the query "apply(build(<$a:int32>[x=0:9],x),b,2*a+1)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <apply(build(<a:int32>[$x=0:9],x),b,2*a+1)>
+[An error expected at this place for the query "apply(build(<a:int32>[$x=0:9],x),b,2*a+1)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <apply(build(<$a:int32>[$x=0:9],x),b,2*a+1)>
+[An error expected at this place for the query "apply(build(<$a:int32>[$x=0:9],x),b,2*a+1)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <apply(build(<a:int32>[x=0:9],x),$b,2*a+1)>
+[An error expected at this place for the query "apply(build(<a:int32>[x=0:9],x),$b,2*a+1)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME.]
+
+SCIDB QUERY : <store(sort(build(<a:int32>[x=-9:0],x)),sorted)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(sorted)>
+{$n} a
+{0} -9
+{1} -8
+{2} -7
+{3} -6
+{4} -5
+{5} -4
+{6} -3
+{7} -2
+{8} -1
+{9} 0
+
+SCIDB QUERY : <apply(sorted, b, 2*$n+1)>
+{$n} a,b
+{0} -9,1
+{1} -8,3
+{2} -7,5
+{3} -6,7
+{4} -5,9
+{5} -4,11
+{6} -3,13
+{7} -2,15
+{8} -1,17
+{9} 0,19
+
+SCIDB QUERY : <add_attributes(sorted, <$q:int64>)>
+[An error expected at this place for the query "add_attributes(sorted, <$q:int64>)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <input(<$q:int64>[i=0:9], '/dev/null')>
+[An error expected at this place for the query "input(<$q:int64>[i=0:9], '/dev/null')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <input(<q:int64>[$i=0:9], '/dev/null')>
+[An error expected at this place for the query "input(<q:int64>[$i=0:9], '/dev/null')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <input(<$q:int64>[$i=0:9], '/dev/null')>
+[An error expected at this place for the query "input(<$q:int64>[$i=0:9], '/dev/null')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:9],i),a)>
+Query was executed successfully
+
+SCIDB QUERY : <redimension(a, <i:int64>[$v=0:9])>
+[An error expected at this place for the query "redimension(a, <i:int64>[$v=0:9])". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <reshape(a, <a:int64>[$v=-9:0])>
+[An error expected at this place for the query "reshape(a, <a:int64>[$v=-9:0])". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <repart(a, <a:int64>[$v=-9:0])>
+[An error expected at this place for the query "repart(a, <a:int64>[$v=-9:0])". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <redimension(a, <i:int64>[v=0:9;$k=0:9])>
+[An error expected at this place for the query "redimension(a, <i:int64>[v=0:9;$k=0:9])". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <redimension(a, <i:int64>[v=0:9;k=0:9])>
+{v,k} i
+{0,0} 0
+{1,0} 1
+{2,0} 2
+{3,0} 3
+{4,0} 4
+{5,0} 5
+{6,0} 6
+{7,0} 7
+{8,0} 8
+{9,0} 9
+
+SCIDB QUERY : <store(sort(build(<v:int64>[i=-9:0],i)),b)>
+Query was executed successfully
+
+SCIDB QUERY : <store(scan(b,true),c)>
+Query was executed successfully
+
+SCIDB QUERY : <redimension(c, <v:int64>[$n=0:9])>
+{$n} v
+{0} -9
+{1} -8
+{2} -7
+{3} -6
+{4} -5
+{5} -4
+{6} -3
+{7} -2
+{8} -1
+{9} 0
+
+SCIDB QUERY : <reshape(c, <v:int64>[$n=0:9])>
+{$n} v
+{0} -9
+{1} -8
+{2} -7
+{3} -6
+{4} -5
+{5} -4
+{6} -3
+{7} -2
+{8} -1
+{9} 0
+
+SCIDB QUERY : <repart(c, <v:int64>[$n=0:9])>
+{$n} v
+{0} -9
+{1} -8
+{2} -7
+{3} -6
+{4} -5
+{5} -4
+{6} -3
+{7} -2
+{8} -1
+{9} 0
+
+SCIDB QUERY : <op_sum(apply(flatten(build(<v:int64>[i=0:9],i)),w,2*$seq),v)>
+{i} v_sum
+{0} 45
+
+SCIDB QUERY : <create array bar <$q:int16>[i=0:9]>
+[An error expected at this place for the query "create array bar <$q:int16>[i=0:9]". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <create array bar <q:int16>[$i=0:9]>
+[An error expected at this place for the query "create array bar <q:int16>[$i=0:9]". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <create array bar <$q:int16>[$i=0:9]>
+[An error expected at this place for the query "create array bar <$q:int16>[$i=0:9]". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA.]
+
+SCIDB QUERY : <remove(sorted)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(b)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(c)>
+Query was executed successfully
+

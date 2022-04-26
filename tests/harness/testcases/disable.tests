@@ -1,0 +1,360 @@
+#
+# keep this file sorted to avoid accidental merges of duplicate lines, each part has its
+# own sort rules
+#
+
+# PART I
+#
+# THIS PART SHOULD BE FOR TESTS THAT ARE NORMALLY DISABLED, not disabled due to bug/ticket
+# e.g. they take too long to run under any supported Cdash config, they are for design or TDD
+#   and the code that runs them will fail, etc
+#
+# - it is best practice if long tests are pushed to a "long" or "slow" subdirectory of the other
+#   related tests that are not, for example, scalapack/64instance is of this type
+# - it is best practice to give a line explaining why disabled, so others can validate
+#   that it is appropriate that they are disabled (and not just leftover from before we started
+#   adding ticket numbers for disabled-due-to-failure)
+#
+#  KEEP THIS IN ALPHABETICAL ORDER
+#
+
+# Disable suite containing very large data
+daily.stable.other.bigdata
+# next needs conversion to chunksize 32x32
+checkin.by_op.gesvd.20_svd_oldVals
+# The below suite has very long execution time (1580 tests) and queries need to be updated for syntax
+daily.stable.other.data_model
+
+# Disable performance suites intended to run on 64 or more instances
+# NOTE: some of these also require equi-join, which resides on github
+daily.stable.sdqp.load-plugins
+daily.stable.sdqp.sdb-5298 unless instances > 63
+daily.stable.sdqp.sdb-5805 unless instances > 63
+daily.stable.sdqp.sdb-5870 unless instances > 63
+daily.stable.sdqp.sdb-5871 unless instances > 63
+daily.stable.sdqp.sdb-6026 unless instances > 63
+
+# 2 suites of performance tests, too slow for running as 4 instances
+daily.stable.by_op/spgemm/64instance
+daily.stable.by_op/spgemm/performance
+# other/versions tests deltaChunk which no longer exists SDB-901
+daily.stable.other.versions
+#
+# Very long test suite
+daily.stable.by_op.repart.perf
+# 14_gemm_ticket4339 is too slow to be on during functional freeze testing
+daily.stable.by_op.gemm.14_gemm_ticket4339
+# 15_gemm_ticket4346 is too large for 4GB machines like the CDash VMs
+# It must be run by hand on a 1 instance machine in order to repro the symptom of 4346
+daily.stable.by_op.gemm.15_gemm_ticket4346
+# DIR daily.stable.by_op.ge{mm,svd}.64instance are needed for scale-up testing on salty, but take too long to run anywhere else
+daily.stable.by_op.gemm.64instance
+daily.stable.by_op.gesvd.64instance
+# DIR used for performance testing, too slow for normal use
+daily.stable.by_op.gemm.perf
+daily.stable.by_op.gesvd.perf
+# update.updatedeltareallylarge performance tests deltaChunk which no longer exists SDB-901
+daily.stable.other.update.updatedeltareallylarge
+
+# disabled because we disabled the old python connector SDB-2671.
+# Should examine (or replace) after implementing a new python connector SDB-556.
+daily.stable.other.client.python_1
+
+# disabled because we disabled shim SDB_2671
+checkin.other.sciDB-R_interpreter
+checkin.other.R_interpreter
+
+daily.stable.injecterror.inject_4_load_system_library unless redundancy==3
+
+# bernoulli() output changes with instance count or distribution,
+# even when the RNG seed is specified.
+daily.stable.docscript.bernoulli_dist_ha  unless instances==4
+daily.stable.docscript.bernoulli_dist_rc  unless instances==4
+daily.stable.docscript.bernoulli_dist_cc  unless instances==4
+daily.stable.docscript.bernoulli_dist_re  unless instances==4
+daily.stable.other.dataframe.df_bernoulli unless instances==4 and x-dflt-dist-other==1 and x-dflt-dist-root==1
+
+daily.stable.mu.mu_update unless instances>3
+
+checkin.by_src.array.DBArray_inject unless instances==4 and x-dflt-dist-root!=9
+
+# Tests not designed to run with single instance
+daily.stable.other.afl.keywords_2 if instances==1
+checkin.other.parallel_load_5288 if instances==1
+iqueryabort.abort_read if instances==1
+daily.stable.injecterror.inject_2_redim if instances==1
+daily.stable.injecterror.inject_2_store if instances==1
+daily.stable.injecterror.inject_2_update if instances==1
+
+daily.stable.other.data_integrity if instances==1
+daily.stable.other.data_integrity_dup if instances==1
+daily.stable.other.data_integrity_ooo if instances==1
+daily.stable.other.data_integrity_col if instances==1
+
+daily.stable.by_op.input.input_3 if instances==1
+daily.stable.by_op.list.list_queries_race if instances==1
+daily.stable.by_op.load.pload.bin_pload_null_chunk_bounded_neg if instances==1
+daily.stable.by_op.z_abort.abort_read if instances==1
+
+# Test only designed to run in a developer config of 4 instances
+daily.stable.by_op.redim.redim_chunksize_6614
+
+# test that supports understanding how
+# fallocate(FL_PUNCH_HOLES) behaves.  run this test with
+# the normally disabled code in FileIO::fallocPunchHoles enabled
+checkin.by_op.remove.remove_versions_zz_punch_hole_over_end_simulation
+
+# show summarize by instace results so the results change if more instances are used
+checkin.by_other.distrib.bootstrap10 unless instances==4
+checkin.by_other.distrib.bootstrap20 unless instances==4
+
+# tests that stop outputting "row-cyclic" when row-cyclic(9) is an inherited dflt-dist
+checkin.by_other.distrib.rowCyclic_01_update_ops unless x-dflt-dist-other != 9 and x-dflt-dist-root != 9
+checkin.by_other.distrib.rowCyclic_02_schema_ops unless x-dflt-dist-other != 9 abd x-dflt-dist-root != 9
+
+#
+# PART II
+# THIS PART IS FOR FAILING TESTS.  These represent known defects in the code or in the tests
+# - each disabled test must have a corresponding ticket number
+# - TODO: DAVE, please decide whether you would like this sorted
+#         A) alpabetical, so that each test is surely added only once OR
+#         B) in ticket order
+#         as right now it seems random and is inconsistent between disable{,1i}.tests.in
+#
+
+#This test only works correctly with four instances.  SDB-5732 is the ticket to generalize it.
+daily.stable.by_op.gesvd.23_svd_largeDims_5664 unless instances==4
+
+#This test only works correctly with fewer than four instances.  SDB-5733 is the
+#ticket to generalize it.
+daily.stable.by_op.gesvd.35_svd_driver_allstd_o1to96c32_intermittents if instances > 4
+
+# SDB-4603: This only works on one instance! Need to edit fits loader to not throw errors on multiple instances!
+daily.stable.other.fits.fits_input
+
+# summarize outputs instance-specific info that changes with ninstances and dflt-dist
+checkin.by_op.summarize.summarize_inst_8 unless instances==8 and x-dflt-dist-other==1 and x-dflt-dist-root==1
+checkin.by_op.summarize.summarize_inst_6 unless instances==6 and x-dflt-dist-other==1 and x-dflt-dist-root==1
+checkin.by_op.summarize.summarize_inst_4 unless instances==4 and x-dflt-dist-other==1 and x-dflt-dist-root==1
+checkin.by_op.summarize.summarize_inst_1 unless instances==1 and x-dflt-dist-other==1 and x-dflt-dist-root==1
+
+checkin.by_op.summarize.summarize_inst_8_dist_ha unless instances==4
+checkin.by_op.summarize.summarize_inst_6_dist_rc unless instances==4
+checkin.by_op.summarize.summarize_inst_4_dist_re unless instances==4
+checkin.by_op.summarize.summarize_inst_4_dist_cc unless instances==4
+checkin.by_op.summarize.summarize_inst_4_dist_ha unless instances==4
+checkin.by_op.summarize.summarize_inst_4_dist_rc unless instances==4
+# summarize_inst_4_dist_multi covers multiple distributions
+checkin.by_op.summarize.summarize_inst_4_dist_multi unless instances==4
+
+daily.stable.docscript.summarize         unless instances==4 and x-dflt-dist-other==1 and x-dflt-dist-root==1
+
+checkin.by_op.input.input_dist_bin    unless instances==4 and x-dflt-dist-root==1
+checkin.by_op.input.input_dist_csv    unless instances==4 and x-dflt-dist-root==1
+checkin.by_op.input.input_dist_opaque unless instances==4 and x-dflt-dist-root==1
+checkin.by_op.input.input_dist_text   unless instances==4 and x-dflt-dist-root==1
+checkin.by_op.input.input_dist_tsv    unless instances==4 and x-dflt-dist-root==1
+
+
+#
+# does not take multiple copies of the same chunk (redundant or replicated)
+# into account
+checkin.macros.cell_instance_imbalance
+
+# SDB-5586.  load/pload now require unbounded array schemas
+# (until such a time as we have true round-robin)
+# but this seems to be incompatible with how overlap
+# is supported.
+checkin.other.overlap_3u_5586_simplest
+checkin.other.overlap_3
+checkin.other.overlap_4
+checkin.other.overlap_4_newdims
+
+# SDB-4603: This only works on one instance! Need to edit fits loader to not throw errors on multiple instances!
+daily.stable.other.fits.fits_input
+
+# SDB-6171: JDBC is trying to send a query that performs invalid string->char conversion
+daily.stable.jdbc.Types
+daily.stable.jdbc.all_types
+daily.stable.jdbc.all_types_cpp_version
+# SDB-6665: Move jdbc to github.
+#        This was disabled as a result of the related defect SDB-6664
+daily.stable.jdbc
+
+# SDB-5818: chunk descriptor conversion upgrade tests (not deploying at the moment)
+daily.stable.other.chunk_descriptor_upgrade
+
+# SDB-5929: disable chunk descriptor upgrade as it doesn't run in CDash environment
+checkin.chunk_descriptor_upgrade
+
+# SDB-5974, has to be disabled again, inteference from BufferMgr_inject.test
+daily.stable.injecterror.BufferMgr_inject_5974
+
+
+# Tests below have an unrobust inject error issue, SDB-6002
+# SDB-6055
+checkin.by_src.storage.bufferMgr.BufferMgr_inject_09_SLOT_GENCOUNT_CHANGE_RBFC
+# SDB-6054
+checkin.by_src.storage.bufferMgr.BufferMgr_inject_05_ALLOC_BLOCK_BASE_FAIL_PBL
+# SDB-6053
+checkin.by_src.storage.bufferMgr.BufferMgr_inject_06_ALLOC_BLOCK_BASE_FAIL_GCB
+checkin.by_src.storage.bufferMgr.BufferMgr_inject_04_ALLOC_BLOCK_BASE_FAIL_BH
+# SDB-6052
+checkin.by_src.storage.bufferMgr.BufferMgr_inject_08_SLOT_OTHER_THREAD_LOAD
+# SDB-6051
+checkin.by_src.storage.bufferMgr.BufferMgr_inject_01_RESERVE_SPACE_FAIL
+# SDB-6211
+checkin.by_src.storage.bufferMgr.BufferMgr_inject_03_BLOCK_LIST_END
+
+# SDB-6314 the list('datastores') output is static to the number of instances
+# on the machine on which the test was developed, in my case, I had four
+# instances.
+checkin.update.check_prior_versions unless instances==4
+
+# SDB-6674: Maximum operator stack depth needs to be revisited with Ubuntu 16.04 (xenial)
+checkin.other.4102_operator_nested_levels
+
+# Output of _dskeys changes with the number of instances.
+checkin.by_op.dskeys unless instances==4
+
+#*****************************************************************************
+# PART III
+#
+# THIS PART IS FOR TEMPORARILY DISABLED TESTS.  These test files all include
+# statements that use the old NID syntax and are disabled while we rip out and
+# de-NID the code base. Many of these just happen to use NIDS in arrays that
+# are then used to test other features, so we need to either replace them with
+# uses of the uniq/index_look operators - talk to Alex about this - or rewrite
+# the tests to not use NIDdled arrays at all.
+#
+# See SDB-1357 Re-enable / rewrite tests that use NID's
+#*****************************************************************************
+
+daily.stable.aql.aql_misc.create_5
+daily.stable.aql.aql_misc.udt_point
+daily.stable.aql.aql_misc.udt_rational
+checkin.other.chunk_count
+checkin.by_op.redim.flip_chunksize
+checkin.by_op.redim.flip_n_subarray
+checkin.by_op.redim.flip_n_thin
+checkin.by_op.redim.flip_store_14
+checkin.by_op.redim.flip_store_newdim
+checkin.by_op.redim.flip_store_ni_04
+checkin.by_op.redim.flip_store_rational
+checkin.by_op.redim.select_into_4
+checkin.by_op.redim.select_into_5
+checkin.by_op.redim.select_into_6
+checkin.by_op.redim.select_into_10
+checkin.by_op.redim.neg.flip_store_3
+checkin.by_op.redim.neg.flip_store_5
+checkin.by_op.redim.neg.flip_store_10
+checkin.by_op.repart.repart_neg
+daily.stable.aql.newaql2.create_array_expressions
+daily.stable.aql.aql_neg_misc.select_into_1
+checkin.other.scidbLoadCsv_02_non_int_dimensions
+checkin.other.array_reference
+checkin.by_op.between.between_range
+checkin.other.dcsv_format
+checkin.by_op.redim.flip_vector2
+checkin.by_op.redim.flip_vectorR2
+checkin.by_op.redim.flip_vector_str
+checkin.by_op.join.join_flip
+checkin.other.iquery_1
+checkin.other.iquery_2
+checkin.other.presidents
+checkin.by_op.remove.remove_nid
+checkin.by_op.subarray.subarray_range
+checkin.other.thin_7
+checkin.by_op.repart.repart_algo_selection
+checkin.by_op.repart.repart_empty
+checkin.by_op.repart.repart_NID
+checkin.by_op.gesvd.21_svd_neg
+daily.stable.other.compression.compression_47
+daily.stable.doc.redimension_1
+daily.stable.doc.redimension_store_1
+daily.stable.doc.ug_loadingData_opaque
+daily.stable.by_op.redim.between_sub_nid
+daily.stable.by_op.redim.complex_query_nid
+daily.stable.by_op.redim.flip_store_11
+daily.stable.by_op.redim.flip_store_12
+daily.stable.by_op.redim.flip_store_15
+daily.stable.by_op.redim.flip_store_ni_01
+daily.stable.by_op.redim.flip_store_ni_02
+daily.stable.by_op.redim.flip_store_ni_03
+daily.stable.by_op.redim.flip_store_ni_05
+daily.stable.by_op.redim.flip_store_ni_06
+daily.stable.by_op.redim.flip_store_ni_07
+daily.stable.by_op.redim.flip_store_ni_08
+daily.stable.by_op.redim.flip_store_ni_11
+daily.stable.by_op.redim.flip_store_ni_12
+daily.stable.by_op.redim.flip_store_ni_13
+daily.stable.by_op.redim.flip_store_ni_14
+daily.stable.by_op.redim.flip_store_ni_15
+daily.stable.by_op.redim.flip_store_ni_16
+daily.stable.by_op.redim.flip_store_ni_17
+daily.stable.by_op.redim.flip_store_ni_18
+daily.stable.by_op.redim.flip_store_ni_21
+daily.stable.by_op.redim.flip_store_ni_22
+daily.stable.by_op.redim.flip_store_ni_23
+daily.stable.by_op.redim.flip_store_ni_24
+daily.stable.by_op.redim.flip_store_ni_25
+daily.stable.by_op.redim.flip_store_ni_26
+daily.stable.by_op.redim.flip_store_ni_27
+daily.stable.by_op.redim.flip_store_ni_28
+daily.stable.by_op.redim.flip_store_ni_31
+daily.stable.by_op.redim.flip_store_ni_32
+daily.stable.by_op.redim.flip_store_ni_33
+daily.stable.by_op.redim.flip_store_ni_34
+daily.stable.by_op.redim.flip_store_ni_35
+daily.stable.by_op.redim.flip_store_ni_36
+daily.stable.by_op.redim.flip_store_ni_37
+daily.stable.by_op.redim.flip_store_ni_38
+daily.stable.by_op.redim.flip_store_nulls
+daily.stable.by_op.redim.flip_with_overlap
+daily.stable.by_op.redim.join_merge_cross_nid
+
+daily.stable.by_op.redim.largemap
+daily.stable.by_op.redim.literal_nid
+
+daily.stable.by_op.redim.mapping2
+daily.stable.by_op.redim.null_nid
+
+daily.stable.by_op.redim.remove_mapping
+daily.stable.by_op.redim.select_into_11
+daily.stable.by_op.redim.select_into_12
+daily.stable.by_op.redim.select_into_13
+daily.stable.by_op.redim.select_into_14
+daily.stable.by_op.redim.select_into_15
+daily.stable.by_op.redim.select_into_8
+daily.stable.by_op.redim.select_into_9
+daily.stable.by_op.redim.sparse_nid1
+daily.stable.by_op.redim.unbounded_ops_double
+daily.stable.by_op.redim.unbounded_ops_int32
+daily.stable.by_op.redim.window_regrid1
+daily.stable.injecterror.inject_4_mapping
+daily.stable.by_op.z_abort.abort_rdstore_1
+daily.stable.by_op.z_abort.abort_rdstore_2
+daily.stable.by_op.z_abort.abort_rdstore_3
+daily.stable.by_op.z_abort.abort_rdstore_7
+daily.stable.aql.newaql1.aggregate3
+daily.stable.by_op.load.binary_loader
+daily.stable.by_op.load.binary_loader_unlimited
+daily.stable.other.binary_opaque
+daily.stable.by_op.cross_join.aggregate.cross_agg1
+daily.stable.by_op.cross_join.cross_sparse4
+daily.stable.other.immutable_binary
+daily.stable.other.iquery_5
+daily.stable.other.iquery_6
+daily.stable.by_op.merge.merge_data_array
+daily.stable.other.NID_basics
+daily.stable.other.operator_1
+daily.stable.by_op.redim.redim_NID_UB_misc
+daily.stable.other.UB_basics
+daily.stable.by_op.quantile.quantile_nid4
+daily.stable.by_op.quantile.quantile_nid5
+daily.stable.by_op.quantile.stringdims_withsubarray
+
+#*****************************************************************************
+# This test ensured that the 'copy chunk' optimization actually saved space.
+# That optimization has been backed-out, so disable this test.
+checkin.update.check_prior_versions

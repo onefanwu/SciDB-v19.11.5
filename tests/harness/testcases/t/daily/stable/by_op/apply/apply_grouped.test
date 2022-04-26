@@ -1,0 +1,17 @@
+--setup
+create temp array AG <v:double> [i=0:9]
+store(build(AG, i), AG)
+
+--test
+--start-query-logging
+apply(AG, w, 10+i)
+apply(AG, (w, 10+i))
+apply(AG, (w, 10+i), (x, float(i)/2.0))
+
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "apply(AG, (w, 10+i), (x, float(i)/2.0), y, 2*i)"
+
+--stop-query-logging
+
+--cleanup
+remove(AG)

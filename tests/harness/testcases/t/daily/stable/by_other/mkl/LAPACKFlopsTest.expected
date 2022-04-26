@@ -1,0 +1,17 @@
+SCIDB QUERY : <load_library('dense_linear_algebra')>
+Query was executed successfully
+
+SCIDB QUERY : <store(_lapackflopstest(), RESULTS)>
+Query was executed successfully
+
+SCIDB QUERY : <project(apply(op_count(RESULTS), any, 1), any)>
+{i} any
+{0} 1
+
+SCIDB QUERY : <aggregate(filter(RESULTS, flops__s < 0.3e9),count(*))>
+{i} count
+{0} 0
+
+SCIDB QUERY : <remove(RESULTS)>
+Query was executed successfully
+

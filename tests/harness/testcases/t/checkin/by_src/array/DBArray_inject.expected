@@ -1,0 +1,45 @@
+SCIDB QUERY : <load_library('misc')>
+Query was executed successfully
+
+SCIDB QUERY : <store(apply(build(<val:int64>[i=0:1:0:2], i), inject, injectError(0,13)), noCurrentChunkArray)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,13)), noCurrentChunkArray)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(noCurrentChunkArray)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,13)), noCurrentChunkArray)>
+[An error expected at this place for the query "store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,13)), noCurrentChunkArray)". And it failed with error code = scidb::SCIDB_SE_EXECUTION::SCIDB_LE_NO_CURRENT_CHUNK. Expected error code = scidb::SCIDB_SE_EXECUTION::SCIDB_LE_NO_CURRENT_CHUNK.]
+
+SCIDB QUERY : <store(apply(build(<val:int64>[i=0:1:0:2], i), inject, injectError(0,13)), noCurrentChunkArray)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(noCurrentChunkArray)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(build(<val:int64>[i=0:1:0:2], i), inject, injectError(0,14)), noCurrentChunkArray, _fetch: true)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,14)), noCurrentChunkArray, _fetch: true)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(noCurrentChunkArray)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,14)), noCurrentChunkArray, _fetch: true)>
+[An error expected at this place for the query "store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,14)), noCurrentChunkArray, _fetch: true)". And it failed with error code = scidb::SCIDB_SE_EXECUTION::SCIDB_LE_NO_CURRENT_CHUNK. Expected error code = scidb::SCIDB_SE_EXECUTION::SCIDB_LE_NO_CURRENT_CHUNK.]
+
+SCIDB QUERY : <store(apply(build(<val:int64>[i=0:1:0:2], i), inject, injectError(0,14)), noCurrentChunkArray, _fetch: true)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(noCurrentChunkArray)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(chunkOutOfBoundsArray)>
+[SciDB query execution failed. But continuing, as it was intended to just run.]
+
+SCIDB QUERY : <remove(noCurrentChunkArray)>
+[SciDB query execution failed. But continuing, as it was intended to just run.]
+

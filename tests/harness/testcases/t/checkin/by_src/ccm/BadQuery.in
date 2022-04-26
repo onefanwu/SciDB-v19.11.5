@@ -1,0 +1,51 @@
+# --*- Mode: shell-script -*--
+echo * Starting badquery.test
+  set encode=On
+  reset_sessions
+#
+#  authlogon, authresponse
+#
+  echo ** Setup authlogon, authresponse
+    echo *** calling authlogon
+      authlogon scidbadmin
+      get session
+    echo *** calling authresponse
+      authresponse Paradigm4
+      get session
+#
+# execute (invalid query)
+  echo ** calling (bad) executequery
+    executequery This(query(is<bad>[i=3:0:0], i/2.89)
+    get session
+#
+# execute (good) same session
+  echo ** calling (good) executequery (same session)
+    echo *** Calling executequery
+      executequery list()
+      get session
+    echo *** Calling fetchingot
+      fetchingot
+      get session
+# #  execute (good) same session, zero bytes in ingot response returned (take 1)
+  echo ** calling (good) executequery (store A)
+    echo *** Calling executequery
+      executequery store(build(<val:double>[i=1:10], i/ 1.1), A)
+      get session
+    echo *** Calling fetch ingot
+      fetchingot
+      get session
+#  execute (good) same session, zero bytes in ingot response returned (take 2)
+  echo ** calling (good) executequery (store B -- using call to self.default())
+    store(build(<val:double>[i=1:10], i/ 1.1), B)
+    get session
+#  execute (good) same session, zero bytes in ingot response returned (take 1)
+  echo ** calling (good - ddl) executequery (remove A)
+    echo *** Calling executequery
+      executequery remove(A)
+      get session
+    echo *** Calling fetch ingot
+      fetchingot
+      get session
+  echo ** calling (good - ddl) executequery (remove B -- using call to self.default())
+    remove(B)
+    get session

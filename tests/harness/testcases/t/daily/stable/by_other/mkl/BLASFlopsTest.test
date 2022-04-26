@@ -1,0 +1,37 @@
+--setup
+--start-query-logging
+
+load_library('dense_linear_algebra')
+
+# first, not a test, just get the raw data for the logs for diagnosis purposes
+# running via --command puts the output in the log, and not the .out file to avoid matching
+--shell --command "iquery -ocsv+ -aq '_blasflopstest()'"
+
+--test
+
+# now, count how many times the performance is below our expected minimum
+# on our test servers (         @ 2.00Ghz westmere),      with MKL ~ 12 GFLOP/s, without @ 1   GFLOP/s)
+# on an older dev box (i7-3930k @ 3.20Ghz sandybridge-e), with MKL ~ 25 GFLOP/s, without @ 2   GFLOP/s)
+# on a newer dev box  (i9-7920X @ 2.90GHz skylake),       with MKL ~ 80 GFLOP/s, without @ 2.3 GFLOP/s)
+#
+# so a dividing line that might work for the widest range of machines for now  is to put the cutoff
+# between the highest non-mkl (2.3) and the lowest with-mkl (12)  GFLOP/s
+# so lets use 3.0 GFLOP/s as the dividing line
+#
+#
+# _blasflops test runs a multi-GFLOP computation
+# and reports the GFLOP/s rate on each instance
+#
+# so we count all the tests which ran slower than 3GFLOP/s
+
+# first let's make sure the test operator is producing a results on at least one instance
+# any rows produced (but server-count insensitive)
+store(_blasflopstest(), RESULTS)
+project(apply(op_count(RESULTS), any, 1), any)
+
+# the following should produce 0 ... i.e. no test is below the limit of 3.0e9 GFLOP/s
+aggregate(filter(RESULTS, flops__s < 3.0e9),count(*))
+
+--cleanup
+
+remove(RESULTS)

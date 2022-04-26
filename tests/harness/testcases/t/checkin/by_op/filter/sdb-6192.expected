@@ -1,0 +1,48 @@
+SCIDB QUERY : <store(build(<val:double>[x=1:1000,100,0,y=1:1000,100,0], x*y), sdb6192)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <filter(sdb6192, x=11 and y>5 and y<10)>
+{x,y} val
+{11,6} 66
+{11,7} 77
+{11,8} 88
+{11,9} 99
+
+SCIDB QUERY : <filter(sdb6192, x=11.0 and y>5 and y<10)>
+{x,y} val
+{11,6} 66
+{11,7} 77
+{11,8} 88
+{11,9} 99
+
+SCIDB QUERY : <filter(sdb6192, x=11 and y>5.0 and y<10)>
+{x,y} val
+{11,6} 66
+{11,7} 77
+{11,8} 88
+{11,9} 99
+
+SCIDB QUERY : <filter(sdb6192, x=11 and y>5 and y<10.0)>
+{x,y} val
+{11,6} 66
+{11,7} 77
+{11,8} 88
+{11,9} 99
+
+SCIDB QUERY : <filter(sdb6192, x=11.0 and y>5 and y<10.0)>
+{x,y} val
+{11,6} 66
+{11,7} 77
+{11,8} 88
+{11,9} 99
+
+SCIDB QUERY : <filter(sdb6192, x=11 and y>=6.0 and y<=9.0)>
+{x,y} val
+{11,6} 66
+{11,7} 77
+{11,8} 88
+{11,9} 99
+
+SCIDB QUERY : <remove(sdb6192)>
+Query was executed successfully
+

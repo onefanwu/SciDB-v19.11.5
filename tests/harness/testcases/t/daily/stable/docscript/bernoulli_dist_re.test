@@ -1,0 +1,45 @@
+
+--test
+--start-query-logging
+--set-format dcsv
+
+CREATE ARRAY bernoulli_array<val:double>[i=0:4,5,0,j=0:4,5,0] distribution replicated
+
+store(build(bernoulli_array,i*5+1+j),bernoulli_array)
+scan(bernoulli_array)  -- Inserted by scan_doctor
+
+# did it store as replicated?
+show(bernoulli_array)
+
+# run bernoulli with a seed so the output will be deterministic.
+# also, because this is a replicated test, and bernoulli
+# does not handle replicated input (and should not unless its algorithm
+# can be verified to be instance-identical) a reducer will be inserted.
+#
+# reducers currently reduce to their inherited (I hope) dist type,
+# which in our tests varies with config variable x-dflt-dist-root if the root operator.
+# we can control that from the test by nesting the bernoulli inside a store.
+#
+# (this will not be an issue for a user, where x-dflt-dist-root is a fixed value)
+
+store(bernoulli(bernoulli_array,0.5,15),      OUT_HA, distribution: hashed)
+scan(OUT_HA)
+store(bernoulli(bernoulli_array,0.5,seed:15), OUT_HA, distribution: hashed)
+scan(OUT_HA)
+
+store(bernoulli(bernoulli_array,0.5,15),      OUT_RC, distribution: row_cyclic)
+scan(OUT_RC)
+store(bernoulli(bernoulli_array,0.5,seed:15), OUT_RC, distribution: row_cyclic)
+scan(OUT_RC)
+
+store(bernoulli(bernoulli_array,0.5,15),      OUT_CC, distribution: col_cyclic)
+scan(OUT_CC)
+store(bernoulli(bernoulli_array,0.5,seed:15), OUT_CC, distribution: col_cyclic)
+scan(OUT_CC)
+
+--cleanup
+
+remove(bernoulli_array)
+remove(OUT_HA)
+remove(OUT_RC)
+remove(OUT_CC)

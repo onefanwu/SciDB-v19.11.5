@@ -1,0 +1,93 @@
+--setup
+--start-query-logging
+
+create array DAY_STR_DFLT <daystr: string>[day=0:6,1,0]
+create array DAY_STR_REPL <daystr: string>[day=0:6,1,0] distribution replicated
+
+create array WEEK_STR_DFLT <weekstr: string>[week=0:3,1,0]
+create array WEEK_STR_REPL <weekstr: string>[week=0:3,1,0] distribution replicated
+
+store(build(DAY_STR_DFLT, 'DAY'+string(day)), DAY_STR_DFLT)
+scan(DAY_STR_DFLT)
+
+store(build(WEEK_STR_DFLT, 'WEEK'+string(week)), WEEK_STR_DFLT)
+scan(WEEK_STR_DFLT)
+
+create array DMONTH_DFLT <date:int64>[week=0:3; day=0:6,1,0]
+store(build(DMONTH_DFLT, week*7+day), DMONTH_DFLT)
+scan(DMONTH_DFLT)
+
+
+--test
+
+# replicate by copying, as a test
+store(WEEK_STR_DFLT, WEEK_STR_REPL)
+scan(WEEK_STR_REPL)
+
+# replicate by copy, new array with keyword
+store(WEEK_STR_DFLT, WEEK_STR_REPL_KEY1, distribution:replicated)
+scan(WEEK_STR_REPL_KEY1)
+
+# replicate by building, test is that it is the same as copy
+store(build(WEEK_STR_DFLT, 'WEEK'+string(week)), WEEK_STR_REPL)
+scan(WEEK_STR_REPL)
+
+# replicate by copy, new array with keyword
+store(build(WEEK_STR_DFLT, 'WEEK'+string(week)), WEEK_STR_REPL_KEY2)
+scan(WEEK_STR_REPL_KEY2)
+
+
+# replicate by copying
+store(DMONTH_DFLT, DMONTH_REPL)
+scan(DMONTH_REPL)
+
+# cross join not replicated
+cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week)
+
+# cross join right replicated
+cross_join(DMONTH_DFLT as A, WEEK_STR_REPL as B, A.week, B.week)
+
+# cross join left replicated
+cross_join(DMONTH_REPL as A, WEEK_STR_DFLT as B, A.week, B.week)
+
+# cross join right, left replicated
+cross_join(DMONTH_REPL as A, WEEK_STR_REPL as B, A.week, B.week)
+
+###
+
+# triple cross join deeper on left, no replication
+cross_join(cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week) as C, DAY_STR_DFLT as W, C.day, W.day)
+
+# triple cross join deeper on left, WEEK_STRING replicated
+cross_join(cross_join(DMONTH_DFLT as A, WEEK_STR_REPL as B, A.week, B.week) as C, DAY_STR_DFLT as W, C.day, W.day)
+
+# triple cross join deeper on left, WEEK_STRING replicated
+cross_join(cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week) as C, DAY_STR_REPL as W, C.day, W.day)
+
+# triple cross join deeper on left, WEEK_STRING, WEEK_STRING replicated
+cross_join(cross_join(DMONTH_DFLT as A, WEEK_STR_REPL as B, A.week, B.week) as C, DAY_STR_REPL as W, C.day, W.day)
+
+###
+
+# triple cross join deeper on right, no replication
+cross_join(DAY_STR_DFLT as W, cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week) as C, W.day, C.day)
+
+# triple cross join deeper on right, WEEK_STRING replicated
+cross_join(DAY_STR_DFLT as W, cross_join(DMONTH_DFLT as A, WEEK_STR_REPL as B, A.week, B.week) as C, W.day, C.day)
+
+# triple cross join deeper on right, WEEK_STRING replicated
+cross_join(DAY_STR_REPL as W, cross_join(DMONTH_DFLT as A, WEEK_STR_DFLT as B, A.week, B.week) as C, W.day, C.day)
+
+# triple cross join deeper on right, WEEK_STRING, WEEK_STRING replicated
+cross_join(DAY_STR_REPL as W, cross_join(DMONTH_DFLT as A, WEEK_STR_REPL as B, A.week, B.week) as C, W.day, C.day)
+
+
+--cleanup
+remove(DMONTH_DFLT)
+remove(DMONTH_REPL)
+remove(WEEK_STR_DFLT)
+remove(WEEK_STR_REPL)
+remove(WEEK_STR_REPL_KEY1)
+remove(WEEK_STR_REPL_KEY2)
+remove(DAY_STR_DFLT)
+remove(DAY_STR_REPL)

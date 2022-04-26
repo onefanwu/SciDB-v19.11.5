@@ -1,0 +1,51 @@
+SCIDB QUERY : <store(build(<z:uint64>[i=0:9],i),a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} z
+{0} 0
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+{5} 5
+{6} 6
+{7} 7
+{8} 8
+{9} 9
+
+SCIDB QUERY : <add_attributes(a, <y:int64>)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} z,y
+{0} 0,null
+{1} 1,null
+{2} 2,null
+{3} 3,null
+{4} 4,null
+{5} 5,null
+{6} 6,null
+{7} 7,null
+{8} 8,null
+{9} 9,null
+
+SCIDB QUERY : <store(project(apply(a, yprime, 2*i+1), z, yprime), a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} z,y
+{0} 0,1
+{1} 1,3
+{2} 2,5
+{3} 3,7
+{4} 4,9
+{5} 5,11
+{6} 6,13
+{7} 7,15
+{8} 8,17
+{9} 9,19
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+

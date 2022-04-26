@@ -1,0 +1,32 @@
+# SDB-1929.  The std::vector<bool> class is problematic.  Google
+# "vector bool problems" to understand why.  There is never a good
+# reason to use it.
+#
+# This test makes sure it doesn't get reintroduced, making exceptions
+# for a few places in the code base where it is mentioned in
+# comments.  Repeat: don't use vector<bool>.
+
+--setup
+--test
+--shell --command \
+    "if [ "${SCIDB_SOURCE_PATH}" = "" ] ; \
+    then \
+        echo In Cdash, do nothing. ; \
+        exit 0 ; \
+    fi ; \
+    EXPECTED=3 ; \
+    HITS=$(find ${SCIDB_SOURCE_PATH} \( -name \*.cpp -o -name \*.h \) \
+        | xargs grep -hE 'vector[       ]*<[   ]*bool' \
+        | wc -l) ; \
+    if [ $HITS = $EXPECTED ] ; \
+    then \
+        echo Success ; \
+        exit 0 ; \
+    elif [ $HITS -lt $EXPECTED ] ; \
+    then \
+        echo "Thank you for removing a vector<bool> use.  Please update this test by changing EXPECTED!" ; \
+        exit 1 ; \
+    else \
+        echo "Any new use of vector<bool> is strictly forbidden!" ; \
+        exit $HITS ; \
+    fi"

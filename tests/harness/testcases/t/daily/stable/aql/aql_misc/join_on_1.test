@@ -1,0 +1,18 @@
+--setup
+create array A <a:int32>[x=0:2,3,0]
+store(build(A,x+1),A)
+scan(A)  -- Inserted by scan_doctor
+store(build(A,x+2),B)
+scan(B)  -- Inserted by scan_doctor
+create array C <a:int32>[y=0:2,3,0]
+store(build(C,y+2),C)
+scan(C)  -- Inserted by scan_doctor
+
+--test
+--aql select * from A join B on A.x = B.x
+--aql select * from C join A on A.x = C.y
+
+--cleanup
+remove(A)
+remove(B)
+remove(C)

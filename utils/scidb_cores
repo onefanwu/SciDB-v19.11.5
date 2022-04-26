@@ -1,0 +1,63 @@
+#!/bin/sh
+
+dt=
+outdir=
+datadir=
+FULL=				# set to "full" when SDB-6313 is fixed
+
+while [ $# != 0 ]
+do
+    case "$1" in
+    -d|--data-dir)
+	datadir=$2
+	shift
+	;;
+    -o|--output-dir)
+	outdir=$2
+	shift
+	;;
+    *)  dt=$1
+	;;
+    esac
+    shift
+done
+
+[ "$outdir" = "" ] && outdir=$dt
+[ "$datadir" != "" ] && cd $datadir
+
+cores=`ls core*`
+
+if [ -x /opt/rh/devtoolset-3/root/usr/bin/gdb ]; then
+    MY_GDB=/opt/rh/devtoolset-3/root/usr/bin/gdb
+else
+    MY_GDB=gdb
+fi
+
+for i in $cores
+do
+    # Find out who dumped it.
+    EXECFN=$($MY_GDB --core=$i --eval-command="info auxv" --batch 2>&1 |
+	awk '/EXECFN/ { match($NF, /"(.*)"$/, m) ; print m[1] }')
+    echo "File $i is from $EXECFN"
+
+    # XXX Just use $EXECFN directly?  KIND=$(basename $EXECFN) ??
+    case "$EXECFN" in
+	*mpi_slave*)
+	    KIND="mpi_slave"
+	    BINARY=@CMAKE_INSTALL_PREFIX@/lib/scidb/plugins/mpi_slave_scidb
+	    ;;
+	*)
+	    KIND="SciDB"
+	    BINARY=@CMAKE_INSTALL_PREFIX@/bin/scidb
+	    ;;
+    esac
+
+    $MY_GDB $BINARY \
+	--core=$i \
+	--eval-command="info auxv" \
+	--eval-command="thread apply all bt $FULL" \
+	--eval-command="info sharedlib" \
+	--eval-command="info target" \
+	--eval-command="info threads" \
+	--batch > "$outdir/stack-$dt.$KIND.$i" 2>&1
+done

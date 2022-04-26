@@ -1,0 +1,148 @@
+SCIDB QUERY : <store(build(<v:int64 null>[R=0:0,1,0], 1), ARRAY_A)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(ARRAY_A)  -- Inserted by scan_doctor>
+{R} v
+{0} 1
+
+SCIDB QUERY : <store(build(<v:int64 null>[R=0:0,1,0], 1), ARRAY_B)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(ARRAY_B)  -- Inserted by scan_doctor>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from ARRAY_A as A>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from ARRAY_A as A where A.v = 1>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from (select A.v from ARRAY_A as A)>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from (select A.v from ARRAY_A as A where A.v=1 )>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from (select ARRAY_A.v from ARRAY_A) as A>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from (select ARRAY_A.v from ARRAY_A) as A where A.v = 1>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v,AA.v from (select A.v from ARRAY_A as A             ) as AA>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,AA.v from (select A.v from ARRAY_A as A where A.v=1 ) as AA where AA.v=1>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,B.v from ARRAY_A as A, ARRAY_B as B>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,B.v from ARRAY_A as A, ARRAY_B as B where A.v = B.v>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,B.v from (select A.v from ARRAY_A as A            ),(select B.v from ARRAY_B as B)>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,B.v from (select A.v from ARRAY_A as A where A.v=1),(select B.v from ARRAY_B as B) where A.v = B.v>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select AA.v,BB.v from (select ARRAY_A.v from ARRAY_A) as AA,(select ARRAY_B.v from ARRAY_B) as BB>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select AA.v,BB.v from (select ARRAY_A.v from ARRAY_A) as AA,(select ARRAY_B.v from ARRAY_B) as BB where AA.v = BB.v>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,AA.v,B.v,BB.v from (select A.v from ARRAY_A as A            ) as AA,(select B.v from ARRAY_B as B) as BB>
+{R} v,v,v,v
+{0} 1,1,1,1
+
+SCIDB QUERY : <select A.v,AA.v,B.v,BB.v from (select A.v from ARRAY_A as A where A.v=1) as AA,(select B.v from ARRAY_B as B where B.v=1) as BB where AA.v = BB.v>
+{R} v,v,v,v
+{0} 1,1,1,1
+
+SCIDB QUERY : <select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v = 1>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A)>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v=1 )>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from (select v from build(<v:int64>[R=0:0,1,0],abs(1))) as A>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v from (select v from build(<v:int64>[R=0:0,1,0],abs(1))) as A where A.v = 1>
+{R} v
+{0} 1
+
+SCIDB QUERY : <select A.v,AA.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A             ) as AA>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,AA.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v=1 ) as AA where AA.v=1>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A, build(<v:int64>[R=0:0,1,0],abs(1)) as B>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A, build(<v:int64>[R=0:0,1,0],abs(1)) as B where A.v = B.v>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,B.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A            ),(select B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as B)>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,B.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v=1),(select B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as B) where A.v = B.v>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select AA.v,BB.v from (select v from build(<v:int64>[R=0:0,1,0],abs(1))) as AA,(select v from build(<v:int64>[R=0:0,1,0],abs(1))) as BB>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select AA.v,BB.v from (select v from build(<v:int64>[R=0:0,1,0],abs(1))) as AA,(select v from build(<v:int64>[R=0:0,1,0],abs(1))) as BB where AA.v = BB.v>
+{R} v,v
+{0} 1,1
+
+SCIDB QUERY : <select A.v,AA.v,B.v,BB.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A            ) as AA,(select B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as B) as BB>
+{R} v,v,v,v
+{0} 1,1,1,1
+
+SCIDB QUERY : <select A.v,AA.v,B.v,BB.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v=1) as AA,(select B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as B where B.v=1) as BB where AA.v = BB.v>
+{R} v,v,v,v
+{0} 1,1,1,1
+
+SCIDB QUERY : <remove(ARRAY_A)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ARRAY_B)>
+Query was executed successfully
+

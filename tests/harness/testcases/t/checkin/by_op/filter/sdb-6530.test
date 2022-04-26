@@ -1,0 +1,25 @@
+--setup
+--start-query-logging
+
+--test
+
+# Basic checks
+filter(build(<v:int64>[i=3:5],i+1),(i<4 or i>4))
+filter(build(<v:int64>[i=3:5:0:1;j=7:9],i+j+1),(i<4 or i>4) and (j<8 or j>8))
+filter(build(<v:int64>[i=3:5;j=7:9;k=11:13],i+j+k+1),(i<4 or i>4) and (j<8 or j>8) and (k<12 or k>12))
+
+# Two ranges on the same dimension
+filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),(i<4 or i>4) and (i<3 or i>3) and (j<8 or j>8))
+filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),(i<4 or i>4) and (j<8 or j>8) and (j<7 or j>7))
+
+# Mixing range and non-range comparisons, semantically equivalent
+# to previous examples and must give same results.
+filter(build(<v:int64>[i=3:5],i+1),(i<4 or i>4) and (i!=4))
+filter(build(<v:int64>[i=3:5:0:1;j=7:9],i+j+1),(i<4 or i>4) and (j!=8))
+filter(build(<v:int64>[i=3:5;j=7:9;k=11:13],i+j+k+1),(i!=4) and (j!=8) and (k<12 or k>12))
+
+filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),(i<4 or i>4) and (i<3 or i>3) and (j!=8))
+filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),(i<4 or i>4) and (j<8 or j>8) and (j!=7))
+
+--cleanup
+--stop-query-logging

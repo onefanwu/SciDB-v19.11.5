@@ -1,0 +1,21 @@
+--setup
+--start-query-logging
+
+--test
+store(build(<v:int64>[i=1:10:0:1],i),sapv_arr)
+store(project(apply(sapv_arr,vnew,10*v),vnew),sapv_arr)
+project(versions(sapv_arr),version_id)
+store(sapv_arr@1, sapv_arr)
+
+# The output of these two queries should be identical, the
+# sequence from 1 to 10.
+scan(sapv_arr@1)
+scan(sapv_arr@3)
+
+# This should be the sequence from 10 to 100, in
+# multiples of 10.
+scan(sapv_arr@2)
+
+--cleanup
+remove(sapv_arr)
+--stop-query-logging

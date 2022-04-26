@@ -1,0 +1,23 @@
+--setup
+
+create array bounded <a:int64>[x=0:170,5,0]
+load(bounded,'${TEST_DATA_DIR}/unbounded.txt')
+scan(bounded)  -- Inserted by scan_doctor
+
+--test
+--start-query-logging
+
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "store(input(bounded,  '${TEST_DATA_DIR}/append.txt'), bounded)""
+scan(bounded)  -- Inserted by scan_doctor
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "store(input(bounded,  '${TEST_DATA_DIR}/append2.txt'), bounded)""
+scan(bounded)  -- Inserted by scan_doctor
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "store(input(bounded,  '${TEST_DATA_DIR}/append2.txt'), bounded)""
+scan(bounded)  -- Inserted by scan_doctor
+  
+scan(bounded)  
+
+
+--stop-query-logging
+--cleanup
+
+remove(bounded) 

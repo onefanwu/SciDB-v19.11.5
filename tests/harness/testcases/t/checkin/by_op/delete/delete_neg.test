@@ -1,0 +1,16 @@
+--setup
+create array A <v:int64>[i=0:9]
+--start-igdata
+store(build(A, 1), A)
+store(build(A, 2), A)
+store(build(A, 3), A)
+--stop-igdata
+
+--test
+
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_CANT_ACCESS_ARRAY_VERSION \
+    "delete(A@2, i < 7 and i > 3)"
+--igdata "delete(A, i < 7 and i > 3)"
+
+--cleanup
+remove(A)

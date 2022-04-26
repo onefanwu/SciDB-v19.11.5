@@ -1,0 +1,37 @@
+--setup
+--start-query-logging
+store(build(<v:int64>[i=0:9], i), f)
+
+--test
+# The empty tag is hidden, so don't allow the user to project it away or to create
+# a new array with only the empty tag and no other attributes.
+--error --code=scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR \
+    "store(project(f, EmptyTag), z)"
+
+--error --code=scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR \
+    "store(project(f, EmptyTag, inverse:1), z)"
+
+# Still can't project away all attributes.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ILLEGAL_OPERATION \
+    "project(show(f), schema, distribution, etcomp, inverse:1)"
+
+# These produce non-emptyable arrays because show() produces non-emptyable arrays.
+store(project(show(f), distribution, inverse:1), g, _fetch:true)
+_show_nodist(g)
+store(op_count(project(show(f), schema, inverse:1)), h, _fetch:true)
+_show_nodist(h)
+store(op_count(project(show(f), distribution)), i, _fetch:true)
+_show_nodist(i)
+store(project(show(f), schema), j, _fetch:true)
+_show_nodist(j)
+
+# Demonstrate that project on an emptyable array results in an emptyable array.
+_show2_nodist('project(f, v)', 'afl')
+
+--cleanup
+remove(f)
+remove(g)
+remove(h)
+remove(i)
+remove(j)
+--stop-query-logging

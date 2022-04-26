@@ -1,0 +1,72 @@
+--setup
+--start-query-logging
+create array A <a:int64> [x=0:2,3,0]
+create array B <x:int64> [a=0:15,3,0]
+store(B,C)
+scan(C)  -- Inserted by scan_doctor
+store(C,D)
+scan(D)  -- Inserted by scan_doctor
+store(D,E)
+scan(E)  -- Inserted by scan_doctor
+store(E,F)
+scan(F)  -- Inserted by scan_doctor
+store(F,G)
+scan(G)  -- Inserted by scan_doctor
+store(G,H)
+scan(H)  -- Inserted by scan_doctor
+store(build(A,x+10),A)
+scan(A)  -- Inserted by scan_doctor
+
+--test
+
+--aql select * into B from A as Az
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select count(B)
+
+--aql select * into C from A where a=11
+scan(C)  -- Inserted by scan_doctor
+
+--aql select a,x from C
+
+--aql select count(C)
+
+--aql select a into D from A where a<>11
+scan(D)  -- Inserted by scan_doctor
+
+--aql select a,x from D
+
+--aql select x into E from A where a<=11
+scan(E)  -- Inserted by scan_doctor
+
+--aql select a,x from D
+
+--aql select count(E)
+
+--aql select a,x into F from B
+scan(F)  -- Inserted by scan_doctor
+
+--aql select count(F)
+
+--aql select x,a into G from B
+scan(G)  -- Inserted by scan_doctor
+
+--aql select count(G)
+
+--aql select x,a,x,a into H from D
+scan(H)  -- Inserted by scan_doctor
+
+--aql select count(H)
+
+--cleanup
+remove(A)
+remove(B)
+remove(C)
+remove(D)
+remove(E)
+remove(F)
+remove(G)
+remove(H)
+--stop-query-logging

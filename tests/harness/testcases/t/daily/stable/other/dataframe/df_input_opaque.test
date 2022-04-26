@@ -1,0 +1,58 @@
+# Test OPAQUE input()/load() into dataframes.
+--setup
+--start-query-logging
+
+store(apply(build(<v:int64>[i=0:199:0:10], i), (w, 2*v)), A)
+
+# query logging suppressed for all queries that would expand ${HPID} into .expected
+--stop-query-logging
+save(A, '/tmp/df_input_${HPID}_array.opaque', format:'opaque')
+save(project(flatten(A), v, w), '/tmp/df_input_${HPID}_frame.opaque', format:'opaque')
+--start-query-logging
+
+--test
+--echo Baseline sums.
+op_sum(A, v)
+op_sum(flatten(A), v)
+op_sum(A, w)
+op_sum(flatten(A), w)
+
+--echo Sums from input()
+--stop-query-logging
+--igdata "input(<v:int64, w:int64>, '/tmp/df_input_${HPID}_frame.opaque', format:'opaque')"
+op_sum(input(<v:int64, w:int64>, '/tmp/df_input_${HPID}_frame.opaque', format:'opaque'), v)
+op_sum(input(<v:int64, w:int64>, '/tmp/df_input_${HPID}_frame.opaque', format:'opaque'), w)
+--start-query-logging
+
+--echo Reload saved dataframe.
+--stop-query-logging
+--igdata "input(<v:int64, w:int64>, '/tmp/df_input_${HPID}_frame.opaque', format:'opaque')"
+store(input(<v:int64, w:int64>, '/tmp/df_input_${HPID}_frame.opaque', format:'opaque'), DF)
+--start-query-logging
+# show(DF)
+project(apply(show(DF), nschema, substr(schema, 0, 29)+'-'+substr(schema, 30, 100)), nschema)
+op_sum(DF, v)
+op_sum(DF, w)
+
+--echo SG found reloading a dataframe saved in opaque format.
+--stop-query-logging
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'store(input(<v:int64, w:int64>, \'/tmp/df_input_${HPID}_frame.opaque\', format:\'opaque\'), DF)', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+--start-query-logging
+
+--echo SG found storing an array.
+--stop-query-logging
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'store(input(A, \'/tmp/df_input_${HPID}_array.opaque\', format:\'opaque\'), B)', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+--start-query-logging
+
+--cleanup
+remove(A)
+remove(DF)
+--shell --command "rm -f /tmp/df_input_${HPID}_*.opaque"

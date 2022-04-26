@@ -1,0 +1,70 @@
+--setup
+--start-query-logging
+
+# Inject Error Support
+load_library('misc')
+
+--test
+
+# inject CHUNK_OUT_OF_BOUNDS
+#--error --code=scidb::SCIDB_SE_EXECUTION::SCIDB_LE_CHUNK_OUT_OF_BOUNDARIES \
+#    "store(apply(build(<val:int64>[i=0:100:0:10], i), inject, injectError(0,12)), chunkOutOfBoundsArray)"
+
+# inject NO_CURRENT_CHUNK
+--start-igdata
+# Inject two cells across two chunks because, after trial-and-error, I can predictably check
+# for the injected error a few lines down.  This approach seems to guarantee the result if the
+# test is run in isolation as well as part of the broader checkin test suite.  Admittedly this
+# is brittle, and a subtle change in flow-of-control in the DBArray class could cause this
+# approach no longer to work.
+store(apply(build(<val:int64>[i=0:1:0:2], i), inject, injectError(0,13)), noCurrentChunkArray)
+# further preps the injected error mechanism predictably
+store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,13)), noCurrentChunkArray)
+remove(noCurrentChunkArray)
+# The next query may pass if SciDB is freshly started or fail if it has been running and this test was
+# previously executed.  Either way, we ignore the output of the next line (next query) because it primes
+# the trigger for the expected error condition on the following line.
+--shell --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq \
+    'store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,13)), noCurrentChunkArray)' \
+     2>&1 > /dev/null ; true"
+--error --code=scidb::SCIDB_SE_EXECUTION::SCIDB_LE_NO_CURRENT_CHUNK \
+    "store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,13)), noCurrentChunkArray)"
+# clear remaining injected error triggers
+store(apply(build(<val:int64>[i=0:1:0:2], i), inject, injectError(0,13)), noCurrentChunkArray)
+remove(noCurrentChunkArray)
+
+# TODO (SDB-6001) split this test into two separate files
+
+# NOTE: Since store() no longer fetches the result array by default
+# (SDB-6178), we have to use the undocumented _fetch: option for the
+# following "code 14" tests to pass.  Ideally some operator other than
+# store() could be used here.
+
+# inject CANNOT_GET_CHUNK (14)
+# Inject two cells across two chunks because, after trial-and-error, I can predictably check
+# for the injected error a few lines down.  This approach seems to guarantee the result if the
+# test is run in isolation as well as part of the broader checkin test suite.  Admittedly this
+# is brittle, and a subtle change in flow-of-control in the DBArray class could cause this
+# approach no longer to work.
+store(apply(build(<val:int64>[i=0:1:0:2], i), inject, injectError(0,14)), noCurrentChunkArray, _fetch: true)
+# further preps the injected error mechanism predictably
+store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,14)), noCurrentChunkArray, _fetch: true)
+remove(noCurrentChunkArray)
+# The next query may pass if SciDB is freshly started or fail if it has been running and this test was
+# previously executed.  Either way, we ignore the output of the next line (next query) because it primes
+# the trigger for the expected error condition on the following line.
+--shell --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq \
+    'store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,14)), \
+           noCurrentChunkArray, _fetch: true)' 2>&1 > /dev/null ; true"
+--error --code=scidb::SCIDB_SE_EXECUTION::SCIDB_LE_NO_CURRENT_CHUNK \
+    "store(apply(build(<val:int64>[i=0:1:0:1], i), inject, injectError(0,14)), noCurrentChunkArray, _fetch: true)"
+# clear remaining injected error triggers
+store(apply(build(<val:int64>[i=0:1:0:2], i), inject, injectError(0,14)), noCurrentChunkArray, _fetch: true)
+remove(noCurrentChunkArray)
+
+--stop-igdata
+
+--cleanup
+--justrun "remove(chunkOutOfBoundsArray)"
+--justrun "remove(noCurrentChunkArray)"
+--stop-query-logging

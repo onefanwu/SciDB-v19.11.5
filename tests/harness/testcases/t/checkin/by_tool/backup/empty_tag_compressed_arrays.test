@@ -1,0 +1,60 @@
+--setup
+store(build(<v:int64>[i=0:9:0:1], i), uncompressed_etag, etcomp: 'none')
+store(build(<v:int64>[i=0:9:0:1], i), zlib_etag, etcomp: 'zlib')
+store(build(<v:int64>[i=0:9:0:1], i), bzlib_etag, etcomp: 'bzlib')
+
+--test
+
+# Backup arrays created with each of the three acceptable compression schemes (shown in
+# the setup section above).  Remove the arrays from SciDB and restore the backup.
+# Verify that the compression options per-array have been preserved.
+project(list(), name, etcomp)
+--shell --command "${SCIDB_INSTALL_PATH}/bin/scidb_backup.py --save tsv+ /tmp/${HPID}-etc/bkpTest"
+remove(uncompressed_etag)
+remove(zlib_etag)
+remove(bzlib_etag)
+list()
+--shell --command "${SCIDB_INSTALL_PATH}/bin/scidb_backup.py --restore tsv+ /tmp/${HPID}-etc/bkpTest"
+project(list(), name, etcomp)
+remove(uncompressed_etag)
+remove(zlib_etag)
+remove(bzlib_etag)
+--shell --store --command "\
+    grep uncompressed_etag /tmp/${HPID}-etc/bkpTest/%manifest | \
+    awk -F'|' '{print NF-1}'"
+--shell --store --command "\
+    grep zlib_etag /tmp/${HPID}-etc/bkpTest/%manifest | \
+    awk -F'|' '{print NF-1}'"
+--shell --store --command "\
+    grep bzlib_etag /tmp/${HPID}-etc/bkpTest/%manifest | \
+    awk -F'|' '{print NF-1}'"
+--shell --command "rm -rf /tmp/${HPID}-etc"
+
+# Test case where the manifest doesn't have the empty_tag_attribute which occurs
+# when backing-up a pre-19.3.1 system.  We'll simulate it by removing that field
+# from the manifest file and restoring from backup.
+store(build(<v:int64>[i=0:9:0:1], i), uncompressed_etag, etcomp: 'none')
+--shell --command "${SCIDB_INSTALL_PATH}/bin/scidb_backup.py --save tsv+ /tmp/${HPID}-etc/bkpTest"
+remove(uncompressed_etag)
+--shell --command "sed -i 's/|none$//' /tmp/${HPID}-etc/bkpTest/%manifest"
+--shell --command "${SCIDB_INSTALL_PATH}/bin/scidb_backup.py --restore tsv+ /tmp/${HPID}-etc/bkpTest"
+project(list(), name, etcomp)
+remove(uncompressed_etag)
+--shell --command "rm -rf /tmp/${HPID}-etc"
+
+# Test case where the manifest doesn't have the empty_tag_attribute or the distribution
+# attribute which occurs when backing-up a pre-19.3 system.  We'll simulate it by
+# removing both fields from the manifest file and restoring from backup.
+store(build(<v:int64>[i=0:9:0:1], i), uncompressed_etag, etcomp: 'none')
+--shell --command "${SCIDB_INSTALL_PATH}/bin/scidb_backup.py --save tsv+ /tmp/${HPID}-etc/bkpTest"
+remove(uncompressed_etag)
+--shell --command "sed -i 's/|hashed|none$//' /tmp/${HPID}-etc/bkpTest/%manifest"
+--shell --store --command "\
+    grep uncompressed_etag /tmp/${HPID}-etc/bkpTest/%manifest | \
+    awk -F'|' '{print NF-1}'"
+--shell --command "${SCIDB_INSTALL_PATH}/bin/scidb_backup.py --restore tsv+ /tmp/${HPID}-etc/bkpTest"
+project(list(), name, distribution, etcomp)
+remove(uncompressed_etag)
+--shell --command "rm -rf /tmp/${HPID}-etc"
+
+--cleanup

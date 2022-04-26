@@ -1,0 +1,39 @@
+# Test TSV input()/load() into dataframes.
+--setup
+store(apply(build(<v:int64>[i=0:199:0:10], i), (w, 2*i)), A)
+save(A, '/tmp/df_input_tsv.tsv', format:'tsv')
+
+--test
+--echo Baseline sums.
+op_sum(A, v)
+op_sum(A, w)
+
+--echo Sums from input()
+--igdata "input(<v:int64, w:int64>, '/tmp/df_input_tsv.tsv', format:'tsv')"
+op_sum(input(<v:int64, w:int64>, '/tmp/df_input_tsv.tsv', format:'tsv'), v)
+op_sum(input(<v:int64, w:int64>, '/tmp/df_input_tsv.tsv', format:'tsv'), w)
+
+store(input(<v:int64, w:int64>, '/tmp/df_input_tsv.tsv', format:'tsv'), DF)
+#show(DF)
+project(apply(show(DF), nschema, substr(schema, 0, 29)+'-'+substr(schema, 30, 100)), nschema)
+op_sum(DF, v)
+op_sum(DF, w)
+
+--echo No SG storing a dataframe
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'store(input(<v:int64, w:int64>, \'/tmp/df_input_tsv.tsv\', format:\'tsv\'), DF)', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+
+--echo SG found storing an array
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'store(input(<v:int64, w:int64>[dummy], \'/tmp/df_input_tsv.tsv\', format:\'tsv\'), B)', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+
+--cleanup
+remove(A)
+remove(DF)
+--shell --command "rm -f /tmp/df_input_tsv.tsv"

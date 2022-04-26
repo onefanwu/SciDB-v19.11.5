@@ -1,0 +1,11 @@
+--setup
+--start-query-logging
+create array f <v:int64>[i=1:1000:0:1]
+
+--test
+load_library('perf_time_test')
+--shell --command "${TESTDIR}/mquery_09.sh"
+
+--cleanup
+remove(f)
+--stop-query-logging

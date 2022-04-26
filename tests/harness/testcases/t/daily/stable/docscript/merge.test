@@ -1,0 +1,18 @@
+
+--test
+--start-query-logging
+
+--set-format dense
+store(build(<val:double>[i=0:2,3,0, j=0:5,6,0], '[[1.1,1.2,1.3,1.4,1.5,1.6],[],[]]',true), left_array)  
+scan(left_array)  -- Inserted by scan_doctor
+store(build(<val:double>[i=0:2,3,0, j=0:2,6,0], '[[1,(),()],[(),1,()],[(),(),1]]',true), right_array)  
+scan(right_array)  -- Inserted by scan_doctor
+merge(left_array,right_array)  
+
+--stop-query-logging
+
+
+--cleanup
+
+remove(left_array)
+remove(right_array)

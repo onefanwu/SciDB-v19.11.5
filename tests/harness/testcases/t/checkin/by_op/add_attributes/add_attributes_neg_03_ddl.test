@@ -1,0 +1,11 @@
+--setup
+--start-query-logging
+create array a <q:int64>[i=0:9:0:2]
+store(build(a, i), a)
+
+--test
+--error "store(add_attributes(a, <s:int64>), b)"
+
+--cleanup
+remove(a)
+--stop-query-logging

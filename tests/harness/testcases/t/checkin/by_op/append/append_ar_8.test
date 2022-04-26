@@ -1,0 +1,32 @@
+# Append some single cell arrays.
+--setup
+
+store(build(<v:int64>[i=3:3], 5), A)
+create array X<v:int64>[j=-5:5]
+
+--test
+--echo Initial sum...
+op_sum(A, v)
+
+--start-query-logging
+
+append(A, X)
+op_sum(X, v)
+
+append(A, X)
+op_sum(X, v)
+
+append(A, X)
+op_sum(X, v)
+
+append(A, X)
+op_sum(X, v)
+
+append(A, X)
+op_sum(X, v)
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(X)

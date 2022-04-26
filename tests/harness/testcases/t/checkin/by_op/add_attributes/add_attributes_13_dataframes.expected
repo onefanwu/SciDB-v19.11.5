@@ -1,0 +1,42 @@
+SCIDB QUERY : <store(build(<q:uint64>[i=0:9:0:2], i), a)>
+Query was executed successfully
+
+SCIDB QUERY : <store(flatten(a), b)>
+Query was executed successfully
+
+SCIDB QUERY : <add_attributes(b, <r:int64, s:int64>)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(b, i)>
+{i} i_sum
+{0} 45
+
+SCIDB QUERY : <op_sum(b, q)>
+{i} q_sum
+{0} 45
+
+SCIDB QUERY : <store(project(apply(b, sp, 4*q), i, q, r, sp), b)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(b, i)>
+{i} i_sum
+{0} 45
+
+SCIDB QUERY : <op_sum(b, q)>
+{i} q_sum
+{0} 45
+
+SCIDB QUERY : <op_sum(b, r)>
+{i} r_sum
+{0} 0
+
+SCIDB QUERY : <op_sum(b, s)>
+{i} s_sum
+{0} 180
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(b)>
+Query was executed successfully
+

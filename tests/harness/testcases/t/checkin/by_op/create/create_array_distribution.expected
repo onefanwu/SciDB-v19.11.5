@@ -1,0 +1,111 @@
+SCIDB QUERY : <create array dist_default    <v:uint64>[i=0:9]>
+Query was executed successfully
+
+SCIDB QUERY : <create array dist_hashed     <v:uint64>[i=0:9] distribution hashed>
+Query was executed successfully
+
+SCIDB QUERY : <create array dist_replicated <v:uint64>[i=0:9] distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <create array dist_row_cyclic  <v:uint64>[i=0:9] distribution row_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <create array dist_col_cyclic  <v:uint64>[i=0:9] distribution col_cyclic>
+[An error expected at this place for the query "create array dist_col_cyclic  <v:uint64>[i=0:9] distribution col_cyclic". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT.]
+
+SCIDB QUERY : <create array dist_col_cyclic  <v:uint64>[dummy=0:0,1,0, i=0:9] distribution col_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_default_afl,   <v:uint64>[i=0:9],false)>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_hashed_afl,    <v:uint64>[i=0:9],false,hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_replicated_afl,<v:uint64>[i=0:9],false,replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_row_cyclic_afl, <v:uint64>[i=0:9],false,row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_col_cyclic_afl, <v:uint64>[i=0:9],false,col_cyclic)>
+[An error expected at this place for the query "create_array(dist_col_cyclic_afl, <v:uint64>[i=0:9],false,col_cyclic)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT.]
+
+SCIDB QUERY : <create_array(dist_col_cyclic_afl, <v:uint64>[dummy=0:0,1,0, i=0:9],false,col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_default_afl_temp,   <v:uint64>[i=0:9],true)>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_hashed_afl_temp,    <v:uint64>[i=0:9],true,hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_replicated_afl_temp,<v:uint64>[i=0:9],true,replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_row_cyclic_afl_temp,<v:uint64>[i=0:9],true,row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <create_array(dist_col_cyclic_afl_temp,<v:uint64>[i=0:9],true,col_cyclic)>
+[An error expected at this place for the query "create_array(dist_col_cyclic_afl_temp,<v:uint64>[i=0:9],true,col_cyclic)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT.]
+
+SCIDB QUERY : <create_array(dist_col_cyclic_afl_temp,<v:uint64>[dummy=0:0,1,0, i=0:9],true,col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <create array bad_distribution <v:uint64>[i=0:9] distribution no_such_distribution>
+[An error expected at this place for the query "create array bad_distribution <v:uint64>[i=0:9] distribution no_such_distribution". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION.]
+
+SCIDB QUERY : <create array bad_distribution <v:uint64>[i=0:9] distribution>
+[An error expected at this place for the query "create array bad_distribution <v:uint64>[i=0:9] distribution". And it failed with error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR. Expected error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR.]
+
+SCIDB QUERY : <create temp array bad_distribution <v:uint64>[i=0:9] distribution no_such_distribution>
+[An error expected at this place for the query "create temp array bad_distribution <v:uint64>[i=0:9] distribution no_such_distribution". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION.]
+
+SCIDB QUERY : <create temp array bad_distribution <v:uint64>[i=0:9] distribution>
+[An error expected at this place for the query "create temp array bad_distribution <v:uint64>[i=0:9] distribution". And it failed with error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR. Expected error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR.]
+
+SCIDB QUERY : <create_array(bad_distribution,<v:uint64>[i=0:9],false,no_such_distribution)>
+[An error expected at this place for the query "create_array(bad_distribution,<v:uint64>[i=0:9],false,no_such_distribution)". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION.]
+
+SCIDB QUERY : <create_array(bad_distribution,<v:uint64>[i=0:9],true,no_such_distribution)>
+[An error expected at this place for the query "create_array(bad_distribution,<v:uint64>[i=0:9],true,no_such_distribution)". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INVALID_DISTRIBUTION.]
+
+SCIDB QUERY : <create_array(wrong_args_count,<v:uint64>[i=0:9],true,replicated,replicated)>
+[An error expected at this place for the query "create_array(wrong_args_count,<v:uint64>[i=0:9],true,replicated,replicated)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+SCIDB QUERY : <create_array(wrong_args_count,<v:uint64>[i=0:9],true,row_cyclic,row_cyclic)>
+[An error expected at this place for the query "create_array(wrong_args_count,<v:uint64>[i=0:9],true,row_cyclic,row_cyclic)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+SCIDB QUERY : <create_array(wrong_args_count,<v:uint64>[i=0:9],true,col_cyclic,col_cyclic)>
+[An error expected at this place for the query "create_array(wrong_args_count,<v:uint64>[i=0:9],true,col_cyclic,col_cyclic)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

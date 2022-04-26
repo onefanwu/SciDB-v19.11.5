@@ -1,0 +1,105 @@
+# Build a multi-chunk array, then save and reload it in a particular format.
+# Files input_dist_{bin,csv,tsv,opaque,text}.test are all to be kept in sync
+# They vary only by their format strings, so after changing one,
+# merge all changes into the others.
+
+--setup
+--start-query-logging
+
+
+--start-igdata
+store(build(<v0:int64>[i=1:2,1,0;j=1:4,1,0;k=1:1,1,0], i), SAVE_HA, distribution: hashed)
+store(build(<v0:int64>[i=1:2,1,0;j=1:4,1,0;k=1:1,1,0], i), SAVE_RC, distribution: row_cyclic)
+store(build(<v0:int64>[i=1:2,1,0;j=1:4,1,0;k=1:1,1,0], i), SAVE_RE, distribution: replicated)
+store(build(<v0:int64>[i=1:2,1,0;j=1:4,1,0;k=1:1,1,0], i), SAVE_CC, distribution: col_cyclic)
+
+--test
+--stop-igdata
+aggregate(SAVE_HA, count(v0), sum(v0))
+aggregate(SAVE_RC, count(v0), sum(v0))
+aggregate(SAVE_RE, count(v0), sum(v0))
+aggregate(SAVE_CC, count(v0), sum(v0))
+aggregate(SAVE_CC, count(v0), sum(v0), j, k)
+
+# Save as binary and reload ----------------
+--start-igdata
+save(SAVE_HA, 'data_ha.opaque', 0, '(int64)')
+save(SAVE_RC, 'data_rc.opaque', 0, '(int64)')
+save(SAVE_RE, 'data_re.opaque', 0, '(int64)')
+save(SAVE_CC, 'data_cc.opaque', 0, '(int64)')
+--stop-igdata
+
+create array UNBOUNDED_SCHEMA <v0:int64>[i=1:*,1,0;j=1:4,1,0;k=1:1,1,0]
+
+# input() generates warnings that input files missing on instances other than 0
+# because these warnings vary with number of instances they can't appear in the .out
+--start-ignore-warnings
+
+# ha to unspecified
+aggregate(input(UNBOUNDED_SCHEMA, 'data_rc.opaque', -1, '(int64)'),count(v0), sum(v0))
+
+# ha to ha
+store(input(UNBOUNDED_SCHEMA, 'data_ha.opaque', -1, '(int64)'), TMP, distribution: hashed)
+aggregate(TMP, count(v0), sum(v0))
+remove(TMP)
+# ha to rc
+store(input(UNBOUNDED_SCHEMA, 'data_ha.opaque', -1, '(int64)'), TMP, distribution: row_cyclic)
+aggregate(TMP, count(v0), sum(v0))
+remove(TMP)
+# ha to re
+store(input(UNBOUNDED_SCHEMA, 'data_ha.opaque', -1, '(int64)'), TMP, distribution: replicated)
+aggregate(TMP, count(v0), sum(v0))
+remove(TMP)
+# ha to cc
+store(input(UNBOUNDED_SCHEMA, 'data_ha.opaque', -1, '(int64)'), TMP, distribution: col_cyclic)
+aggregate(TMP, count(v0), sum(v0), j, k)
+remove(TMP)
+
+# rc to ha
+store(input(UNBOUNDED_SCHEMA, 'data_rc.opaque', -1, '(int64)'), TMP, distribution: hashed)
+aggregate(TMP, count(v0), sum(v0))
+remove(TMP)
+# rc to rc
+store(input(UNBOUNDED_SCHEMA, 'data_rc.opaque', -1, '(int64)'), TMP, distribution: row_cyclic)
+aggregate(TMP, count(v0), sum(v0))
+remove(TMP)
+# rc to re
+store(input(UNBOUNDED_SCHEMA, 'data_rc.opaque', -1, '(int64)'), TMP, distribution: replicated)
+aggregate(TMP, count(v0), sum(v0))
+remove(TMP)
+# rc to cc
+store(input(UNBOUNDED_SCHEMA, 'data_rc.opaque', -1, '(int64)'), TMP, distribution: col_cyclic)
+aggregate(TMP, count(v0), sum(v0), j, k)
+remove(TMP)
+
+# re to ha
+store(input(UNBOUNDED_SCHEMA, 'data_re.opaque', -1, '(int64)'), TMP, distribution: hashed)
+aggregate(TMP, count(v0), sum(v0))
+remove(TMP)
+# re to rc
+store(input(UNBOUNDED_SCHEMA, 'data_re.opaque', -1, '(int64)'), TMP, distribution: row_cyclic)
+aggregate(TMP, count(v0), sum(v0))
+remove(TMP)
+# re to re
+store(input(UNBOUNDED_SCHEMA, 'data_re.opaque', -1, '(int64)'), TMP, distribution: replicated)
+aggregate(TMP, count(v0), sum(v0))
+remove(TMP)
+# re to cc
+store(input(UNBOUNDED_SCHEMA, 'data_re.opaque', -1, '(int64)'), TMP, distribution: col_cyclic)
+aggregate(TMP, count(v0), sum(v0), j, k)
+remove(TMP)
+
+#end of use of input()
+--stop-ignore-warnings
+
+--cleanup
+remove(SAVE_HA)
+remove(SAVE_RC)
+remove(SAVE_RE)
+remove(SAVE_CC)
+
+remove(UNBOUNDED_SCHEMA)
+
+# do not save query path into .expected
+--stop-query-logging
+--shell --command "find ${SCIDB_DATA_PATH} -name 'data_??.opaque' | xargs rm -f"

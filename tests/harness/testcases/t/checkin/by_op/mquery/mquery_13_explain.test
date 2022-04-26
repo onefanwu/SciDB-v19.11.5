@@ -1,0 +1,15 @@
+--setup
+--start-query-logging
+create array f <v:int64>[i=1:*]
+
+--test
+
+# Ignoring query output, only expect that this doesn't crash.
+--start-igdata
+_explain_logical('mquery(insert(build(<v:int64>[i=1:9],1*i),f))','afl')
+_explain_physical('mquery(insert(build(<v:int64>[i=1:9],1*i),f))','afl')
+--stop-igdata
+
+--cleanup
+remove(f)
+--stop-query-logging

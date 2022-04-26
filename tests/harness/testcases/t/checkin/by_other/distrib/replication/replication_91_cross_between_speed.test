@@ -1,0 +1,36 @@
+--setup
+--start-query-logging
+
+create array source <a: int64 > [x=0:8,2,0, y=0:9,2,1, z=1000:1001,3,0]
+store(filter(build(source,x+y+z), x=y or x=z), source)
+
+create array region <v1:int64,v2:int64,v3:int64,v4:int64,v5:int64,v6:int64>[dummy=0:*,1,0]
+# avoid expansion of the load file path into the .expected
+--stop-query-logging
+load(region,'${TEST_DATA_DIR}/for_cross_between_speed.txt')
+--start-query-logging
+
+create array region_replicated <v1:int64,v2:int64,v3:int64,v4:int64,v5:int64,v6:int64>[dummy=0:*,5,0] distribution replicated
+store(region, region_replicated)
+
+--test
+
+# right default
+--shell --store-all --command "TIMEFORMAT=%3R; time (iquery -naq 'cross_between(source, region)') 2>/tmp/replication99.1.txt"
+
+# right replicated
+--shell --store-all --command "TIMEFORMAT=%3R; time (iquery -naq 'cross_between(source, region_replicated)') 2>/tmp/replication99.2.txt"
+
+# output times taken on terminal without affecting the .out file (developer feedback)
+--shell --command "cat /tmp/replication99.1.txt >&2"
+--shell --command "cat /tmp/replication99.2.txt >&2"
+
+# to make the test pass/fail, ensure that the time for the first query is longer than the second
+# outputs a 1 into the .out file when that is true
+--shell --store-all --command "echo "scale=3; $(cat /tmp/replication99.1.txt) > $(cat /tmp/replication99.2.txt)" | bc"
+
+--cleanup
+remove(source)
+remove(region)
+remove(region_replicated)
+--shell --store-all --command "rm /tmp/replication99.1.txt /tmp/replication99.2.txt"

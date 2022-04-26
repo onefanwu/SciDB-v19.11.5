@@ -1,0 +1,44 @@
+--setup
+--start-query-logging
+store(flatten(build(<v:int64>[i=0:9:0:10],i)),df)
+
+--test
+# CSV
+--echo "csv"
+--stop-query-logging
+save(df,'/tmp/${HPID}_df_save', format:'csv')
+--start-query-logging
+--shell --store --command "${TESTDIR}/inspect_save_data"
+
+# CSV+
+--echo "csv+"
+--stop-query-logging
+save(df,'/tmp/${HPID}_df_save', format:'csv+')
+--start-query-logging
+--shell --store --command "${TESTDIR}/inspect_save_data"
+
+# DCSV
+--echo "dcsv"
+--stop-query-logging
+save(df,'/tmp/${HPID}_df_save', format:'dcsv')
+--start-query-logging
+--shell --store --command "wc -l /tmp/${HPID}_df_save | cut -d" " -f1"
+
+# TSV
+--echo "tsv"
+--stop-query-logging
+save(df,'/tmp/${HPID}_df_save', format:'tsv')
+--start-query-logging
+--shell --store --command "${TESTDIR}/inspect_save_data"
+
+# TSV
+--echo "tsv+"
+--stop-query-logging
+save(df,'/tmp/${HPID}_df_save', format:'tsv+')
+--start-query-logging
+--shell --store --command "${TESTDIR}/inspect_save_data"
+
+--cleanup
+remove(df)
+--shell --command "rm -f /tmp/${HPID}_df_save"
+--stop-query-logging

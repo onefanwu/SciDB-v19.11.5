@@ -1,0 +1,11 @@
+# Test apply() with dataframe input.
+
+--setup
+store(flatten(build(<v:int64>[i=0:5], i)), DF)
+
+--test
+--set-format tsv
+apply(DF, w, 5 - v)
+
+--cleanup
+remove(DF)

@@ -1,0 +1,6 @@
+SCIDB QUERY : <load_library('misc')>
+Query was executed successfully
+
+SCIDB QUERY : <remove(remove_neg_01_arr)>
+[SciDB query execution failed. But continuing, as it was intended to just run.]
+

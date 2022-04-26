@@ -1,0 +1,8 @@
+--setup
+
+--test
+--echo "_trace(build) sanity check"
+_trace(build(<v:int64>[i=0:9],i),'/tmp/trace_test_${HPID}_')
+
+--cleanup
+--shell --command "rm -f /tmp/trace_test_${HPID}_*"

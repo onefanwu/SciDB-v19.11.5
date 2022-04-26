@@ -1,0 +1,68 @@
+--setup
+--start-query-logging
+
+--test
+# internal attributes and/or dimensions in build() should fail
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "build(<\$a:int32>[x=0:9],x)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "build(<a:int32>[\$x=0:9],x)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "build(<\$a:int32>[\$x=0:9],x)"
+
+# internal attributes in apply() and apply(build()) should fail
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "apply(build(<\$a:int32>[x=0:9],x),b,2*a+1)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "apply(build(<a:int32>[\$x=0:9],x),b,2*a+1)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "apply(build(<\$a:int32>[\$x=0:9],x),b,2*a+1)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME "apply(build(<a:int32>[x=0:9],x),\$b,2*a+1)"
+
+# sort produces an array with an internal dimension
+store(sort(build(<a:int32>[x=-9:0],x)),sorted)
+scan(sorted)
+# referencing the internal dimension from the sorted array is allowed
+apply(sorted, b, 2*$n+1)
+
+# add_attributes can't be used to add an internal attribute
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "add_attributes(sorted, <\$q:int64>)"
+
+# input() shouldn't allow internal attributes.  The filename supplied doesn't matter (other than it must exist) because
+# these queries will fail before trying to load any data because of the incorrect schema.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA \
+    "input(<\$q:int64>[i=0:9], '/dev/null')"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA \
+    "input(<q:int64>[\$i=0:9], '/dev/null')"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA \
+    "input(<\$q:int64>[\$i=0:9], '/dev/null')"
+
+# redimension() can reference internal attributes and dimensions but it can't be
+# allowed to introduce new attributes and dimensions with internal names if those
+# names didn't previously exist as either attributes or dimensions in the input array.
+store(build(<v:int64>[i=0:9],i),a)
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "redimension(a, <i:int64>[\$v=0:9])"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "reshape(a, <a:int64>[\$v=-9:0])"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "repart(a, <a:int64>[\$v=-9:0])"
+
+# cannot redim and add a synthetic dimension with an internal name
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "redimension(a, <i:int64>[v=0:9;\$k=0:9])"
+# adding synthetic dim otherwise is fine
+redimension(a, <i:int64>[v=0:9;k=0:9])
+
+# referring to an internal name in the source schema is allowed
+store(sort(build(<v:int64>[i=-9:0],i)),b)
+store(scan(b,true),c)
+redimension(c, <v:int64>[$n=0:9])
+reshape(c, <v:int64>[$n=0:9])
+repart(c, <v:int64>[$n=0:9])
+
+# flatten() produces an array with internal dimensions and is allowed
+op_sum(apply(flatten(build(<v:int64>[i=0:9],i)),w,2*$seq),v)
+
+# cannot create an array with internal dimensions or attributes
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "create array bar <\$q:int16>[i=0:9]"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "create array bar <q:int16>[\$i=0:9]"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAMES_IN_SCHEMA "create array bar <\$q:int16>[\$i=0:9]"
+
+--cleanup
+remove(sorted)
+remove(a)
+remove(b)
+remove(c)
+
+--stop-query-logging

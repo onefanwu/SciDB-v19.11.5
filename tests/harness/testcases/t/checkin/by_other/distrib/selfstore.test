@@ -1,0 +1,35 @@
+--setup
+--start-query-logging
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), HASH, distribution: hashed)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), ROWC, distribution: row_cyclic)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), COLC, distribution: col_cyclic)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), REPL, distribution: replicated)
+--test
+
+# Store an array back "onto itself" explicitly specifying the SAME distribution,
+# that is, create a new version with exactly the same data and same distribution.
+# see SDB-6478
+store(HASH, HASH, distribution: hashed)
+store(ROWC, ROWC, distribution: row_cyclic)
+store(COLC, COLC, distribution: col_cyclic)
+store(REPL, REPL, distribution: replicated)
+
+# Check that arrays have a new version with the same distribution.
+sort(filter(project(list('arrays', true), \
+                    name, \
+                    distribution), \
+            regex(name, '(COLC|HASH|REPL|ROWC)(@[0-9]+)*')), \
+     name)
+
+# Store an array back "onto itself" explicitly specifying a DIFFERENT distribution
+# Confirm that this cannot be done.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT "store(HASH, HASH, distribution: row_cyclic)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT "store(ROWC, ROWC, distribution: col_cyclic)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT "store(COLC, COLC, distribution: replicated)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_INVALID_OPERATOR_ARGUMENT "store(REPL, REPL, distribution: hashed)"
+
+--cleanup
+remove(HASH)
+remove(ROWC)
+remove(COLC)
+remove(REPL)

@@ -1,0 +1,35 @@
+--setup
+CREATE ARRAY p4_quantile_test1 <a:double> [x=0:11,12,0, y=0:11,12,0]
+CREATE ARRAY p4_quantile_test2 <a:double> [x=0:14,5,0, y=0:7,4,0]
+
+load( p4_quantile_test1, '${TEST_DATA_DIR}/p4_quantile_test1.txt', 0)
+scan(p4_quantile_test1)  -- Inserted by scan_doctor
+load( p4_quantile_test2, '${TEST_DATA_DIR}/p4_quantile_test2.txt', 0)
+scan(p4_quantile_test2)  -- Inserted by scan_doctor
+
+store(flatten(p4_quantile_test1), flat_test1)
+store(flatten(p4_quantile_test2), flat_test2)
+
+store(flatten(p4_quantile_test1), repl_test1, distribution:replicated)
+store(flatten(p4_quantile_test2), repl_test2, distribution:replicated)
+
+--test
+--echo not replicated
+quantile(flat_test1,5,a)
+quantile(flat_test2,10,a)
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "quantile(flat_test2,5,a,x)"
+
+--echo replicated
+quantile(repl_test1,5,a)
+quantile(repl_test2,10,a)
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "quantile(repl_test2,5,a,x)"
+
+--cleanup
+remove(p4_quantile_test1)
+remove(p4_quantile_test2)
+remove(flat_test1)
+remove(flat_test2)
+remove(repl_test1)
+remove(repl_test2)

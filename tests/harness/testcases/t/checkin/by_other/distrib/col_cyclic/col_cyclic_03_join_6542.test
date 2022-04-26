@@ -1,0 +1,30 @@
+--setup
+--start-query-logging
+
+store(build(<a:double>[i=0:0;j=0:0], 1.0), LEFT_CC, distribution: col_cyclic)
+
+store(build(<a:double>[i=0:0;j=0:0], 1.0), RIGHT_CC, distribution: col_cyclic)
+store(build(<a:double>[i=0:0;j=0:0], 1.0), RIGHT_HA, distribution: hashed)
+store(build(<a:double>[i=0:0;j=0:0], 1.0), RIGHT_RC, distribution: row_cyclic)
+store(build(<a:double>[i=0:0;j=0:0], 1.0), RIGHT_RE, distribution: replicated)
+
+--test
+
+--echo same distributions, no sg should be inserted
+_sgcount('join(LEFT_CC,RIGHT_CC)')
+
+--echo different distributions, one sg should be inserted
+_sgcount('join(LEFT_CC,RIGHT_HA)')
+
+--echo different distributions, one sg should be inserted
+_sgcount('join(LEFT_CC,RIGHT_RC)')
+
+--echo different distributions, replicated should be reduced rather than an sg inserted
+_sgcount('join(LEFT_CC,RIGHT_RE)')
+
+--cleanup
+remove(LEFT_CC)
+remove(RIGHT_CC)
+remove(RIGHT_HA)
+remove(RIGHT_RC)
+remove(RIGHT_RE)

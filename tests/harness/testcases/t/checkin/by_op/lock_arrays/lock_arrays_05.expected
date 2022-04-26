@@ -1,0 +1,15 @@
+SCIDB QUERY : <${TESTDIR}/store-build-test-case.sh>
+Query "load_libra..." was executed successfully
+Query "cancel('0...." was executed successfully
+Query was executed successfully
+Query "lock_array..." was executed successfully
+
+SCIDB QUERY : <psql -e -d ${DB_NAME} -U ${DB_USER} -p ${DB_PORT} -h ${DB_HOST} -t -c 'select count(*) from array_version_lock'>
+select count(*) from array_version_lock
+     0
+
+
+SCIDB QUERY : <op_count(list())>
+{i} count
+{0} 0
+

@@ -1,0 +1,6 @@
+Query was executed successfully
+
+[An error expected at this place for the query "filter(flatten(VIJ), v%2=0)". And it failed with error code = scidb::SCIDB_SE_EXECUTION::SCIDB_LE_NO_CURRENT_CHUNK. Expected error code = scidb::SCIDB_SE_EXECUTION::SCIDB_LE_NO_CURRENT_CHUNK.]
+
+Query was executed successfully
+

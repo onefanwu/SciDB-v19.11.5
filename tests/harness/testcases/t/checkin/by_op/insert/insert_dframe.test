@@ -1,0 +1,44 @@
+# The insert() operator hates dataframes.
+
+--setup
+
+create array AR<v:int64>[i=-100:100]
+create array DF<v:int64>  -- Dataframe has no dimensions!
+create temp array TAR<v:int64>[i=-100:100]
+create temp array TDF<v:int64>
+
+--test
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(flatten(build(AR, i)), AR)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(build(AR, i), DF)"
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(flatten(build(AR, i)), TAR)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(build(AR, i), TDF)"
+
+# Very paranoid.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(DF,  TAR)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(DF,  AR)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(TDF, TAR)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(TDF, AR)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(AR,  TDF)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(AR,  DF)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(TAR, TDF)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "insert(TAR, DF)"
+
+--cleanup
+remove(AR)
+remove(DF)
+remove(TAR)
+remove(TDF)

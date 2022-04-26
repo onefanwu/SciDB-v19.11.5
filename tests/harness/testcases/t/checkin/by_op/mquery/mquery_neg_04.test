@@ -1,0 +1,8 @@
+--setup
+--start-query-logging
+
+--test
+--shell --command "${TESTDIR}/mquery_neg_04.sh"
+
+--cleanup
+--stop-query-logging

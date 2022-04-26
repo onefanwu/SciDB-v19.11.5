@@ -1,0 +1,54 @@
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], i*2+j), BUILD_OUT1_HA, distribution: hashed)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], i*2+j), BUILD_OUT1_RC, distribution: row_cyclic)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], i*2+j), BUILD_OUT1_CC, distribution: col_cyclic)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], i*2+j), BUILD_OUT1_RE, distribution: replicated)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], random())    , BUILD_OUT2_HA, distribution: hashed)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], instanceid()), BUILD_OUT2_RC, distribution: row_cyclic)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], 3*random())  , BUILD_OUT2_CC, distribution: col_cyclic)')>
+{$dummy} $count
+{0} 0
+
+"count should be 1"
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], instanceid()), BUILD_OUT2_RE, distribution: replicated)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], 3*random()),   BUILD_OUT2_RE2,distribution: replicated)')>
+{$dummy} $count
+{0} 1
+
+"count should be 1"
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:0,1,0, j=0:0,1,0],\'[[(1)],[(2)]]\',true), BUILD_OUT3_HA, distribution: hashed)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:0,1,0, j=0:0,1,0],\'[[(1)],[(2)]]\',true), BUILD_OUT3_RC, distribution: row_cyclic)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:0,1,0, j=0:0,1,0],\'[[(1)],[(2)]]\',true), BUILD_OUT3_CC, distribution: col_cyclic)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <_sgcount('store(build(<v:int64>[i=0:0,1,0, j=0:0,1,0],\'[[(1)],[(2)]]\',true), BUILD_OUT3_RE, distribution: replicated)')>
+{$dummy} $count
+{0} 1
+

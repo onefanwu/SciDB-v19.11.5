@@ -1,0 +1,97 @@
+# Test new semantics of cast() intended to make casting easy.
+
+--setup
+create array CASTME < chr : char, \
+                      i16 : int16 not null, \
+		      str : string, \
+		      i64 : int64, \
+		      u64 : uint64, \
+		      dbl : double, \
+		      flt : float > \
+                    [ i=0:3:0:4; j=0:9 ]
+
+store( \
+  redimension( \
+    apply( \
+      build( <i64: int64>[i=0:3], i ), \
+      (chr, char(int8(38))), \
+      (str, 'Yow!'), \
+      (u64, uint64(i*100)), \
+      (dbl, 6.02e23), \
+      (flt, float(3.1415)), \
+      (i16, int16(64000)), \
+      (j, i+4)), \
+    CASTME), \
+  CASTME)
+
+--test
+--start-query-logging
+
+_show_nodist(CASTME)
+
+--echo Simple attribute renaming.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION \
+    "_show2_nodist('cast(CASTME, (foo, bar))', 'afl')"
+cast(CASTME, (i16, bar))
+_show2_nodist('cast(CASTME, (i16, bar))', 'afl')
+cast(CASTME, (CASTME.dbl, baz))
+_show2_nodist('cast(CASTME, (CASTME.dbl, baz))', 'afl')
+
+--echo Sorry, no dollar signs.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME \
+    "cast(CASTME, (CASTME.dbl, \$baz))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME \
+    "cast(CASTME, (i16, \$baz))"
+
+--echo Simple dimension renaming.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION \
+    "_show2_nodist('cast(CASTME, (foo, i))', 'afl')"
+cast(CASTME, (i, eye))
+_show2_nodist('cast(CASTME, (i, eye))', 'afl')
+cast(CASTME, (CASTME.j, frotz))
+_show2_nodist('cast(CASTME, (CASTME.j, frotz))', 'afl')
+
+--echo Again, no dollar signs.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME \
+    "cast(CASTME, (CASTME.j, \$frotz))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME \
+    "cast(CASTME, (i, \$eye))"
+
+--echo Swapping attribute names!
+cast(CASTME, (i16, tmp), (str, i16), (tmp, str))
+_show2_nodist('cast(CASTME, (i16, tmp), (str, i16), (tmp, str))', 'afl')
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION \
+    "_show2_nodist('cast(CASTME, (i16, tmp), (str, i16), (phoon, str))', 'afl')"
+
+--echo Swapping dimension names!
+cast(CASTME, (i, tmp), (j, i), (tmp, j))
+_show2_nodist('cast(CASTME, (i, tmp), (j, i), (tmp, j))', 'afl')
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION \
+    "_show2_nodist('cast(CASTME, (i, tmp), (j, i), (phoon, j))', 'afl')"
+
+--echo Swapping attribute name vs. dimension name
+cast(CASTME, (chr, tmp), (i, chr), (tmp, i))
+_show2_nodist('cast(CASTME, (chr, tmp), (i, chr), (tmp, i))', 'afl')
+
+--echo Swapping dimension name vs. attribute name
+cast(CASTME, (j, tmp), (i16, j), (tmp, i16))
+_show2_nodist('cast(CASTME, (j, tmp), (i16, j), (tmp, i16))', 'afl')
+
+--echo Target name exists?  Tsk, tsk.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_DIMENSION_NAME \
+    "cast(CASTME, (j, i16))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_DIMENSION_NAME \
+    "cast(CASTME, (i, j))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_DIMENSION_NAME \
+    "cast(CASTME, (j, i))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_ATTRIBUTE_NAME \
+    "cast(CASTME, (i16, j))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_ATTRIBUTE_NAME \
+    "cast(CASTME, (i16, u64))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_ATTRIBUTE_NAME \
+    "cast(CASTME, (u64, i16))"
+
+--stop-query-logging
+
+--cleanup
+remove(CASTME)

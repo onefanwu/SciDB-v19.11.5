@@ -1,0 +1,48 @@
+SCIDB QUERY : <lock_arrays(true)>
+Query was executed successfully
+
+SCIDB QUERY : <psql -e -d ${DB_NAME} -U ${DB_USER} -p ${DB_PORT} -h ${DB_HOST} -t -c 'select count(*) from array_version_lock'>
+select count(*) from array_version_lock
+     1
+
+
+SCIDB QUERY : <lock_arrays(true)>
+[An error expected at this place for the query "lock_arrays(true)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ILLEGAL_OPERATION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ILLEGAL_OPERATION.]
+
+SCIDB QUERY : <psql -e -d ${DB_NAME} -U ${DB_USER} -p ${DB_PORT} -h ${DB_HOST} -t -c 'select count(*) from array_version_lock'>
+select count(*) from array_version_lock
+     1
+
+
+SCIDB QUERY : <lock_arrays(true)>
+[An error expected at this place for the query "lock_arrays(true)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ILLEGAL_OPERATION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ILLEGAL_OPERATION.]
+
+SCIDB QUERY : <psql -e -d ${DB_NAME} -U ${DB_USER} -p ${DB_PORT} -h ${DB_HOST} -t -c 'select count(*) from array_version_lock'>
+select count(*) from array_version_lock
+     1
+
+
+SCIDB QUERY : <lock_arrays(false)>
+Query was executed successfully
+
+SCIDB QUERY : <psql -e -d ${DB_NAME} -U ${DB_USER} -p ${DB_PORT} -h ${DB_HOST} -t -c 'select count(*) from array_version_lock'>
+select count(*) from array_version_lock
+     0
+
+
+SCIDB QUERY : <lock_arrays(false)>
+Query was executed successfully
+
+SCIDB QUERY : <psql -e -d ${DB_NAME} -U ${DB_USER} -p ${DB_PORT} -h ${DB_HOST} -t -c 'select count(*) from array_version_lock'>
+select count(*) from array_version_lock
+     0
+
+
+SCIDB QUERY : <lock_arrays(false)>
+Query was executed successfully
+
+SCIDB QUERY : <psql -e -d ${DB_NAME} -U ${DB_USER} -p ${DB_PORT} -h ${DB_HOST} -t -c 'select count(*) from array_version_lock'>
+select count(*) from array_version_lock
+     0
+
+

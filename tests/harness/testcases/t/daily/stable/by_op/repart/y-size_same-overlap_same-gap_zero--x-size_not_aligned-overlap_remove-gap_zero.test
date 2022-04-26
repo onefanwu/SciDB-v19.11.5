@@ -1,0 +1,14 @@
+--setup
+create array source <a: int32 DEFAULT 100> [y=-2:13,4,1,x=-2:21,4,1]
+create array result <a: int32 DEFAULT 100> [y=-2:13,4,1,x=-2:21,6,0]
+store(build(source, (y)*24+x), source)
+scan(source)  -- Inserted by scan_doctor
+--test
+scan(source)
+repart(source, result)
+store(repart(source, result), result)
+scan(result)  -- Inserted by scan_doctor
+scan(result)
+--cleanup
+remove(source)
+remove(result)

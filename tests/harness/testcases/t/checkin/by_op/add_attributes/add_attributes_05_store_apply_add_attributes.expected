@@ -1,0 +1,60 @@
+SCIDB QUERY : <create array a <q:uint64>[i=0:9:0:2]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(a, i), a)>
+Query was executed successfully
+
+SCIDB QUERY : <store(apply(a, r, 2*q), b)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(b)>
+{i} q,r
+{0} 0,0
+{1} 1,2
+{2} 2,4
+{3} 3,6
+{4} 4,8
+{5} 5,10
+{6} 6,12
+{7} 7,14
+{8} 8,16
+{9} 9,18
+
+SCIDB QUERY : <add_attributes(b, <s:int64, t:int64>)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(b)>
+{i} q,r,s,t
+{0} 0,0,null,null
+{1} 1,2,null,null
+{2} 2,4,null,null
+{3} 3,6,null,null
+{4} 4,8,null,null
+{5} 5,10,null,null
+{6} 6,12,null,null
+{7} 7,14,null,null
+{8} 8,16,null,null
+{9} 9,18,null,null
+
+SCIDB QUERY : <store(project(apply(b, tp, 4*q), q, r, s, tp), b)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(b)>
+{i} q,r,s,t
+{0} 0,0,null,0
+{1} 1,2,null,4
+{2} 2,4,null,8
+{3} 3,6,null,12
+{4} 4,8,null,16
+{5} 5,10,null,20
+{6} 6,12,null,24
+{7} 7,14,null,28
+{8} 8,16,null,32
+{9} 9,18,null,36
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(b)>
+Query was executed successfully
+

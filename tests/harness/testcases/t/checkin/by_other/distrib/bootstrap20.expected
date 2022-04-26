@@ -1,0 +1,1204 @@
+SCIDB QUERY : <store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <summarize(HASH, by_instance: true)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',2,256,4,1,1,1,48,64,80
+{1,0} 'all',0,0,0,null,null,null,null,null,null
+{2,0} 'all',5,640,10,1,1,1,48,64,80
+{3,0} 'all',2,256,4,1,1,1,48,64,80
+
+SCIDB QUERY : <summarize(ROWC, by_instance: true)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',3,384,6,1,1,1,48,64,80
+{1,0} 'all',3,384,6,1,1,1,48,64,80
+{2,0} 'all',3,384,6,1,1,1,48,64,80
+{3,0} 'all',0,0,0,null,null,null,null,null,null
+
+SCIDB QUERY : <summarize(COLC, by_instance: true)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',3,384,6,1,1,1,48,64,80
+{1,0} 'all',3,384,6,1,1,1,48,64,80
+{2,0} 'all',3,384,6,1,1,1,48,64,80
+{3,0} 'all',0,0,0,null,null,null,null,null,null
+
+SCIDB QUERY : <summarize(REPL, by_instance: true)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',9,1152,18,1,1,1,48,64,80
+{1,0} 'all',9,1152,18,1,1,1,48,64,80
+{2,0} 'all',9,1152,18,1,1,1,48,64,80
+{3,0} 'all',9,1152,18,1,1,1,48,64,80
+
+SCIDB QUERY : <store(join(HASH, HASH), HASH_HASH_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, HASH), HASH_HASH_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, HASH), HASH_HASH_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, HASH), HASH_HASH_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, ROWC), HASH_ROWC_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, ROWC), HASH_ROWC_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, ROWC), HASH_ROWC_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, ROWC), HASH_ROWC_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, COLC), HASH_COLC_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, COLC), HASH_COLC_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, COLC), HASH_COLC_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, COLC), HASH_COLC_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, REPL), HASH_REPL_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, REPL), HASH_REPL_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, REPL), HASH_REPL_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(HASH, REPL), HASH_REPL_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, HASH), ROWC_HASH_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, HASH), ROWC_HASH_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, HASH), ROWC_HASH_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, HASH), ROWC_HASH_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, ROWC), ROWC_ROWC_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, ROWC), ROWC_ROWC_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, ROWC), ROWC_ROWC_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, ROWC), ROWC_ROWC_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, COLC), ROWC_COLC_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, COLC), ROWC_COLC_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, COLC), ROWC_COLC_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, COLC), ROWC_COLC_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, REPL), ROWC_REPL_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, REPL), ROWC_REPL_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, REPL), ROWC_REPL_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(ROWC, REPL), ROWC_REPL_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, HASH), COLC_HASH_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, HASH), COLC_HASH_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, HASH), COLC_HASH_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, HASH), COLC_HASH_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, ROWC), COLC_ROWC_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, ROWC), COLC_ROWC_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, ROWC), COLC_ROWC_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, ROWC), COLC_ROWC_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, COLC), COLC_COLC_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, COLC), COLC_COLC_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, COLC), COLC_COLC_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, COLC), COLC_COLC_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, REPL), COLC_REPL_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, REPL), COLC_REPL_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, REPL), COLC_REPL_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(COLC, REPL), COLC_REPL_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, HASH), REPL_HASH_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, HASH), REPL_HASH_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, HASH), REPL_HASH_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, HASH), REPL_HASH_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, ROWC), REPL_ROWC_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, ROWC), REPL_ROWC_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, ROWC), REPL_ROWC_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, ROWC), REPL_ROWC_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, COLC), REPL_COLC_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, COLC), REPL_COLC_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, COLC), REPL_COLC_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, COLC), REPL_COLC_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, REPL), REPL_REPL_HASH, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, REPL), REPL_REPL_ROWC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, REPL), REPL_REPL_COLC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(join(REPL, REPL), REPL_REPL_REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(HASH_HASH_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_HASH_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_HASH_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_HASH_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_ROWC_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_ROWC_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_ROWC_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_ROWC_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_COLC_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_COLC_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_COLC_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_COLC_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_REPL_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_REPL_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_REPL_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(HASH_REPL_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_HASH_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_HASH_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_HASH_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_HASH_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_ROWC_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_ROWC_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_ROWC_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_ROWC_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_COLC_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_COLC_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_COLC_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_COLC_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_REPL_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_REPL_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_REPL_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(ROWC_REPL_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_HASH_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_HASH_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_HASH_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_HASH_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_ROWC_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_ROWC_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_ROWC_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_ROWC_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_COLC_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_COLC_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_COLC_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_COLC_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_REPL_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_REPL_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_REPL_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(COLC_REPL_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_HASH_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_HASH_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_HASH_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_HASH_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_ROWC_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_ROWC_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_ROWC_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_ROWC_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_COLC_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_COLC_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_COLC_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_COLC_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_REPL_HASH)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_REPL_ROWC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_REPL_COLC)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <scan(REPL_REPL_REPL)>
+{i,j} v,v_2
+{0,0} 0,0
+{0,1} 1,1
+{0,2} 2,2
+{1,0} 3,3
+{1,1} 4,4
+{1,2} 5,5
+{2,0} 6,6
+{2,1} 7,7
+{2,2} 8,8
+
+SCIDB QUERY : <remove(HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_HASH_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_HASH_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_HASH_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_HASH_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_ROWC_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_ROWC_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_ROWC_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_ROWC_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_COLC_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_COLC_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_COLC_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_COLC_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_REPL_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_REPL_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_REPL_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(HASH_REPL_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_HASH_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_HASH_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_HASH_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_HASH_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_ROWC_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_ROWC_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_ROWC_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_ROWC_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_COLC_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_COLC_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_COLC_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_COLC_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_REPL_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_REPL_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_REPL_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ROWC_REPL_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_HASH_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_HASH_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_HASH_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_HASH_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_ROWC_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_ROWC_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_ROWC_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_ROWC_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_COLC_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_COLC_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_COLC_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_COLC_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_REPL_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_REPL_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_REPL_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(COLC_REPL_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_HASH_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_HASH_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_HASH_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_HASH_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_ROWC_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_ROWC_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_ROWC_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_ROWC_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_COLC_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_COLC_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_COLC_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_COLC_REPL)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_REPL_HASH)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_REPL_ROWC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_REPL_COLC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(REPL_REPL_REPL)>
+Query was executed successfully
+

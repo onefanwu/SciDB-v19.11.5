@@ -1,0 +1,13 @@
+# Store into pre-created dataframe.
+
+--setup
+store(build(<v:int64>[i=0:5], i), A)
+create array DF<x:int64, val:int64>
+
+--test
+store(flatten(A), DF)
+op_sum(DF, val)
+
+--cleanup
+remove(A)
+remove(DF)

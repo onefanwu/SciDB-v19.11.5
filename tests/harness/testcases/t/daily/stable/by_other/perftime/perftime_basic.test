@@ -1,0 +1,98 @@
+--setup
+
+# enable perf-wait-timing and restart scidb
+--echo "Restarting SciDB with perf-wait-timing enabled"
+--shell --command "iquery -otsv -c ${IQUERY_HOST:=localhost} -p ${IQUERY_PORT:=1239} -aq "project(apply(list('instances'),host,name+':'+string(port)),host)" > /tmp/${HPID}.hosts.txt"
+
+--shell --command "${SCIDB_CMD:=scidbctl.py} stop $SCIDB_CLUSTER_NAME"
+--shell --command "cp $SCIDB_INSTALL_PATH/etc/config.ini /tmp/${HPID}_config.ini"
+--shell --command "echo perf-wait-timing=1 >> /tmp/${HPID}_config.ini"
+--shell --command "${SCIDB_CMD:=scidbctl.py} --config /tmp/${HPID}_config.ini start $SCIDB_CLUSTER_NAME"
+--shell --command "/bin/bash ${TEST_UTILS_DIR}/wait_for_sync.sh --query 'store(list(),foo);remove(foo)' < /tmp/${HPID}.hosts.txt"
+--echo "SciDB restarted."
+--reconnect
+
+load_library('perf_time_test')
+
+create array TEST_DATA <v:uint32>[i=0:0,1,0] distribution row_cyclic
+store(build(TEST_DATA,1), TEST_DATA)
+
+--test
+
+# run a sleep for 1 second, and a spin for 1 second
+--start-igdata
+apply(TEST_DATA, v2, perf_time_test_sleep(v))
+apply(TEST_DATA, v2, perf_time_test_spin(v))
+--stop-igdata
+#
+# now check that we detected a time delay of about 1 second from the sleep, using perfTools
+#
+# first, create base_path.txt (technique copied from mpi_21_mpitest_concurrent.test)
+--shell --command "iquery -o csv -aq "project(filter(list('instances'), instance_id=0), instance_path)" | head -n1  | sed -e "s/'\(.*\)'/\1/" > /tmp/${HPID}.base_path.txt"
+
+# find the PerfTimingDetail line
+--shell --command "fgrep QueryTimingDetail $(cat /tmp/${HPID}.base_path.txt)/scidb.log | fgrep perf_time_test_sleep | tail -n1 > /tmp/${HPID}_log.txt"
+# get the raw PTS_xxx,PT_yyy pairs
+# omitting sed -e 's/ \+/ /g', think its not needed in this case
+--shell --command "cat /tmp/${HPID}_log.txt | cut -d'%' -f 2 | sed -e 's/@/\n/g' > /tmp/${HPID}_lines.txt"
+
+# there should be a line for PTW_PERF_TEST_SLEEP with a float value of seconds in the second column
+# that number should be reasonably clsoe to 1.0 (say 0.95 to 1.05)
+--shell --command "cat /tmp/${HPID}_lines.txt | fgrep PTS_JOB_RUN_PREFETCH,PTW_SWT_TEST_SLEEP | cut -d' ' -f2 > /tmp/${HPID}_secs.txt"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) > 0.95" | bc"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) < 1.05" | bc"
+# PTS_CMHJ_COMP_EXE_QUERY,PT_SUM_CUMU should also be about 1
+--shell --command "cat /tmp/${HPID}_lines.txt | fgrep PTS_JOB_RUN_PREFETCH,PT_SUM_CUMU | cut -d' ' -f2 > /tmp/${HPID}_secs.txt"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) > 0.95" | bc"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) < 1.05" | bc"
+# the sum of the 3rd and 4th columns shoud sum to close to 0 for the sleep case
+--shell --command "cat /tmp/${HPID}_lines.txt | fgrep PTS_JOB_RUN_PREFETCH,PT_SUM_CUMU | cut -d' ' -f3 > /tmp/${HPID}_secs.txt"
+--shell --command "cat /tmp/${HPID}_lines.txt | fgrep PTS_JOB_RUN_PREFETCH,PT_SUM_CUMU | cut -d' ' -f4 > /tmp/${HPID}_secs_b.txt"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) +  $(cat /tmp/${HPID}_secs_b.txt) >= 0.00" | bc"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) +  $(cat /tmp/${HPID}_secs_b.txt) <  0.05" | bc"
+
+
+#
+# repeat the above check, but looking at the spin (vs sleep) query
+#
+# find the PerfTimingDetail line
+--shell --command "fgrep QueryTimingDetail $(cat /tmp/${HPID}.base_path.txt)/scidb.log | fgrep perf_time_test_spin | tail -n1 > /tmp/${HPID}_log.txt"
+# get the raw PTS_xxx,PT_yyy pairs
+# omitting sed -e 's/ \+/ /g', think its not needed in this case
+--shell --command "cat /tmp/${HPID}_log.txt | cut -d'%' -f 2 | sed -e 's/@/\n/g' > /tmp/${HPID}_lines.txt"
+
+# there should be a line for PTW_PERF_TEST_SPIN with a float value of seconds in the second column
+--shell --command "cat /tmp/${HPID}_lines.txt | fgrep PTS_JOB_RUN_PREFETCH,PTW_SWT_TEST_SPIN | cut -d' ' -f2 > /tmp/${HPID}_secs.txt"
+# that number should be reasonably clsoe to 1.0 (say 0.95 to 1.05)
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) > 0.95" | bc"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) < 1.05" | bc"
+# PTS_CMHJ_COMP_EXE_QUERY,PT_SUM_CUMU should also be about 1
+--shell --command "cat /tmp/${HPID}_lines.txt | fgrep PTS_JOB_RUN_PREFETCH,PT_SUM_CUMU | cut -d' ' -f2 > /tmp/${HPID}_secs.txt"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) > 0.95" | bc"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) < 1.05" | bc"
+
+# the sum of the 3rd and 4th columns shoud sum to close to 1 for the spin case
+--shell --command "cat /tmp/${HPID}_lines.txt | fgrep PTS_JOB_RUN_PREFETCH,PT_SUM_CUMU | cut -d' ' -f3 > /tmp/${HPID}_secs.txt"
+--shell --command "cat /tmp/${HPID}_lines.txt | fgrep PTS_JOB_RUN_PREFETCH,PT_SUM_CUMU | cut -d' ' -f4 > /tmp/${HPID}_secs_b.txt"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) +  $(cat /tmp/${HPID}_secs_b.txt) >= 0.95" | bc"
+--shell --command "echo "scale=3; $(cat /tmp/${HPID}_secs.txt) +  $(cat /tmp/${HPID}_secs_b.txt) <  1.05" | bc"
+
+
+--cleanup
+
+remove(TEST_DATA)
+--shell --command "rm /tmp/${HPID}_config.ini"
+--shell --command "rm /tmp/${HPID}_log.txt"
+--shell --command "rm /tmp/${HPID}_lines.txt"
+--shell --command "rm /tmp/${HPID}_secs.txt"
+unload_library('perf_time_test')
+
+--echo "Restarting SciDB with original config.ini"
+--shell --command "${SCIDB_CMD:=scidbctl.py} stop $SCIDB_CLUSTER_NAME"
+--shell --command "${SCIDB_CMD:=scidbctl.py} --config $SCIDB_INSTALL_PATH/etc/config.ini start $SCIDB_CLUSTER_NAME"
+--shell --command "/bin/bash ${TEST_UTILS_DIR}/wait_for_sync.sh --query 'list()' < /tmp/${HPID}.hosts.txt"
+--shell --command "rm /tmp/${HPID}.hosts.txt"
+# Workaround for SDB-6623 - some liveness issues are created by this test.
+--sleep 5
+--echo "SciDB restarted."
+--reconnect

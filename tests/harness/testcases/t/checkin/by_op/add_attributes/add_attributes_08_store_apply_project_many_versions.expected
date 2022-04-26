@@ -1,0 +1,225 @@
+SCIDB QUERY : <create array a <q:int64>[i=0:9:0:2]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(a, i), a)>
+Query was executed successfully
+
+SCIDB QUERY : <add_attributes(a, <r:int64, s:int64, t:int64, u:int64, v:int64, w:int64>)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q,r,s,t,u,v,w
+{0} 0,null,null,null,null,null,null
+{1} 1,null,null,null,null,null,null
+{2} 2,null,null,null,null,null,null
+{3} 3,null,null,null,null,null,null
+{4} 4,null,null,null,null,null,null
+{5} 5,null,null,null,null,null,null
+{6} 6,null,null,null,null,null,null
+{7} 7,null,null,null,null,null,null
+{8} 8,null,null,null,null,null,null
+{9} 9,null,null,null,null,null,null
+
+SCIDB QUERY : <store(project(apply(a, sp, 3*q), q, r, sp, t, u, v, w), a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q,r,s,t,u,v,w
+{0} 0,null,0,null,null,null,null
+{1} 1,null,3,null,null,null,null
+{2} 2,null,6,null,null,null,null
+{3} 3,null,9,null,null,null,null
+{4} 4,null,12,null,null,null,null
+{5} 5,null,15,null,null,null,null
+{6} 6,null,18,null,null,null,null
+{7} 7,null,21,null,null,null,null
+{8} 8,null,24,null,null,null,null
+{9} 9,null,27,null,null,null,null
+
+SCIDB QUERY : <store(project(apply(a, up, 5*q), q, r, s, t, up, v, w), a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q,r,s,t,u,v,w
+{0} 0,null,0,null,0,null,null
+{1} 1,null,3,null,5,null,null
+{2} 2,null,6,null,10,null,null
+{3} 3,null,9,null,15,null,null
+{4} 4,null,12,null,20,null,null
+{5} 5,null,15,null,25,null,null
+{6} 6,null,18,null,30,null,null
+{7} 7,null,21,null,35,null,null
+{8} 8,null,24,null,40,null,null
+{9} 9,null,27,null,45,null,null
+
+SCIDB QUERY : <store(project(apply(a, wp, 7*q), q, r, s, t, u, v, wp), a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q,r,s,t,u,v,w
+{0} 0,null,0,null,0,null,0
+{1} 1,null,3,null,5,null,7
+{2} 2,null,6,null,10,null,14
+{3} 3,null,9,null,15,null,21
+{4} 4,null,12,null,20,null,28
+{5} 5,null,15,null,25,null,35
+{6} 6,null,18,null,30,null,42
+{7} 7,null,21,null,35,null,49
+{8} 8,null,24,null,40,null,56
+{9} 9,null,27,null,45,null,63
+
+SCIDB QUERY : <store(project(apply(a, rp, 2*q), q, rp, s, t, u, v, w), a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q,r,s,t,u,v,w
+{0} 0,0,0,null,0,null,0
+{1} 1,2,3,null,5,null,7
+{2} 2,4,6,null,10,null,14
+{3} 3,6,9,null,15,null,21
+{4} 4,8,12,null,20,null,28
+{5} 5,10,15,null,25,null,35
+{6} 6,12,18,null,30,null,42
+{7} 7,14,21,null,35,null,49
+{8} 8,16,24,null,40,null,56
+{9} 9,18,27,null,45,null,63
+
+SCIDB QUERY : <store(project(apply(a, tp, 4*q), q, r, s, tp, u, v, w), a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q,r,s,t,u,v,w
+{0} 0,0,0,0,0,null,0
+{1} 1,2,3,4,5,null,7
+{2} 2,4,6,8,10,null,14
+{3} 3,6,9,12,15,null,21
+{4} 4,8,12,16,20,null,28
+{5} 5,10,15,20,25,null,35
+{6} 6,12,18,24,30,null,42
+{7} 7,14,21,28,35,null,49
+{8} 8,16,24,32,40,null,56
+{9} 9,18,27,36,45,null,63
+
+SCIDB QUERY : <store(project(apply(a, vp, 6*q), q, r, s, t, u, vp, w), a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q,r,s,t,u,v,w
+{0} 0,0,0,0,0,0,0
+{1} 1,2,3,4,5,6,7
+{2} 2,4,6,8,10,12,14
+{3} 3,6,9,12,15,18,21
+{4} 4,8,12,16,20,24,28
+{5} 5,10,15,20,25,30,35
+{6} 6,12,18,24,30,36,42
+{7} 7,14,21,28,35,42,49
+{8} 8,16,24,32,40,48,56
+{9} 9,18,27,36,45,54,63
+
+SCIDB QUERY : <scan(a@2)>
+{i} q,r,s,t,u,v,w
+{0} 0,null,null,null,null,null,null
+{1} 1,null,null,null,null,null,null
+{2} 2,null,null,null,null,null,null
+{3} 3,null,null,null,null,null,null
+{4} 4,null,null,null,null,null,null
+{5} 5,null,null,null,null,null,null
+{6} 6,null,null,null,null,null,null
+{7} 7,null,null,null,null,null,null
+{8} 8,null,null,null,null,null,null
+{9} 9,null,null,null,null,null,null
+
+SCIDB QUERY : <scan(a@4)>
+{i} q,r,s,t,u,v,w
+{0} 0,null,0,null,0,null,null
+{1} 1,null,3,null,5,null,null
+{2} 2,null,6,null,10,null,null
+{3} 3,null,9,null,15,null,null
+{4} 4,null,12,null,20,null,null
+{5} 5,null,15,null,25,null,null
+{6} 6,null,18,null,30,null,null
+{7} 7,null,21,null,35,null,null
+{8} 8,null,24,null,40,null,null
+{9} 9,null,27,null,45,null,null
+
+SCIDB QUERY : <scan(a@6)>
+{i} q,r,s,t,u,v,w
+{0} 0,0,0,null,0,null,0
+{1} 1,2,3,null,5,null,7
+{2} 2,4,6,null,10,null,14
+{3} 3,6,9,null,15,null,21
+{4} 4,8,12,null,20,null,28
+{5} 5,10,15,null,25,null,35
+{6} 6,12,18,null,30,null,42
+{7} 7,14,21,null,35,null,49
+{8} 8,16,24,null,40,null,56
+{9} 9,18,27,null,45,null,63
+
+SCIDB QUERY : <scan(a@8)>
+{i} q,r,s,t,u,v,w
+{0} 0,0,0,0,0,0,0
+{1} 1,2,3,4,5,6,7
+{2} 2,4,6,8,10,12,14
+{3} 3,6,9,12,15,18,21
+{4} 4,8,12,16,20,24,28
+{5} 5,10,15,20,25,30,35
+{6} 6,12,18,24,30,36,42
+{7} 7,14,21,28,35,42,49
+{8} 8,16,24,32,40,48,56
+{9} 9,18,27,36,45,54,63
+
+SCIDB QUERY : <scan(a@1)>
+{i} q
+{0} 0
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+{5} 5
+{6} 6
+{7} 7
+{8} 8
+{9} 9
+
+SCIDB QUERY : <scan(a@3)>
+{i} q,r,s,t,u,v,w
+{0} 0,null,0,null,null,null,null
+{1} 1,null,3,null,null,null,null
+{2} 2,null,6,null,null,null,null
+{3} 3,null,9,null,null,null,null
+{4} 4,null,12,null,null,null,null
+{5} 5,null,15,null,null,null,null
+{6} 6,null,18,null,null,null,null
+{7} 7,null,21,null,null,null,null
+{8} 8,null,24,null,null,null,null
+{9} 9,null,27,null,null,null,null
+
+SCIDB QUERY : <scan(a@5)>
+{i} q,r,s,t,u,v,w
+{0} 0,null,0,null,0,null,0
+{1} 1,null,3,null,5,null,7
+{2} 2,null,6,null,10,null,14
+{3} 3,null,9,null,15,null,21
+{4} 4,null,12,null,20,null,28
+{5} 5,null,15,null,25,null,35
+{6} 6,null,18,null,30,null,42
+{7} 7,null,21,null,35,null,49
+{8} 8,null,24,null,40,null,56
+{9} 9,null,27,null,45,null,63
+
+SCIDB QUERY : <scan(a@7)>
+{i} q,r,s,t,u,v,w
+{0} 0,0,0,0,0,null,0
+{1} 1,2,3,4,5,null,7
+{2} 2,4,6,8,10,null,14
+{3} 3,6,9,12,15,null,21
+{4} 4,8,12,16,20,null,28
+{5} 5,10,15,20,25,null,35
+{6} 6,12,18,24,30,null,42
+{7} 7,14,21,28,35,null,49
+{8} 8,16,24,32,40,null,56
+{9} 9,18,27,36,45,null,63
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+

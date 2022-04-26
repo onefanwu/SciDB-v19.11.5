@@ -1,0 +1,65 @@
+SCIDB QUERY : <create array CASTME < chr : char, i16 : int16 not null, str : string, i64 : int64, u64 : uint64, dbl : double, flt : float > [ i=0:3:0:4; j=0:9 ]>
+Query was executed successfully
+
+SCIDB QUERY : <store( redimension( apply( build( <i64: int64>[i=0:3], i ), (chr, char(int8(37))), (str, 'hi mom'), (u64, uint64(42)), (dbl, 6.02e23), (flt, float(3.14)), (i16, int16(64000)), (j, i+4)), CASTME), CASTME)>
+Query was executed successfully
+
+Rename fourth attribute.
+SCIDB QUERY : <cast(CASTME, ($4, four))>
+i	j	chr	i16	str	i64	four	dbl	flt
+0	4	%	-1536	hi mom	0	42	6.02e+23	3.14
+1	5	%	-1536	hi mom	1	42	6.02e+23	3.14
+2	6	%	-1536	hi mom	2	42	6.02e+23	3.14
+3	7	%	-1536	hi mom	3	42	6.02e+23	3.14
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, ($4, four))', 'afl')>
+i	schema
+0	CASTME@1<chr:char,i16:int16 NOT NULL,str:string,i64:int64,four:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]
+
+Rename 27th attribute fails utterly.
+SCIDB QUERY : <_show2_nodist('cast(CASTME, ($27, twentyseven))', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, ($27, twentyseven))', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION.]
+
+Rename zeroth dimension.
+SCIDB QUERY : <cast(CASTME, ($_0, zero))>
+zero	j	chr	i16	str	i64	u64	dbl	flt
+0	4	%	-1536	hi mom	0	42	6.02e+23	3.14
+1	5	%	-1536	hi mom	1	42	6.02e+23	3.14
+2	6	%	-1536	hi mom	2	42	6.02e+23	3.14
+3	7	%	-1536	hi mom	3	42	6.02e+23	3.14
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, ($_0, zero))', 'afl')>
+i	schema
+0	CASTME@1<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [zero=0:3:0:4; j=0:9:0:4]
+
+Rename both dimensions by position.
+SCIDB QUERY : <cast(CASTME, ($_0, zero), ($_1, one))>
+zero	one	chr	i16	str	i64	u64	dbl	flt
+0	4	%	-1536	hi mom	0	42	6.02e+23	3.14
+1	5	%	-1536	hi mom	1	42	6.02e+23	3.14
+2	6	%	-1536	hi mom	2	42	6.02e+23	3.14
+3	7	%	-1536	hi mom	3	42	6.02e+23	3.14
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, ($_0, zero), ($_1, one))', 'afl')>
+i	schema
+0	CASTME@1<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [zero=0:3:0:4; one=0:9:0:4]
+
+Rename 42nd dimension fails utterly.
+SCIDB QUERY : <_show2_nodist('cast(CASTME, ($_42, fourtytwo))', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, ($_42, fourtytwo))', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION.]
+
+Don't be so negative.  The $-5 looks like an expression.
+SCIDB QUERY : <_show2_nodist('cast(CASTME, ($-5, minus_five))', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, ($-5, minus_five))', 'afl')". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+Same story with dimensions:  The $_-1 looks like an expression.
+SCIDB QUERY : <_show2_nodist('cast(CASTME, ($_-1, minus_one))', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, ($_-1, minus_one))', 'afl')". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+We want to reserve $ names for the system, so no renaming to $anything.
+SCIDB QUERY : <cast(CASTME, (u64, $2), (i, $_1))>
+[An error expected at this place for the query "cast(CASTME, (u64, $2), (i, $_1))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME.]
+
+SCIDB QUERY : <remove(CASTME)>
+Query was executed successfully
+

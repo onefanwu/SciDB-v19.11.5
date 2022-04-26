@@ -1,0 +1,28 @@
+# --*- Mode: shell-script -*--
+echo * Starting unathsession.test
+  set encode=on
+  reset_sessions
+  echo ** authlogon
+echo authlogon (unauthsession) -> new sessionid
+    reset_sessions
+    get session
+    authlogon scidbadmin
+    get session
+  echo ** authresponse
+echo authresponse (unauthsession) -> error and null session
+    reset_sessions
+    get session
+    authresponse Paradigm4
+    get session
+  echo ** executequery
+echo executequery (unauthsession) -> error and null session
+    reset_sessions
+    get session
+    executequery
+    get session
+  echo ** fetchingot
+echo fetchingot (unauthsession) -> error and null session
+    reset_sessions
+    get session
+    fetchingot
+    get session

@@ -1,0 +1,31 @@
+
+--test
+--start-query-logging
+
+--set-format dcsv
+--start-igdata
+load_library('dense_linear_algebra')  
+CREATE ARRAY A <val:double> [i=0:1,32,0,j=0:1,32,0]  
+--set-format dense
+--stop-igdata
+store(build (A, i*2 + j + 1), A)  
+scan(A)  -- Inserted by scan_doctor
+store(build(<val:double>[i=0:1,32,0,j=0:1,32,0],iif(i=j,1,0)),B)  
+scan(B)  -- Inserted by scan_doctor
+--set-format dcsv
+--start-igdata
+CREATE ARRAY C <val:double> [i=0:1,32,0,j=0:1,32,0]  
+--set-format dense
+--stop-igdata
+store(build (C, 1), C)  
+scan(C)  -- Inserted by scan_doctor
+gemm(A,B,C)  
+
+--stop-query-logging
+
+
+--cleanup
+
+remove(A)
+remove(B)
+remove(C)

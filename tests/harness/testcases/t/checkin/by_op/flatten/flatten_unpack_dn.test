@@ -1,0 +1,20 @@
+--setup
+
+CREATE ARRAY dense <a: double > [x=0:5,3,0, y=0:5,3,0]
+load(dense,'${TEST_DATA_DIR}/dense.txt')
+
+--test
+flatten(dense, row)
+
+_show2_nodist('flatten(dense, row)', 'afl')
+_show2_nodist('flatten(dense, row, cells_per_chunk:10)', 'afl')
+_show2_nodist('flatten(dense, row, cells_per_chunk: 8)', 'afl')
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT \
+    "flatten(dense, row, 10, chunk_size: 8)"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_UNRECOGNIZED_KEYWORD_PARAM \
+    "flatten(dense, row, chunk_size: 8)"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT \
+    "flatten(dense, row, 10, 42)"
+
+--cleanup
+remove (dense)

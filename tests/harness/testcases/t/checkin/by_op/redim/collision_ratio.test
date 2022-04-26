@@ -1,0 +1,26 @@
+--setup
+--start-query-logging
+
+--test
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:9999],i),cr),cr)
+summarize(cr)
+remove(cr)
+
+# verify that specifying _collision_ratio of 0 effectively disables synthetic dimension
+# chunk interval sizing based on collisions
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:9999],i),cr,cells_per_chunk:100,_collision_ratio:0.0),cr)
+summarize(cr)
+remove(cr)
+
+# verify exception on invalid _collision_ratio values
+create array cr<v:uint64>[i;j]
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_PARAMETER_OUT_OF_RANGE \
+    "redimension(build(<v:uint64>[i=0:132000],i),cr,phys_chunk_size:1,_collision_ratio:2.0)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_PARAMETER_OUT_OF_RANGE \
+    "redimension(build(<v:uint64>[i=0:132000],i),cr,phys_chunk_size:1,_collision_ratio:-2.0)"
+remove(cr)
+
+--cleanup
+--stop-query-logging

@@ -1,0 +1,53 @@
+--setup
+--start-query-logging
+store(apply(build(<v:int64>[i=0:9],i+1), u, 2*i), g)
+
+--test
+# Update each attribute some number of times.
+scan(g)
+# sort is to prevent instance from appearing in .expected
+sort(project(list('datastores'), file_bytes), file_bytes)
+store(project(apply(g, uprime, 2*i+1), v, uprime), g)
+scan(g)
+# sort is to prevent instance from appearing in .expected
+sort(project(list('datastores'), file_bytes), file_bytes)
+store(project(apply(g, vprime, 3*i+2), vprime, u), g)
+scan(g)
+# sort is to prevent instance from appearing in .expected
+sort(project(list('datastores'), file_bytes), file_bytes)
+store(project(apply(g, vprime, 10*i, uprime, 20*i), vprime, uprime), g)
+scan(g)
+# sort is to prevent instance from appearing in .expected
+sort(project(list('datastores'), file_bytes), file_bytes)
+# Scan back earlier versions of the array to ensure we get what we expect.
+scan(g@1)
+scan(g@2)
+scan(g@3)
+scan(g@4)
+
+# Remove versions and scan to ensure remaining chunks are correct.
+remove_versions(g, 2)
+--error "scan(g@1)"
+scan(g@2)
+scan(g@3)
+scan(g@4)
+remove_versions(g, keep:2)
+--error "scan(g@1)"
+--error "scan(g@2)"
+scan(g@3)
+scan(g@4)
+remove_versions(g)
+--error "scan(g@1)"
+--error "scan(g@2)"
+--error "scan(g@3)"
+scan(g@4)
+scan(g)
+
+# Since our optimizer can't optimize this kind of nonsense out
+# yet, we can use it to exercise the DelegateChunk walking logic.
+store(project(project(project(project(apply(g, vprime, 5*(i+1), uprime, 7*(i+1)), uprime, vprime), vprime, uprime), uprime, vprime), vprime, uprime),g)
+scan(g)
+
+--cleanup
+remove(g)
+--stop-query-logging

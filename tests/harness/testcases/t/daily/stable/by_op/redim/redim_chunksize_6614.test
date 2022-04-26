@@ -1,0 +1,66 @@
+--setup
+
+# NUMLINES 6000 is used to demo failure because the redimension sort will write 1500 lines on one instance
+# (1.5MB) to a single chunk due to default chunksize for sorting of 10240 (and 1M before that)
+# The redim will fail to pass our system config with mem-array-threshold=1
+# Then will will lower "redimension-chunksize" config variable to 250 and demonstrate that it reduces
+# the size of the chunking during sorting, and allows the redim to succeed
+
+--echo "making a tsv file with long strings, 4i*1500=6000 lines, 1000 chars per string"
+--shell --command "${TESTDIR}/wide_lines.sh 6000 1000 > /tmp/${HPID}_redim_chunksize_6614.tsv"
+
+# load the tsv into chunks of passable size
+create array SRC_DATA <anno:string>[idx=0:*,500,0] distribution row_cyclic
+load(SRC_DATA, '/tmp/${HPID}_redim_chunksize_6614.tsv', -2, 'tsv')
+op_count(SRC_DATA)
+
+--test
+
+# make it impossible to push a 1.5MB (1500-cell@1000 bytes/attr-string) chunk through BufferMgr
+# which a later redimension will attempt
+--echo "Restarting SciDB with mem-array-threshold=1"
+--shell --command "${SCIDB_CMD:=scidbctl.py} stop $SCIDB_CLUSTER_NAME"
+--shell --command "cp $SCIDB_INSTALL_PATH/etc/config.ini /tmp/${HPID}_config.ini"
+--shell --command "echo mem-array-threshold=1 >> /tmp/${HPID}_config.ini"
+--shell --command "${SCIDB_CMD:=scidbctl.py} --config /tmp/${HPID}_config.ini start $SCIDB_CLUSTER_NAME"
+--shell --command "/bin/bash ${TEST_UTILS_DIR}/wait_for_sync.sh --query 'list()'"
+--echo "SciDB restarted."
+--reconnect
+
+# target dimensions
+create array DST_REDIM <anno:string>[idx2=0:*,500,0] distribution row_cyclic
+
+# SDB-6614 redimension of arrays with very large cell sizes could fail because
+#          redimensions SortArray chunksize was 1M cells by default
+#          and now is 10240 cells by default (via redimension-chunksize config)
+#          so this is still expected to exceed mem-array-threshold by 1M bytes
+--error --code=scidb::SCIDB_SE_STORAGE::SCIDB_LE_MEM_ARRAY_THRESHOLD_OR_BUFFER_MGR_SLOTS_EXCEEDED\
+        "store(redimension(project(apply(SRC_DATA, idx2, 6000-idx), idx2, anno), DST_REDIM), DST_REDIM)"
+
+# SDB-6614 fix: the redimesion SortArray chunksize s now taken from the existing
+#               redimension-chunksize config variable (rather than the hardcoded 1M value before)
+#               so we can reduce it to about 1/4 of the size of mem-array-threshold
+#               so there is sufficient room to pin the source and destination buffers in the BufferMgr
+--start-igdata
+# --start-igdata becasue _setopt output varies with the number of instances
+_setopt('redimension-chunksize', '250')
+# Workaround for SDB-6623 - some liveness issues are created by this test.
+--sleep 5
+--stop-igdata
+store(redimension(project(apply(SRC_DATA, idx2, 6000-idx), idx2, anno), DST_REDIM), DST_REDIM)
+
+--cleanup
+
+remove(SRC_DATA)
+remove(DST_REDIM)
+--shell --command "rm /tmp/${HPID}_redim_chunksize_6614.tsv"
+--shell --command "rm /tmp/${HPID}_config.ini"
+
+--echo "Restarting SciDB with original config.ini"
+--shell --command "${SCIDB_CMD:=scidbctl.py} stop $SCIDB_CLUSTER_NAME"
+--shell --command "${SCIDB_CMD:=scidbctl.py} --config $SCIDB_INSTALL_PATH/etc/config.ini start $SCIDB_CLUSTER_NAME"
+--shell --command "/bin/bash ${TEST_UTILS_DIR}/wait_for_sync.sh --query 'list()'"
+# Workaround for SDB-6623 - some liveness issues are created by this test.
+--sleep 5
+--echo "SciDB restarted."
+--reconnect

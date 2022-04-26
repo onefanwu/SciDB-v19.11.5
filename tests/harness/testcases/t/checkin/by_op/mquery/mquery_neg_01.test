@@ -1,0 +1,14 @@
+--setup
+--start-query-logging
+create array a<v:int64>[i=12:24:0:1]
+
+--test
+--error --code scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST \
+  "mquery(insert(build(a,2*i+1),a), \
+                  delete(a,i%2=0), \
+                  insert(project(apply(a@1,vnew,5*v+3),vnew),a), \
+                  delete(a,v%3=0))"
+
+--cleanup
+remove(a)
+--stop-query-logging

@@ -1,0 +1,315 @@
+--setup
+--start-query-logging
+
+# store with creation
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), HASH, distribution: hashed)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), ROWC, distribution: row_cyclic)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), COLC, distribution: col_cyclic)
+store(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j), REPL, distribution: replicated)
+    # summarize
+    summarize(HASH, by_instance: true)
+    summarize(ROWC, by_instance: true)
+    summarize(COLC, by_instance: true)
+    summarize(REPL, by_instance: true)
+
+--test
+
+# join lefts=4,rights=4,inherited=4 = 64 combos
+# HASH HASH
+store(join(HASH, HASH), HASH_HASH_HASH, distribution: hashed)
+store(join(HASH, HASH), HASH_HASH_ROWC, distribution: row_cyclic)
+store(join(HASH, HASH), HASH_HASH_COLC, distribution: col_cyclic)
+store(join(HASH, HASH), HASH_HASH_REPL, distribution: replicated)
+# HASH ROWC
+store(join(HASH, ROWC), HASH_ROWC_HASH, distribution: hashed)
+store(join(HASH, ROWC), HASH_ROWC_ROWC, distribution: row_cyclic)
+store(join(HASH, ROWC), HASH_ROWC_COLC, distribution: col_cyclic)
+store(join(HASH, ROWC), HASH_ROWC_REPL, distribution: replicated)
+# HASH COLC
+store(join(HASH, COLC), HASH_COLC_HASH, distribution: hashed)
+store(join(HASH, COLC), HASH_COLC_ROWC, distribution: row_cyclic)
+store(join(HASH, COLC), HASH_COLC_COLC, distribution: col_cyclic)
+store(join(HASH, COLC), HASH_COLC_REPL, distribution: replicated)
+# HASH REPL
+store(join(HASH, REPL), HASH_REPL_HASH, distribution: hashed)
+store(join(HASH, REPL), HASH_REPL_ROWC, distribution: row_cyclic)
+store(join(HASH, REPL), HASH_REPL_COLC, distribution: col_cyclic)
+store(join(HASH, REPL), HASH_REPL_REPL, distribution: replicated)
+# ROWC HASH
+store(join(ROWC, HASH), ROWC_HASH_HASH, distribution: hashed)
+store(join(ROWC, HASH), ROWC_HASH_ROWC, distribution: row_cyclic)
+store(join(ROWC, HASH), ROWC_HASH_COLC, distribution: col_cyclic)
+store(join(ROWC, HASH), ROWC_HASH_REPL, distribution: replicated)
+# ROWC ROWC
+store(join(ROWC, ROWC), ROWC_ROWC_HASH, distribution: hashed)
+store(join(ROWC, ROWC), ROWC_ROWC_ROWC, distribution: row_cyclic)
+store(join(ROWC, ROWC), ROWC_ROWC_COLC, distribution: col_cyclic)
+store(join(ROWC, ROWC), ROWC_ROWC_REPL, distribution: replicated)
+# ROWC COLC
+store(join(ROWC, COLC), ROWC_COLC_HASH, distribution: hashed)
+store(join(ROWC, COLC), ROWC_COLC_ROWC, distribution: row_cyclic)
+store(join(ROWC, COLC), ROWC_COLC_COLC, distribution: col_cyclic)
+store(join(ROWC, COLC), ROWC_COLC_REPL, distribution: replicated)
+# ROWC REPL
+store(join(ROWC, REPL), ROWC_REPL_HASH, distribution: hashed)
+store(join(ROWC, REPL), ROWC_REPL_ROWC, distribution: row_cyclic)
+store(join(ROWC, REPL), ROWC_REPL_COLC, distribution: col_cyclic)
+store(join(ROWC, REPL), ROWC_REPL_REPL, distribution: replicated)
+# COLC HASH
+store(join(COLC, HASH), COLC_HASH_HASH, distribution: hashed)
+store(join(COLC, HASH), COLC_HASH_ROWC, distribution: row_cyclic)
+store(join(COLC, HASH), COLC_HASH_COLC, distribution: col_cyclic)
+store(join(COLC, HASH), COLC_HASH_REPL, distribution: replicated)
+# COLC ROWC
+store(join(COLC, ROWC), COLC_ROWC_HASH, distribution: hashed)
+store(join(COLC, ROWC), COLC_ROWC_ROWC, distribution: row_cyclic)
+store(join(COLC, ROWC), COLC_ROWC_COLC, distribution: col_cyclic)
+store(join(COLC, ROWC), COLC_ROWC_REPL, distribution: replicated)
+# COLC COLC
+store(join(COLC, COLC), COLC_COLC_HASH, distribution: hashed)
+store(join(COLC, COLC), COLC_COLC_ROWC, distribution: row_cyclic)
+store(join(COLC, COLC), COLC_COLC_COLC, distribution: col_cyclic)
+store(join(COLC, COLC), COLC_COLC_REPL, distribution: replicated)
+# COLC REPL
+store(join(COLC, REPL), COLC_REPL_HASH, distribution: hashed)
+store(join(COLC, REPL), COLC_REPL_ROWC, distribution: row_cyclic)
+store(join(COLC, REPL), COLC_REPL_COLC, distribution: col_cyclic)
+store(join(COLC, REPL), COLC_REPL_REPL, distribution: replicated)
+# REPL HASH
+store(join(REPL, HASH), REPL_HASH_HASH, distribution: hashed)
+store(join(REPL, HASH), REPL_HASH_ROWC, distribution: row_cyclic)
+store(join(REPL, HASH), REPL_HASH_COLC, distribution: col_cyclic)
+store(join(REPL, HASH), REPL_HASH_REPL, distribution: replicated)
+# REPL ROWC
+store(join(REPL, ROWC), REPL_ROWC_HASH, distribution: hashed)
+store(join(REPL, ROWC), REPL_ROWC_ROWC, distribution: row_cyclic)
+store(join(REPL, ROWC), REPL_ROWC_COLC, distribution: col_cyclic)
+store(join(REPL, ROWC), REPL_ROWC_REPL, distribution: replicated)
+# REPL COLC
+store(join(REPL, COLC), REPL_COLC_HASH, distribution: hashed)
+store(join(REPL, COLC), REPL_COLC_ROWC, distribution: row_cyclic)
+store(join(REPL, COLC), REPL_COLC_COLC, distribution: col_cyclic)
+store(join(REPL, COLC), REPL_COLC_REPL, distribution: replicated)
+# REPL REPL
+store(join(REPL, REPL), REPL_REPL_HASH, distribution: hashed)
+store(join(REPL, REPL), REPL_REPL_ROWC, distribution: row_cyclic)
+store(join(REPL, REPL), REPL_REPL_COLC, distribution: col_cyclic)
+store(join(REPL, REPL), REPL_REPL_REPL, distribution: replicated)
+    # scan them all
+    # HASH HASH
+    scan(HASH_HASH_HASH)
+    scan(HASH_HASH_ROWC)
+    scan(HASH_HASH_COLC)
+    scan(HASH_HASH_REPL)
+    # HASH ROWC
+    scan(HASH_ROWC_HASH)
+    scan(HASH_ROWC_ROWC)
+    scan(HASH_ROWC_COLC)
+    scan(HASH_ROWC_REPL)
+    # HASH COLC
+    scan(HASH_COLC_HASH)
+    scan(HASH_COLC_ROWC)
+    scan(HASH_COLC_COLC)
+    scan(HASH_COLC_REPL)
+    # HASH REPL
+    scan(HASH_REPL_HASH)
+    scan(HASH_REPL_ROWC)
+    scan(HASH_REPL_COLC)
+    scan(HASH_REPL_REPL)
+    # ROWC HASH
+    scan(ROWC_HASH_HASH)
+    scan(ROWC_HASH_ROWC)
+    scan(ROWC_HASH_COLC)
+    scan(ROWC_HASH_REPL)
+    # ROWC ROWC
+    scan(ROWC_ROWC_HASH)
+    scan(ROWC_ROWC_ROWC)
+    scan(ROWC_ROWC_COLC)
+    scan(ROWC_ROWC_REPL)
+    # ROWC COLC
+    scan(ROWC_COLC_HASH)
+    scan(ROWC_COLC_ROWC)
+    scan(ROWC_COLC_COLC)
+    scan(ROWC_COLC_REPL)
+    # ROWC REPL
+    scan(ROWC_REPL_HASH)
+    scan(ROWC_REPL_ROWC)
+    scan(ROWC_REPL_COLC)
+    scan(ROWC_REPL_REPL)
+    # COLC HASH
+    scan(COLC_HASH_HASH)
+    scan(COLC_HASH_ROWC)
+    scan(COLC_HASH_COLC)
+    scan(COLC_HASH_REPL)
+    # COLC ROWC
+    scan(COLC_ROWC_HASH)
+    scan(COLC_ROWC_ROWC)
+    scan(COLC_ROWC_COLC)
+    scan(COLC_ROWC_REPL)
+    # COLC COLC
+    scan(COLC_COLC_HASH)
+    scan(COLC_COLC_ROWC)
+    scan(COLC_COLC_COLC)
+    scan(COLC_COLC_REPL)
+    # COLC REPL
+    scan(COLC_REPL_HASH)
+    scan(COLC_REPL_ROWC)
+    scan(COLC_REPL_COLC)
+    scan(COLC_REPL_REPL)
+    # REPL HASH
+    scan(REPL_HASH_HASH)
+    scan(REPL_HASH_ROWC)
+    scan(REPL_HASH_COLC)
+    scan(REPL_HASH_REPL)
+    # REPL ROWC
+    scan(REPL_ROWC_HASH)
+    scan(REPL_ROWC_ROWC)
+    scan(REPL_ROWC_COLC)
+    scan(REPL_ROWC_REPL)
+    # REPL COLC
+    scan(REPL_COLC_HASH)
+    scan(REPL_COLC_ROWC)
+    scan(REPL_COLC_COLC)
+    scan(REPL_COLC_REPL)
+    # REPL REPL
+    scan(REPL_REPL_HASH)
+    scan(REPL_REPL_ROWC)
+    scan(REPL_REPL_COLC)
+    scan(REPL_REPL_REPL)
+
+    # aggregate them all
+
+
+
+
+
+
+
+
+
+
+
+# transpose
+#iquery -aq "transpose(build( <v:double>[r=0:4,2,0, c=0:4,2,0], r+100*c))"
+# transpose is too hard at the moment
+#iquery -aq "build(<v:double>[r=0:4,2,0, c=0:4,2,0], 100*r+c)"
+#iquery -aq "build(<v:double>[r=0:4,2,0, c=0:4,2,0], r+100*c)"
+#iquery -aq "store(transpose(build( <v:double>[r=0:4,2,0, c=0:4,2,0], r+100*c)), T)"
+
+# scalapack
+
+# sort
+#iquery -aq "sort(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j))"
+# these hang
+#iquery -aq "sort(build(<v:int64>[i=0:0,1,0],0))"
+#iquery -aq "sort(build(<v:int64>[i=0:1,1,0],0))"
+#iquery -aq "sort(build(<v:int64>[i=0:10,2,0],0))"
+
+# uniq
+
+#
+# second tier
+#
+
+# add attributes
+#iquery -aq "create array ARRAY_DFLT <v:int64>[i=0:9:0:2]"
+#iquery -aq "store(build(ARRAY_DFLT, i), ARRAY)"
+#iquery -aq "add_attributes(ARRAY_DFLT, <w:int64>)"
+#iquery -aq "scan(ARRAY_DFLT)"
+#iquery -aq "store(project(ARRAY_DFLT, v), ARRAY_DFLT)"
+#iquery -aq "remove(ARRAY_DFLT)"
+
+#iquery -aq "_explain_physical('sort(build(<v:int64>[i=0:2,1,0,j=0:2,1,0],3*i+j)','afl')"
+
+
+#
+#
+# third teir
+
+--cleanup
+remove(HASH)
+remove(ROWC)
+remove(COLC)
+remove(REPL)
+
+# cleanup the 64 dist1_dist2_dist3 files
+# HASH HASH
+remove(HASH_HASH_HASH)
+remove(HASH_HASH_ROWC)
+remove(HASH_HASH_COLC)
+remove(HASH_HASH_REPL)
+# HASH ROWC
+remove(HASH_ROWC_HASH)
+remove(HASH_ROWC_ROWC)
+remove(HASH_ROWC_COLC)
+remove(HASH_ROWC_REPL)
+# HASH COLC
+remove(HASH_COLC_HASH)
+remove(HASH_COLC_ROWC)
+remove(HASH_COLC_COLC)
+remove(HASH_COLC_REPL)
+# HASH REPL
+remove(HASH_REPL_HASH)
+remove(HASH_REPL_ROWC)
+remove(HASH_REPL_COLC)
+remove(HASH_REPL_REPL)
+# ROWC HASH
+remove(ROWC_HASH_HASH)
+remove(ROWC_HASH_ROWC)
+remove(ROWC_HASH_COLC)
+remove(ROWC_HASH_REPL)
+# ROWC ROWC
+remove(ROWC_ROWC_HASH)
+remove(ROWC_ROWC_ROWC)
+remove(ROWC_ROWC_COLC)
+remove(ROWC_ROWC_REPL)
+# ROWC COLC
+remove(ROWC_COLC_HASH)
+remove(ROWC_COLC_ROWC)
+remove(ROWC_COLC_COLC)
+remove(ROWC_COLC_REPL)
+# ROWC REPL
+remove(ROWC_REPL_HASH)
+remove(ROWC_REPL_ROWC)
+remove(ROWC_REPL_COLC)
+remove(ROWC_REPL_REPL)
+# COLC HASH
+remove(COLC_HASH_HASH)
+remove(COLC_HASH_ROWC)
+remove(COLC_HASH_COLC)
+remove(COLC_HASH_REPL)
+# COLC ROWC
+remove(COLC_ROWC_HASH)
+remove(COLC_ROWC_ROWC)
+remove(COLC_ROWC_COLC)
+remove(COLC_ROWC_REPL)
+# COLC COLC
+remove(COLC_COLC_HASH)
+remove(COLC_COLC_ROWC)
+remove(COLC_COLC_COLC)
+remove(COLC_COLC_REPL)
+# COLC REPL
+remove(COLC_REPL_HASH)
+remove(COLC_REPL_ROWC)
+remove(COLC_REPL_COLC)
+remove(COLC_REPL_REPL)
+# REPL HASH
+remove(REPL_HASH_HASH)
+remove(REPL_HASH_ROWC)
+remove(REPL_HASH_COLC)
+remove(REPL_HASH_REPL)
+# REPL ROWC
+remove(REPL_ROWC_HASH)
+remove(REPL_ROWC_ROWC)
+remove(REPL_ROWC_COLC)
+remove(REPL_ROWC_REPL)
+# REPL COLC
+remove(REPL_COLC_HASH)
+remove(REPL_COLC_ROWC)
+remove(REPL_COLC_COLC)
+remove(REPL_COLC_REPL)
+# REPL REPL
+remove(REPL_REPL_HASH)
+remove(REPL_REPL_ROWC)
+remove(REPL_REPL_COLC)
+remove(REPL_REPL_REPL)

@@ -1,0 +1,241 @@
+SCIDB QUERY : <store(build(<v0:int64>[i=1:2,1,0;j=1:4,1,0;k=1:1,1,0], i), SAVE_HA, distribution: hashed)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(<v0:int64>[i=1:2,1,0;j=1:4,1,0;k=1:1,1,0], i), SAVE_RC, distribution: row_cyclic)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(<v0:int64>[i=1:2,1,0;j=1:4,1,0;k=1:1,1,0], i), SAVE_RE, distribution: replicated)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(<v0:int64>[i=1:2,1,0;j=1:4,1,0;k=1:1,1,0], i), SAVE_CC, distribution: col_cyclic)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <aggregate(SAVE_HA, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <aggregate(SAVE_RC, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <aggregate(SAVE_RE, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <aggregate(SAVE_CC, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <aggregate(SAVE_CC, count(v0), sum(v0), j, k)>
+{j,k} v0_count,v0_sum
+{1,1} 2,3
+{2,1} 2,3
+{3,1} 2,3
+{4,1} 2,3
+
+SCIDB QUERY : <save(SAVE_HA, 'data_ha.bin', 0, '(int64)')>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <save(SAVE_RC, 'data_rc.bin', 0, '(int64)')>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <save(SAVE_RE, 'data_re.bin', 0, '(int64)')>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <save(SAVE_CC, 'data_cc.bin', 0, '(int64)')>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array UNBOUNDED_SCHEMA <v0:int64>[i=1:*,1,0;j=1:4,1,0;k=1:1,1,0]>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(input(UNBOUNDED_SCHEMA, 'data_rc.bin', -1, '(int64)'),count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_ha.bin', -1, '(int64)'), TMP, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_ha.bin', -1, '(int64)'), TMP, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_ha.bin', -1, '(int64)'), TMP, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_ha.bin', -1, '(int64)'), TMP, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0), j, k)>
+{j,k} v0_count,v0_sum
+{1,1} 2,3
+{2,1} 3,4
+{3,1} 2,3
+{4,1} 1,2
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_rc.bin', -1, '(int64)'), TMP, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_rc.bin', -1, '(int64)'), TMP, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_rc.bin', -1, '(int64)'), TMP, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_rc.bin', -1, '(int64)'), TMP, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0), j, k)>
+{j,k} v0_count,v0_sum
+{1,1} 2,3
+{2,1} 3,4
+{3,1} 2,3
+{4,1} 1,2
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_re.bin', -1, '(int64)'), TMP, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_re.bin', -1, '(int64)'), TMP, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_re.bin', -1, '(int64)'), TMP, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_re.bin', -1, '(int64)'), TMP, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0), j, k)>
+{j,k} v0_count,v0_sum
+{1,1} 2,3
+{2,1} 3,4
+{3,1} 2,3
+{4,1} 1,2
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_cc.bin', -1, '(int64)'), TMP, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_cc.bin', -1, '(int64)'), TMP, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_cc.bin', -1, '(int64)'), TMP, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0))>
+{i} v0_count,v0_sum
+{0} 8,12
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <store(input(UNBOUNDED_SCHEMA, 'data_cc.bin', -1, '(int64)'), TMP, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(TMP, count(v0), sum(v0), j, k)>
+{j,k} v0_count,v0_sum
+{1,1} 2,3
+{2,1} 3,4
+{3,1} 2,3
+{4,1} 1,2
+
+SCIDB QUERY : <remove(TMP)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(SAVE_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(SAVE_RC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(SAVE_RE)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(SAVE_CC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(UNBOUNDED_SCHEMA)>
+Query was executed successfully
+

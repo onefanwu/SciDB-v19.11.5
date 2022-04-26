@@ -1,0 +1,35 @@
+--setup
+
+--start-igdata
+store(build(<v:int64>[i=0:7], 8-i), A)
+create temp array TA <v:int64>[i=0:7]
+store(build(TA, 18-i), TA)
+--stop-igdata
+
+--test
+--start-query-logging
+--set-format csv
+flatten(A)
+store(flatten(A), FA)
+scan(FA)
+
+flatten(TA)
+store(flatten(TA), FA)
+scan(FA)
+
+--echo No SG in store(flatten(A), FA)
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq \
+    "_explain_physical('store(flatten(A), FA)', 'afl')" | \
+    grep impl_sg || true"
+
+--echo No SG in store(flatten(TA), FA)
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq \
+    "_explain_physical('store(flatten(TA), FA)', 'afl')" | \
+    grep impl_sg || true"
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(TA)
+remove(FA)

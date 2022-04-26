@@ -1,0 +1,20 @@
+# Test between() with dataframe input.
+
+--setup
+create temp array TWO_D<v:int64>[i=0:39; j=0:39]
+store( \
+  redimension( \
+    apply( \
+      build(<v:int64>[dummy=0:29], dummy), \
+      (i, dummy), \
+      (j, 29 - dummy)), \
+    TWO_D), \
+  TWO_D)
+
+--test
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "between(flatten(TWO_D), 0, 0, 2, 2)"
+
+--cleanup
+remove(TWO_D)

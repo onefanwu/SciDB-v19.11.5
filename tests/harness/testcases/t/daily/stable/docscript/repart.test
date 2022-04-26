@@ -1,0 +1,20 @@
+
+--test
+--start-query-logging
+
+--set-format dcsv
+--start-igdata
+CREATE ARRAY source <val:double> [x=0:3,1,0,y=0:3,1,0]  
+--stop-igdata
+store(build(source,x*3+y),source) 
+scan(source)  -- Inserted by scan_doctor
+store(repart(source, <val:double> [x=0:3,2,0, y=0:3,2,0]),target) 
+scan(target)  -- Inserted by scan_doctor
+
+--stop-query-logging
+
+
+--cleanup
+
+remove(source)
+remove(target)

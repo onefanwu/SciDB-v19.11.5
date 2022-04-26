@@ -1,0 +1,8 @@
+Query was executed successfully
+
+Query was executed successfully
+
+[An error expected at this place for the query "between(flatten(TWO_D), 0, 0, 2, 2)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED.]
+
+Query was executed successfully
+

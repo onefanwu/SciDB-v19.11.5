@@ -1,0 +1,47 @@
+--setup
+create array TWO_D<v:double>[x=0:9; t=0:*]
+store(build(<v:double>[x=0:9; t=0:19], float(t)+float(x)), STUFF)
+
+--test
+
+--echo Some of stuff...
+op_sum(STUFF, v)
+
+# Needs a dimension name to work.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_MULTIDIMENSIONAL_ARRAY_NOT_ALLOWED \
+    "append(STUFF, TWO_D)"
+--igdata "append(STUFF, TWO_D, t)"
+# Append worked, because sum is same as for STUFF.
+op_sum(TWO_D, v)
+
+# Dimension name is valid, but data won't fit.
+--error --code=scidb::SCIDB_SE_EXECUTION::SCIDB_LE_CHUNK_OUT_OF_BOUNDARIES \
+    "append(STUFF, TWO_D, x)"
+
+# Append to non-existent array.
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_DOESNT_EXIST \
+    "append(build(STUFF, random()), IDONTEXIST)"
+
+# Append to non-existent dataframe.
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_DOESNT_EXIST \
+    "append(flatten(build(STUFF, random())), IDONTEXIST)"
+
+# Not enough arguments.
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_NAME_ARITY_MISMATCH \
+    "append(STUFF)"
+
+# No arguments at all.
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_NAME_ARITY_MISMATCH \
+    "append()"
+
+# Extra array argument.
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "append(STUFF, TWO_D, TWO_D)"
+
+# Extra dimension argument.
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT \
+    "append(STUFF, TWO_D, x, x)"
+
+--cleanup
+remove(STUFF)
+remove(TWO_D)

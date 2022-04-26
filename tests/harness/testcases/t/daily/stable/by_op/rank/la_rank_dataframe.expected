@@ -1,0 +1,115 @@
+Query was executed successfully
+
+Query was executed successfully
+
+{x,y} val
+{0,1} null
+{1,0} 0
+{1,1} 8
+{1,2} 14
+{1,3} 20
+{2,0} 3
+{2,1} 9
+{3,1} 10
+{4,0} 5
+{4,1} 0
+{5,0} 6
+{5,1} null
+{5,3} 24
+
+Query was executed successfully
+
+Query was executed successfully
+
+not replicated
+{$n} val,val_rank
+{0} null,null
+{1} null,null
+{2} 0,1
+{3} 0,1
+{4} 3,3
+{5} 5,4
+{6} 6,5
+{7} 8,6
+{8} 9,7
+{9} 10,8
+{10} 14,9
+{11} 20,10
+{12} 24,11
+
+{$n} v2,v2_rank
+{0} null,null
+{1} null,null
+{2} '0',1.5
+{3} '0',1.5
+{4} '10',3
+{5} '14',4
+{6} '20',5
+{7} '24',6
+{8} '3',7
+{9} '5',8
+{10} '6',9
+{11} '8',10
+{12} '9',11
+
+[An error expected at this place for the query "rank(apply(flat_teeth, v2, double(val)), v2, x)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+[An error expected at this place for the query "avg_rank(apply(flat_teeth, v2, uint8(val)), v2, y)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+[An error expected at this place for the query "rank(apply(flat_teeth, v2, int16(val)), v2, x, y)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+[An error expected at this place for the query "rank(apply(flat_teeth, v2, double(val)), v2, $seq)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+[An error expected at this place for the query "avg_rank(apply(flat_teeth, v2, uint8(val)), v2, $seq)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+[An error expected at this place for the query "rank(apply(flat_teeth, v2, int16(val)), v2, $seq, $inst)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+replicated
+{$n} val,val_rank
+{0} null,null
+{1} null,null
+{2} 0,1
+{3} 0,1
+{4} 3,3
+{5} 5,4
+{6} 6,5
+{7} 8,6
+{8} 9,7
+{9} 10,8
+{10} 14,9
+{11} 20,10
+{12} 24,11
+
+{$n} v2,v2_rank
+{0} null,null
+{1} null,null
+{2} '0',1.5
+{3} '0',1.5
+{4} '10',3
+{5} '14',4
+{6} '20',5
+{7} '24',6
+{8} '3',7
+{9} '5',8
+{10} '6',9
+{11} '8',10
+{12} '9',11
+
+[An error expected at this place for the query "rank(apply(many_flat_teeth, v2, double(val)), v2, x)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+[An error expected at this place for the query "avg_rank(apply(many_flat_teeth, v2, uint8(val)), v2, y)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+[An error expected at this place for the query "rank(apply(many_flat_teeth, v2, int16(val)), v2, x, y)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+[An error expected at this place for the query "rank(apply(many_flat_teeth, v2, double(val)), v2, $seq)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+[An error expected at this place for the query "avg_rank(apply(many_flat_teeth, v2, uint8(val)), v2, $seq)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+[An error expected at this place for the query "rank(apply(many_flat_teeth, v2, int16(val)), v2, $seq, $inst)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

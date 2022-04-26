@@ -1,0 +1,19 @@
+--setup
+--start-query-logging
+store(build(<q:uint64>[i=0:9:0:2], i), a)
+store(flatten(a), b)
+
+--test
+add_attributes(b, <r:int64, s:int64>)
+op_sum(b, i)
+op_sum(b, q)
+store(project(apply(b, sp, 4*q), i, q, r, sp), b)
+op_sum(b, i)
+op_sum(b, q)
+op_sum(b, r)
+op_sum(b, s)
+
+--cleanup
+remove(a)
+remove(b)
+--stop-query-logging

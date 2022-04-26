@@ -1,0 +1,71 @@
+--setup
+--start-query-logging
+
+--start-igdata
+
+#TODO, make into matrices, enable col_cyclic distribution
+
+store( build( <val:string> [x=0:255,10,0],  string(x % 256) ), BUILD_NOOV_HA, distribution: hashed )
+store( build( <val:string> [x=0:255,10,0],  string(x % 256) ), BUILD_NOOV_RC, distribution: row_cyclic )
+store( build( <val:string> [x=0:255,10,0],  string(x % 256) ), BUILD_NOOV_RE, distribution: replicated )
+store( build( <val:string> [x=0:15,10,0;y=0:15,10,0],  string(x % 256) ), BUILD_NOOV_CC, distribution: col_cyclic )
+
+store( build( <val:string> [x=0:255,10,5],  string(x % 256) ), BUILD_OVER_HA, distribution: hashed )
+store( build( <val:string> [x=0:255,10,5],  string(x % 256) ), BUILD_OVER_RC, distribution: row_cyclic )
+store( build( <val:string> [x=0:255,10,5],  string(x % 256) ), BUILD_OVER_RE, distribution: replicated )
+store( build( <val:string> [x=0:15,10,5;y=0:15,10,5],  string(x % 256) ), BUILD_OVER_CC, distribution: col_cyclic )
+
+store(apply(build(<a:double> [x=1:1000000,100000,0], double(x)), b, iif(x%2=0, 'abc','def'), c, int64(0)), TEN_CHUNKS_HA, distribution: hashed)
+store(apply(build(<a:double> [x=1:1000000,100000,0], double(x)), b, iif(x%2=0, 'abc','def'), c, int64(0)), TEN_CHUNKS_RC, distribution: row_cyclic )
+store(apply(build(<a:double> [x=1:1000000,100000,0], double(x)), b, iif(x%2=0, 'abc','def'), c, int64(0)), TEN_CHUNKS_RE, distribution: replicated )
+store(apply(build(<a:double> [x=1:1000,1000,0;y=1:1000,1000,0], double(x)), b, iif(x%2=0, 'abc','def'), c, int64(0)), TEN_CHUNKS_CC, distribution: col_cyclic )
+
+--stop-igdata
+
+--test
+summarize(BUILD_NOOV_HA, by_instance:true)
+summarize(BUILD_NOOV_RC, by_instance:true)
+summarize(BUILD_NOOV_RE, by_instance:true)
+summarize(BUILD_NOOV_CC, by_instance:true)
+
+summarize(BUILD_OVER_HA, by_instance:true)
+summarize(BUILD_OVER_RC, by_instance:true)
+summarize(BUILD_OVER_RE, by_instance:true)
+summarize(BUILD_OVER_CC, by_instance:true)
+
+summarize(TEN_CHUNKS_HA, by_instance:true)
+summarize(TEN_CHUNKS_RC, by_instance:true)
+summarize(TEN_CHUNKS_RE, by_instance:true)
+summarize(TEN_CHUNKS_CC, by_instance:true)
+
+summarize(BUILD_NOOV_HA, by_attribute:true, by_instance:true)
+summarize(BUILD_NOOV_RC, by_attribute:true, by_instance:true)
+summarize(BUILD_NOOV_RE, by_attribute:true, by_instance:true)
+summarize(BUILD_NOOV_CC, by_attribute:true, by_instance:true)
+
+summarize(BUILD_OVER_HA, by_attribute:true, by_instance:true)
+summarize(BUILD_OVER_RC, by_attribute:true, by_instance:true)
+summarize(BUILD_OVER_RE, by_attribute:true, by_instance:true)
+summarize(BUILD_OVER_CC, by_attribute:true, by_instance:true)
+
+summarize(TEN_CHUNKS_HA, by_attribute:true, by_instance:true)
+summarize(TEN_CHUNKS_RC, by_attribute:true, by_instance:true)
+summarize(TEN_CHUNKS_RE, by_attribute:true, by_instance:true)
+summarize(TEN_CHUNKS_CC, by_attribute:true, by_instance:true)
+
+
+--cleanup
+remove(BUILD_NOOV_HA)
+remove(BUILD_NOOV_RC)
+remove(BUILD_NOOV_RE)
+remove(BUILD_NOOV_CC)
+
+remove(BUILD_OVER_HA)
+remove(BUILD_OVER_RC)
+remove(BUILD_OVER_RE)
+remove(BUILD_OVER_CC)
+
+remove(TEN_CHUNKS_HA)
+remove(TEN_CHUNKS_RC)
+remove(TEN_CHUNKS_RE)
+remove(TEN_CHUNKS_CC)

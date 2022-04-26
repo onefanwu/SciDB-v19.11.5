@@ -1,0 +1,30 @@
+# SDB-6285.
+
+--setup
+
+create array DATA<value:string> [tid=0:*:0:1048576; iid=0:*:0:8; attr=0:*:0:128]
+create array FIELD_MAP<sub_field_id:int64> [attribute_no=0:*:0:1024]
+create array PARTICIPANT<participant_id:int64 NOT NULL> [tid=0:*:0:134217728; iid=0:*:0:16]
+
+--test
+
+--start-query-logging
+cross_join( \
+  redimension( \
+    cross_join( \
+      filter( \
+	DATA, \
+	attr > 0) as A, \
+      FIELD_MAP as B, \
+      A.attr, \
+      B.attribute_no), \
+    <value:string>[tid; iid; sub_field_id]) as C, \
+  PARTICIPANT as D, \
+  C.tid, D.tid, \
+  C.iid, D.iid)
+--stop-query-logging
+
+--cleanup
+remove(DATA)
+remove(FIELD_MAP)
+remove(PARTICIPANT)

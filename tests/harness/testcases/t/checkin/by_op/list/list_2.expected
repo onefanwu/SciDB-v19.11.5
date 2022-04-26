@@ -1,0 +1,37 @@
+SCIDB QUERY : <store(build(<v:uint64>[i=0:9],i),a)>
+Query was executed successfully
+
+SCIDB QUERY : <store(flatten(a),df)>
+Query was executed successfully
+
+SCIDB QUERY : <project(list(),name,schema)>
+{No} name,schema
+{0} 'a','a<v:uint64> [i=0:9:0:1000000]'
+{1} 'df','df<i:int64 NOT NULL,v:uint64>'
+
+SCIDB QUERY : <project(list('arrays'),name,schema)>
+{No} name,schema
+{0} 'a','a<v:uint64> [i=0:9:0:1000000]'
+{1} 'df','df<i:int64 NOT NULL,v:uint64>'
+
+SCIDB QUERY : <project(list('arrays',true),name,schema)>
+{No} name,schema
+{0} 'a','a<v:uint64> [i=0:9:0:1000000]'
+{1} 'a@1','a@1<v:uint64> [i=0:9:0:1000000]'
+{2} 'df','df<i:int64 NOT NULL,v:uint64>'
+{3} 'df@1','df@1<i:int64 NOT NULL,v:uint64>'
+
+SCIDB QUERY : <_show_nodist(a)>
+{i} schema
+{0} 'a<v:uint64> [i=0:9:0:1000000]'
+
+SCIDB QUERY : <project(apply(_show_nodist(df), nschema, substr(schema, 0, 39)+'-'+substr(schema, 40, 120)), nschema)>
+{i} nschema
+{0} 'df<i:int64 NOT NULL,v:uint64> [$inst=0:-:0:1; $seq=0:*:0:1000000]'
+
+SCIDB QUERY : <remove(df)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+

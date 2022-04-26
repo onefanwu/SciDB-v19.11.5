@@ -1,0 +1,9 @@
+SCIDB QUERY : <create array a<v:int64>[i=12:24:0:1]>
+Query was executed successfully
+
+SCIDB QUERY : <mquery(mquery(insert(build(a,2*i+1),a)))>
+[An error expected at this place for the query "mquery(mquery(insert(build(a,2*i+1),a)))". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_DDL_CANT_BE_NESTED. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_DDL_CANT_BE_NESTED.]
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+

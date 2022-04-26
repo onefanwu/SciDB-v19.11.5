@@ -1,0 +1,15 @@
+--setup
+--start-query-logging
+create temp array a<z:uint64>[i=0:3:0:2;j=0:3:0:2]
+store(build(a ,i+j),a)
+
+--test
+scan(a)
+add_attributes(a, <y:int64>)
+scan(a)
+store(project(apply(a, yprime, 2*i+1), z, yprime), a)
+scan(a)
+
+--cleanup
+remove(a)
+--stop-query-logging

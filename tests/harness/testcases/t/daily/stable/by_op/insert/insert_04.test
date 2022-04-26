@@ -1,0 +1,85 @@
+--setup
+--start-query-logging
+# Ticket number: 1950
+# Test covers INSERT on dense filled arrays with overlaps, 2D/3D types and complex queries.
+# Test covers INSERT from build literal into arrays
+
+create array A <a:int64 NOT NULL> [x=-3:0,4,2 , y=0:3,4,2]
+store(build(A,100*x-19*y),A)
+scan(A)  -- Inserted by scan_doctor
+
+create array B <fact: bool NOT NULL> [x=1:2,2,0,y=1:2,2,0,z=1:2,2,0]
+store(build(B,iif(x+y+z<=4,true, false)),B)
+scan(B)  -- Inserted by scan_doctor
+
+store(repart(apply(B,enroll, 2000*x-y), <fact: bool, enroll: int64> [x=1:2,2,1, y=1:2,2,1, z=1:2,2,0]),C)
+scan(C)  -- Inserted by scan_doctor
+create array D < a: bool, b: int64> [x=1:2,2,1, y=1:2,2,1, z=1:2,2,0]
+_show_nodist(C)
+
+
+--test
+insert(filter(build(A,2000*x+10000),x>-2 and y=1) As Q1,A)
+scan(A)  -- Inserted by scan_doctor
+insert(between(build(A,2000*x+10000),0,0,0,3),A)
+scan(A)  -- Inserted by scan_doctor
+insert(filter( build(A,2000*x+10000),x=0 and y=2),A)
+scan(A)  -- Inserted by scan_doctor
+
+--igdata "insert(filter( build(A,2000*x+10000),x=0 and y=2),A)"
+store(sort(A),ZZ)
+scan(ZZ)  -- Inserted by scan_doctor
+_show_nodist(ZZ)
+--igdata "insert(filter( build(A,2000*x+10000),x=0 and y=2),A)"
+insert(sort(A ,a desc),ZZ)
+scan(ZZ)  -- Inserted by scan_doctor
+
+insert(build(<a:int64 NOT NULL default 99> [x=-3:0,4,2, y=0:3,4,2], '[[(),(),(),(0)],[(1),(),(),()],[(0),(0),(0),(-157)],[(),(),(),()]]', true),A)
+scan(A)  -- Inserted by scan_doctor
+build(<a:int64 NULL> [x=-3:0,4,2, y=0:3,4,2], '[[(),(),(),(0)],[(1),(),(),()],[(0),(0),(0),(-157)],[(),(),(),()]]', true)
+
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_WRONG_ATTRIBUTE_FLAGS "insert(build(<a:int64 NULL> [x=-3:0,4,2, y=0:3,4,2], '[[(),(),(),(0)],[(1),(),(),()],[(0),(0),(0),(-157)],[(),(),(),()]]', true),A)"
+
+store(build(<a:int64 NULL> [x=-3:0,4,2, y=0:3,4,2], '[[(),(),(),(0)],[(1),(),(),()],[(0),(0),(0),(-157)],[(),(),(),()]]', true),MIB)
+scan(MIB)  -- Inserted by scan_doctor
+insert(build(<a:int64 NULL> [x=-3:0,4,2, y=0:3,4,2], '[[(),(0),(0),(0)],[(1),(0),(0),(0)],[(0),(0),(0),(0)],[(0),(1),(),()]]', true),MIB)
+scan(MIB)  -- Inserted by scan_doctor
+_show_nodist(MIB)
+scan(MIB)
+aggregate(versions(MIB),count(*))
+insert(between(filter(build(MIB,null),a is null),-3,0,-1,2), MIB)
+scan(MIB)  -- Inserted by scan_doctor
+aggregate(versions(MIB),count(*))
+
+--error --code scidb::SCIDB_SE_QPROC::SCIDB_LE_NESTING_PROHIBITED "insert(filter(insert(build(MIB,null), MIB),a is null),MIB)"
+--error --code scidb::SCIDB_SE_QPROC::SCIDB_LE_NESTING_PROHIBITED "insert(insert(build(MIB,null), MIB),MIB)"
+
+insert(build(B,true),B)
+scan(B)  -- Inserted by scan_doctor
+insert(build(B,iif((x+y+z)%2=0,true, false)),B)
+scan(B)  -- Inserted by scan_doctor
+insert(filter(B, 0),B)
+scan(B)  -- Inserted by scan_doctor
+
+# Trying to change only the second attribute of C, I guess it's not possible to change only 1 of the attrbutes with INSERT
+--aql update C set enroll=0 where enroll%2=0
+scan(C)  -- Inserted by scan_doctor
+--aql update C set fact=false where enroll=0
+scan(C)  -- Inserted by scan_doctor
+insert(C,D)
+scan(D)  -- Inserted by scan_doctor
+
+
+
+
+--cleanup
+remove(A)
+remove(B)
+remove(C)
+remove(D)
+remove(ZZ)
+remove(MIB)
+
+--stop-query-logging
+
+

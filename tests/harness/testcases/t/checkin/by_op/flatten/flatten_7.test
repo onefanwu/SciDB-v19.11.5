@@ -1,0 +1,11 @@
+--setup
+--start-query-logging
+store(build(<v:int64>[i=0:2,1,0,j=0:2,2,0],3*i+j), REPL, distribution: replicated)
+
+--test
+show(REPL)
+op_sum(flatten(REPL),v)
+
+--cleanup
+remove(REPL)
+--stop-query-logging

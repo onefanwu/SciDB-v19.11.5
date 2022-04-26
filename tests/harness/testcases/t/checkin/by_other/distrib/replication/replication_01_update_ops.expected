@@ -1,0 +1,66 @@
+SCIDB QUERY : <create array DAY_HA <daystr: string>[day=0:6,1,0] distribution hashed>
+Query was executed successfully
+
+SCIDB QUERY : <show(DAY_HA)>
+{i} schema,distribution,etcomp
+{0} 'DAY_HA<daystr:string> [day=0:6:0:1]','hashed','none'
+
+SCIDB QUERY : <create array DAY_RE <daystr: string>[day=0:6,1,0] distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <show(DAY_RE)>
+{i} schema,distribution,etcomp
+{0} 'DAY_RE<daystr:string> [day=0:6:0:1]','replicated','none'
+
+SCIDB QUERY : <store(build(DAY_HA, 'DAY'+string(day)), DAY_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DAY_HA)>
+{i} schema,distribution,etcomp
+{0} 'DAY_HA<daystr:string> [day=0:6:0:1]','hashed','none'
+
+SCIDB QUERY : <store(build(DAY_RE, 'DAY'+string(day)), DAY_RE)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DAY_RE)>
+{i} schema,distribution,etcomp
+{0} 'DAY_RE<daystr:string> [day=0:6:0:1]','replicated','none'
+
+SCIDB QUERY : <store(DAY_RE, DAY_RE_COPY)>
+Query was executed successfully
+
+SCIDB QUERY : <show(DAY_RE_COPY)>
+{i} schema,distribution,etcomp
+{0} 'DAY_RE_COPY<daystr:string> [day=0:6:0:1]','replicated','none'
+
+SCIDB QUERY : <show('insert(DAY_HA, DAY_HA)','afl')>
+{i} schema,distribution,etcomp
+{0} 'DAY_HA<daystr:string> [day=0:6:0:1]','hashed',null
+
+SCIDB QUERY : <show('insert(DAY_HA, DAY_RE)','afl')>
+{i} schema,distribution,etcomp
+{0} 'DAY_RE<daystr:string> [day=0:6:0:1]','replicated',null
+
+SCIDB QUERY : <show('insert(DAY_RE, DAY_HA)','afl')>
+{i} schema,distribution,etcomp
+{0} 'DAY_HA<daystr:string> [day=0:6:0:1]','hashed',null
+
+SCIDB QUERY : <show('insert(DAY_RE, DAY_RE)','afl')>
+{i} schema,distribution,etcomp
+{0} 'DAY_RE<daystr:string> [day=0:6:0:1]','replicated',null
+
+SCIDB QUERY : <delete(DAY_HA, day=0)>
+Query was executed successfully
+
+SCIDB QUERY : <delete(DAY_RE, day=0)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DAY_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DAY_RE)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DAY_RE_COPY)>
+Query was executed successfully
+

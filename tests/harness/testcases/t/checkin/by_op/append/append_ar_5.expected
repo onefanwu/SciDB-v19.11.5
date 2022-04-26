@@ -1,0 +1,91 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Initial sums...
+SCIDB QUERY : <op_sum(A, v)>
+{i} v_sum
+{0} 17
+
+SCIDB QUERY : <op_sum(B, v)>
+{i} v_sum
+{0} 120
+
+SCIDB QUERY : <append(A, XSHORT, i)>
+[An error expected at this place for the query "append(A, XSHORT, i)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES.]
+
+SCIDB QUERY : <append(A, XSHORT, j)>
+[An error expected at this place for the query "append(A, XSHORT, j)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES.]
+
+SCIDB QUERY : <append(A, X, i)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 17
+
+SCIDB QUERY : <append(A, X, j)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 34
+
+SCIDB QUERY : <append(B, X, i)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 154
+
+SCIDB QUERY : <append(B, X, j)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 274
+
+SCIDB QUERY : <append(A, Y, i)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(Y, v)>
+{i} v_sum
+{0} 17
+
+SCIDB QUERY : <append(A, Y, j)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(Y, v)>
+{i} v_sum
+{0} 34
+
+SCIDB QUERY : <append(B, Y, i)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(Y, v)>
+{i} v_sum
+{0} 154
+
+SCIDB QUERY : <append(B, Y, j)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(Y, v)>
+{i} v_sum
+{0} 274
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

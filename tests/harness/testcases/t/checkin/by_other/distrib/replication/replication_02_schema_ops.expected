@@ -1,0 +1,36 @@
+SCIDB QUERY : <create array DAY_HA <daystr: string>[day=0:6,1,0] distribution hashed>
+Query was executed successfully
+
+SCIDB QUERY : <show(DAY_HA)>
+{i} schema,distribution,etcomp
+{0} 'DAY_HA<daystr:string> [day=0:6:0:1]','hashed','none'
+
+SCIDB QUERY : <create array DAY_RE <daystr: string>[day=0:6,1,0] distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <show(DAY_RE)>
+{i} schema,distribution,etcomp
+{0} 'DAY_RE<daystr:string> [day=0:6:0:1]','replicated','none'
+
+"show('input(DAY_HA, <DATAFILE>)','afl')"
+{i} schema,distribution,etcomp
+{0} 'DAY_HA<daystr:string> [day=0:6:0:1]',null,null
+
+"show('input(DAY_RE, <DATAFILE>)','afl')"
+{i} schema,distribution,etcomp
+{0} 'DAY_RE<daystr:string> [day=0:6:0:1]',null,null
+
+SCIDB QUERY : <_show2_nodist('build(DAY_HA, \'foo\')','afl')>
+{i} schema
+{0} 'DAY_HA<daystr:string> [day=0:6:0:1]'
+
+SCIDB QUERY : <_show2_nodist('build(DAY_RE, \'foo\')','afl')>
+{i} schema
+{0} 'DAY_RE<daystr:string> [day=0:6:0:1]'
+
+SCIDB QUERY : <remove(DAY_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DAY_RE)>
+Query was executed successfully
+

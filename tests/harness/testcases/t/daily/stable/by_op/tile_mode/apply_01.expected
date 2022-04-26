@@ -1,0 +1,18 @@
+SCIDB QUERY : <store(build(<v:int64>[i=0:9999999:0:1000],i),ar)>
+Query was executed successfully
+
+SCIDB QUERY : <consume(apply(ar,w,i,x,2*i,y,3*i))>
+Query was executed successfully
+
+SCIDB QUERY : <consume(apply(ar,w,i,x,2*i,y,3*i))>
+Query was executed successfully
+
+SCIDB QUERY : <consume(apply(ar,w,i,x,2*i,y,3*i))>
+Query was executed successfully
+
+SCIDB QUERY : <consume(apply(ar,w,i,x,2*i,y,3*i))>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ar)>
+Query was executed successfully
+

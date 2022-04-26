@@ -1,0 +1,36 @@
+--setup
+--start-query-logging
+
+load_library('dense_linear_algebra')
+
+# first, not a test, just get the raw data for the logs for diagnosis purposes
+# running via --command puts the output in the log, and not the .out file to avoid matching
+--shell --command "iquery -ocsv+ -aq '_lapackflopstest()'"
+
+--test
+
+# now, count how many times the performance is below our expected minimum
+# note that gesvd gflops are much lower than gemm.
+# on our test servers (   E5650 @ 2.67Ghz Westmere),      with MKL ~ 0.65 GFLOP/s, without @ 0.1? GFLOP/s)
+#                                                           but 8i ~ 0.32 GFLOP/s
+# on an older dev box (i7-3930k @ 3.20Ghz Sandybridge-E), with MKL ~ 2.5  GFLOP/s, without @ 0.2  GFLOP/s)
+# on a newer dev box  (i9-7920X @ 2.90GHz Skylake),       with MKL ~ 7.0  GFLOP/s, without @ 0.23 GFLOP/s)
+#
+# There is adequate separation between
+# the highest non-MKL rate (0.23 GFLOP/s) and
+# the lowest with-MKL rate (0.32 GFLOP/s),
+# so we don't need a machine specific test.
+# We will use 0.3 GFLOP/s as a minimum to be achieved.
+
+# first let's make sure the test operator is producing a results on at least one instance
+# any rows produced (but server-count insensitive)
+store(_lapackflopstest(), RESULTS)
+project(apply(op_count(RESULTS), any, 1), any)
+
+# _lapackflops test runs a multi-GFLOP computation and reports the GFLOP/s rate on each instance
+# the following should produce 0 ... i.e. we are always above 0.3 GFLOP/s
+aggregate(filter(RESULTS, flops__s < 0.3e9),count(*))
+
+--cleanup
+
+remove(RESULTS)

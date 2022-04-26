@@ -1,0 +1,31 @@
+# Convert 2-D array to a dataframe.
+
+--setup
+
+store(                              \
+  redimension(                      \
+    apply(                          \
+      build(<v:int64>[i=0:7], 8-i), \
+      j, i+10),                     \
+    <v:int64>[i=0:7; j=0:99]),      \
+  B)
+scan(B)
+
+--test
+--set-format csv
+--start-query-logging
+
+store(flatten(B), FB)
+scan(FB)
+flatten(B)
+
+--echo No SG in store(flatten(B), FB)
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq \
+    "_explain_physical('store(flatten(B), FB)', 'afl')" | \
+    grep impl_sg || true"
+
+--stop-query-logging
+
+--cleanup
+remove(B)
+remove(FB)

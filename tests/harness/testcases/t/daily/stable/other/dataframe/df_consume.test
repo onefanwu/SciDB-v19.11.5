@@ -1,0 +1,27 @@
+# Test consume() for dataframes.
+
+--setup
+store( \
+  project( \
+    flatten( \
+      apply( \
+	build(<a:int64>[row=0:19:0:5], row), \
+	(b, row*2), \
+	(c, a - row*2), \
+	(d, row - 10), \
+	(e, row*row))), \
+    row, inverse:1), \
+  DF)
+
+--test
+--start-query-logging
+consume(DF)
+consume(DF, 2)
+consume(DF, 3)
+consume(DF, 4)
+consume(DF, 5)
+consume(DF, 6)
+--stop-query-logging
+
+--cleanup
+remove(DF)

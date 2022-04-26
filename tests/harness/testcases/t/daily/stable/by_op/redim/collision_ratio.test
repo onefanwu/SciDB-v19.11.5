@@ -1,0 +1,57 @@
+--setup
+--start-query-logging
+
+--test
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:9999],i),cr),cr)
+summarize(cr)
+remove(cr)
+
+# collision ratio of 0.0
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:9999],i),cr,_collision_ratio:0.0),cr)
+summarize(cr)
+remove(cr)
+
+# fetch summarize output when cells_per_chunk is specified, observe log_2 rounding
+# in effect from the chunk estimator
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:9999],i),cr,cells_per_chunk:100),cr)
+summarize(cr)
+remove(cr)
+
+# verify that _collision_ratio:1.0 has same effect as not specifying it at all, matching
+# the output of the previous redim statement
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:9999],i),cr,cells_per_chunk:100,_collision_ratio:1.0),cr)
+summarize(cr)
+remove(cr)
+
+# verify that specifying _collision_ratio of 0 effectively disables synthetic dimension
+# chunk interval sizing based on collisions
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:9999],i),cr,cells_per_chunk:100,_collision_ratio:0.0),cr)
+summarize(cr)
+remove(cr)
+
+# demonstrate collision ratio of 0.67 (some other value in the unit interval)
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:9999],i),cr,cells_per_chunk:100,_collision_ratio:0.67),cr)
+summarize(cr)
+remove(cr)
+
+# phys_chunk_size one MiB with just over one MiB of bits results in chunks smaller than
+# the desired chunk size, without ignoring collisions on the synthetic dimension
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:132000],i),cr,phys_chunk_size:1),cr)
+summarize(cr)
+remove(cr)
+
+# phys_chunk_size coupled with _collision_ratio:0.0
+create array cr<v:uint64>[i;j]
+store(redimension(build(<v:uint64>[i=0:132000],i),cr,phys_chunk_size:1,_collision_ratio:0.0),cr)
+summarize(cr)
+remove(cr)
+
+--cleanup
+--stop-query-logging

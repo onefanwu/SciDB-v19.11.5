@@ -1,0 +1,47 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Initial sum...
+{i} v_sum
+{0} 5
+
+SCIDB QUERY : <append(A, X)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 5
+
+SCIDB QUERY : <append(A, X)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 10
+
+SCIDB QUERY : <append(A, X)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 15
+
+SCIDB QUERY : <append(A, X)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 20
+
+SCIDB QUERY : <append(A, X)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 25
+
+Query was executed successfully
+
+Query was executed successfully
+

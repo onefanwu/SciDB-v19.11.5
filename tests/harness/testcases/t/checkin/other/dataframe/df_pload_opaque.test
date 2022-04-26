@@ -1,0 +1,58 @@
+# Test parallel OPAQUE input()/load() into dataframes.
+--setup
+--start-query-logging
+
+store(apply(build(<v:int64>[i=0:199:0:10], i), (w, 2*v)), A)
+# stop query logging to avoid having ${HPID} fall into .expected
+--stop-query-logging
+save(A, 'df_pload_${HPID}_array.opaque', -1, format:'opaque')
+save(project(flatten(A), v, w), 'df_pload_${HPID}_frame.opaque', -1, format:'opaque')
+--start-query-logging
+
+--test
+--echo Baseline sums.
+op_sum(A, v)
+op_sum(flatten(A), v)
+op_sum(A, w)
+op_sum(flatten(A), w)
+
+--echo Sums from input()
+--stop-query-logging
+--igdata "input(<v:int64, w:int64>, 'df_pload_${HPID}_frame.opaque', -1, format:'opaque')"
+op_sum(input(<v:int64, w:int64>, 'df_pload_${HPID}_frame.opaque', -1, format:'opaque'), v)
+op_sum(input(<v:int64, w:int64>, 'df_pload_${HPID}_frame.opaque', -1, format:'opaque'), w)
+--start-query-logging
+
+--echo Reload saved dataframe.
+create temp array DF<v:int64, w:int64>
+--stop-query-logging
+load(DF, 'df_pload_${HPID}_frame.opaque', -1, format:'opaque')
+--start-query-logging
+#show(DF)
+project(apply(show(DF), nschema, substr(schema, 0, 29)+'-'+substr(schema, 30, 100)), nschema)
+op_sum(DF, v)
+op_sum(DF, w)
+
+--echo SG found reloading a dataframe saved in opaque format.
+--stop-query-logging
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'load(DF, \'df_pload_${HPID}_frame.opaque\', -1, format:\'opaque\')', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+--start-query-logging
+
+create temp array B<v:int64, w:int64>[row=0:*]
+--echo SG found loading an array.
+--stop-query-logging
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'load(B, \'df_pload_${HPID}_array.opaque\', -1, format:\'opaque\')', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+--start-query-logging
+
+--cleanup
+remove(A)
+remove(B)
+remove(DF)

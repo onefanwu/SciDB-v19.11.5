@@ -1,0 +1,42 @@
+--setup
+--start-query-logging
+
+
+--test
+
+########
+# create
+########
+
+create array DAY_HA <daystr: string>[day=0:6,1,0] distribution hashed
+show(DAY_HA)
+
+create array DAY_RC <daystr: string>[day=0:6,1,0] distribution row_cyclic
+# show dist
+show(DAY_RC)
+
+
+########
+# input
+########
+
+--stop-query-logging
+--echo "show('input(DAY_HA, <DATAFILE>)','afl')"
+show('input(DAY_HA, \'${TEST_DATA_DIR}/doc/m4x4_missing.txt\')', 'afl')
+
+# show dist
+--echo "show('input(DAY_RC, <DATAFILE>)','afl')"
+show('input(DAY_RC, \'${TEST_DATA_DIR}/doc/m4x4_missing.txt\')', 'afl')
+--start-query-logging
+
+########
+# build
+########
+# TODO: test needs upgrade to show output distribution == default distribution
+# TODO: this would replace _show2_nodist
+_show2_nodist('build(DAY_HA, \'foo\')','afl')
+_show2_nodist('build(DAY_RC, \'foo\')','afl')
+
+--cleanup
+remove(DAY_HA)
+remove(DAY_RC)

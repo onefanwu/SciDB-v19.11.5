@@ -1,0 +1,33 @@
+SCIDB QUERY : <create      array DATA_ON_EVERY_INSTANCE <v:int8>[I=0:3,1,0,J=0:10,1,0] distribution row_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <create TEMP array DEST_TEMP              <v:int8>[I=0:3,1,0,J=0:10,1,0] distribution row_cyclic>
+Query was executed successfully
+
+SCIDB QUERY : <test_clear_cache()>
+Query was executed successfully
+
+SCIDB QUERY : <test_clear_cache()>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(DATA_ON_EVERY_INSTANCE,0),DEST_TEMP)>
+Query was executed successfully
+
+SCIDB QUERY : <test_clear_cache()>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(DATA_ON_EVERY_INSTANCE,0),DEST_REGULAR)>
+Query was executed successfully
+
+SCIDB QUERY : <test_clear_cache()>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DATA_ON_EVERY_INSTANCE)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DEST_TEMP)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DEST_REGULAR)>
+Query was executed successfully
+

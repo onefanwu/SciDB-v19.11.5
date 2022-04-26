@@ -1,0 +1,65 @@
+--setup
+--start-query-logging
+create array A <a:int64> [x=0:2,3,0]
+create array B <x:int64> [a=0:15,3,0]
+store(build(A,x+10),A)
+scan(A)  -- Inserted by scan_doctor
+
+--test
+
+--aql select * into B from A
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select * into B from A as Az
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select count(B)
+
+--aql select * into B from A where a=11
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select * into B from A where a<>11
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select * into B from A where x>0
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select * into B from A where x<=1
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select a into B from A
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select x into B from A
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select a,x into B from A
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--aql select x,a into B from A
+scan(B)  -- Inserted by scan_doctor
+
+--aql select a,x from B
+
+--cleanup
+remove(A)
+remove(B)
+--stop-query-logging

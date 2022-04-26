@@ -1,0 +1,86 @@
+Query was executed successfully
+
+{_row} a,b,c
+{0} 0,9,42
+{1} 1,8,42
+{2} 2,7,42
+{3} 3,6,42
+{4} 4,5,42
+{5} 5,4,42
+{6} 6,3,42
+{7} 7,2,42
+{8} 8,1,42
+{9} 9,0,42
+
+{$n} a,b,c
+{0} 0,9,42
+{1} 1,8,42
+{2} 2,7,42
+{3} 3,6,42
+{4} 4,5,42
+{5} 5,4,42
+{6} 6,3,42
+{7} 7,2,42
+{8} 8,1,42
+{9} 9,0,42
+
+{$n} a,b,c
+{0} 10,9,42
+{1} 11,8,42
+{2} 12,7,42
+{3} 13,6,42
+{4} 14,5,42
+{5} 15,4,42
+{6} 16,3,42
+{7} 17,2,42
+{8} 18,1,42
+{9} 19,0,42
+
+{$n} a,b,c
+{0} 2,109,42
+{1} 3,108,42
+{2} 4,107,42
+{3} 5,106,42
+{4} 6,105,42
+{5} 7,104,42
+{6} 8,103,42
+{7} 9,102,42
+{8} 10,101,42
+{9} 11,100,42
+
+[An error expected at this place for the query "sort(unpack(redimension(FLAT, <c:int64>[a=0:*; b=0:*], _offset:(42,)), n))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DIMENSIONS_DONT_MATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DIMENSIONS_DONT_MATCH.]
+
+[An error expected at this place for the query "sort(unpack(redimension(FLAT, <c:int64>[a=0:*; b=0:*], _offset:(42,0,0)), n))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DIMENSIONS_DONT_MATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DIMENSIONS_DONT_MATCH.]
+
+{a} b
+{0} 9
+{1} 8
+{2} 7
+{3} 6
+{4} 5
+{5} 4
+{6} 3
+{7} 2
+{8} 1
+{9} 0
+
+{a} b
+{42} 9
+{43} 8
+{44} 7
+{45} 6
+{46} 5
+{47} 4
+{48} 3
+{49} 2
+{50} 1
+{51} 0
+
+[An error expected at this place for the query "redimension(FLAT, <b:int64>[a=0:*], _offset:42)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+[An error expected at this place for the query "redimension(FLAT, <b:int64>[a=0:*], _offset:())". And it failed with error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR. Expected error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR.]
+
+[An error expected at this place for the query "redimension(FLAT, <b:int64>[a=0:*], _offset:(,))". And it failed with error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR. Expected error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR.]
+
+Query was executed successfully
+

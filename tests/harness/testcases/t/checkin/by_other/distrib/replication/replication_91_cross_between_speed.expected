@@ -1,0 +1,37 @@
+SCIDB QUERY : <create array source <a: int64 > [x=0:8,2,0, y=0:9,2,1, z=1000:1001,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(filter(build(source,x+y+z), x=y or x=z), source)>
+Query was executed successfully
+
+SCIDB QUERY : <create array region <v1:int64,v2:int64,v3:int64,v4:int64,v5:int64,v6:int64>[dummy=0:*,1,0]>
+Query was executed successfully
+
+Query was executed successfully
+
+SCIDB QUERY : <create array region_replicated <v1:int64,v2:int64,v3:int64,v4:int64,v5:int64,v6:int64>[dummy=0:*,5,0] distribution replicated>
+Query was executed successfully
+
+SCIDB QUERY : <store(region, region_replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <TIMEFORMAT=%3R; time (iquery -naq 'cross_between(source, region)') 2>/tmp/replication99.1.txt>
+Query was executed successfully
+
+SCIDB QUERY : <TIMEFORMAT=%3R; time (iquery -naq 'cross_between(source, region_replicated)') 2>/tmp/replication99.2.txt>
+Query was executed successfully
+
+SCIDB QUERY : <echo "scale=3; $(cat /tmp/replication99.1.txt) > $(cat /tmp/replication99.2.txt)" | bc>
+1
+
+SCIDB QUERY : <remove(source)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(region)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(region_replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <rm /tmp/replication99.1.txt /tmp/replication99.2.txt>
+

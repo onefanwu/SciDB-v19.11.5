@@ -1,0 +1,9 @@
+SCIDB QUERY : <create array f <v:int64>[i=1:1000:0:1]>
+Query was executed successfully
+
+SCIDB QUERY : <load_library('perf_time_test')>
+Query was executed successfully
+
+SCIDB QUERY : <remove(f)>
+Query was executed successfully
+

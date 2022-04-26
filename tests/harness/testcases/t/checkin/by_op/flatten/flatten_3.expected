@@ -1,0 +1,16 @@
+Query was executed successfully
+
+SCIDB QUERY : <store(flatten(C), FC)>
+Query was executed successfully
+
+scan(FC)
+flatten(C)
+The diff...
+
+No SG in store(flatten(C), FC)
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('store(flatten(C), FC)', 'afl')" | grep impl_sg || true>
+
+Query was executed successfully
+
+Query was executed successfully
+

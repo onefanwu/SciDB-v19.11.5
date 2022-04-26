@@ -1,0 +1,15 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+SCIDB QUERY : <cross_join( redimension( cross_join( filter( DATA, attr > 0) as A, FIELD_MAP as B, A.attr, B.attribute_no), <value:string>[tid; iid; sub_field_id]) as C, PARTICIPANT as D, C.tid, D.tid, C.iid, D.iid)>
+{tid,iid,sub_field_id} value,participant_id
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

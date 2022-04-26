@@ -1,0 +1,31 @@
+# Append into pre-created dataframe with differing chunk size.
+
+--setup
+store(build(<v:int64>[i=0:9:0:5], i), A5)
+store(build(<v:int64>[i=0:19:0:8], i), A8)
+create array DF<x:int64, val:int64>
+
+--test
+--start-query-logging
+
+--echo No repart() in first append()
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq \
+    "_explain_physical('append(flatten(A5), DF)', 'afl')" | \
+    grep physicalRepart || true"
+
+append(flatten(A5), DF)
+op_sum(DF, val)
+
+--echo Automatic repart() in second append()
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq \
+    "_explain_physical('append(flatten(A8), DF)', 'afl')" | \
+    awk '/physicalRepart/ { print "Found physicalRepart in pPlan" }' || true"
+
+append(flatten(A8), DF)
+op_sum(DF, val)
+--stop-query-logging
+
+--cleanup
+remove(A5)
+remove(A8)
+remove(DF)

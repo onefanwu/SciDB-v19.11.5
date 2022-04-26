@@ -1,0 +1,18 @@
+--setup
+--start-query-logging
+store(build(<v:int64> [i=0:0:0:1000000], 0), sparse)
+store(op_count(build(<v:int64> [i=0:7:0:1000000], 1)), dense)
+
+--test
+_show_nodist(sparse)
+_show_nodist(dense)
+
+join(sparse, dense)
+join(dense, sparse)
+join(sparse, sparse)
+join(dense, dense)
+
+--cleanup
+remove(sparse)
+remove(dense)
+--stop-query-logging

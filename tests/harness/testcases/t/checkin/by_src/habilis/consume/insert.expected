@@ -1,0 +1,35 @@
+SCIDB QUERY : <store(build(<v:int64>[i=1:100:0:1], 2*i+1), insert_consume_op)>
+Query was executed successfully
+
+SCIDB QUERY : <iquery -aq 'consume(insert_consume_op)'>
+Query was executed successfully
+
+SCIDB QUERY : <iquery -naq 'consume(insert_consume_op)'>
+Query was executed successfully
+
+SCIDB QUERY : <iquery -naq 'scan(insert_consume_op)'>
+Query was executed successfully
+
+SCIDB QUERY : <iquery -naq 'store(build(<v:int64>[i=1:100:0:2], 3*i+2), ico)'>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(ico)>
+{i} count
+{0} 100
+
+SCIDB QUERY : <iquery -naq 'store(build(<v:int64>[i=1:100:0:2], 3*i+2), ico2, _fetch:true)'>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(ico2)>
+{i} count
+{0} 100
+
+SCIDB QUERY : <remove(insert_consume_op)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ico)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ico2)>
+Query was executed successfully
+

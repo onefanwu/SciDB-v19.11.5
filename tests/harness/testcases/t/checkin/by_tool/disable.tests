@@ -1,0 +1,110 @@
+#
+# BEGIN_COPYRIGHT
+#
+# Copyright (C) 2008-2019 SciDB, Inc.
+# All Rights Reserved.
+#
+# SciDB is free software: you can redistribute it and/or modify
+# it under the terms of the AFFERO GNU General Public License as published by
+# the Free Software Foundation.
+#
+# SciDB is distributed "AS-IS" AND WITHOUT ANY WARRANTY OF ANY KIND,
+# INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY,
+# NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE. See
+# the AFFERO GNU General Public License for the complete license terms.
+#
+# You should have received a copy of the AFFERO GNU General Public License
+# along with SciDB.  If not, see <http://www.gnu.org/licenses/agpl-3.0.html>
+#
+# END_COPYRIGHT
+#
+# Test file for use with:
+# ./disable.py --config disable.ini --build Assert disable.tests  -
+#
+# These tests are written assuming the following settings:
+#   instances=8
+#   servers=4
+#   redundancy=3
+#   build='Assert'
+#   security='trust'
+#   x_default_dist_type=9
+#   x_default_input_dist_type=9
+#
+# Only "ok.*" tests should appear in the output file
+#
+ok.always
+#
+# For arithmetic tests use redundancy since it is numeric
+# and it is not derivable like instances and servers are from the config file
+#
+# ==
+ok.equal     if redundancy==3
+broken.equal if redundancy==2
+# !=
+ok.not_equal     if redundancy!=2
+broken.not_equal if redundancy!=3
+# <
+ok.less_than     if redundancy<4
+broken.less_than if redundancy<3
+# >
+ok.greater_than     if redundancy>2
+broken.greater_than if redundancy>3
+#
+# For and/or operators use redundancy and build
+#
+# and
+ok.and     if redundancy==3 and build==Assert
+broken.and if redundancy==3 and build==RelWithDebInfo
+broken.and if redundancy==2 and build==Assert
+broken.and if redundancy==2 and build==RelWithDebInfo
+# or
+ok.or.both  if redundancy==3 or build==Assert
+ok.or.left  if redundancy==3 or build==RelWithDebInfo
+ok.or.right if redundancy==2 or build==Assert
+broken.or   if redundancy==2 or build==RelWithDebInfo
+# unless
+ok.unless unless redundancy==2
+broken.unless unless redundancy==3
+#
+# Tests of each setting
+#
+# instances
+ok.instances if instances==8
+broken.instances if instances==7
+# servers
+ok.servers if servers==4
+broken.servers if servers==3
+# redundancy
+ok.redundancy if redundancy==3
+broken.redundancy if redundancy==2
+# build
+ok.build if build==Assert
+broken.build if build==RelWithDebInfo
+broken.build if build==Debug
+# security
+ok.security if security==trust
+broken.security if security==password
+broken.security if security==pam
+# x-dflt-dist-root
+ok.x-dflt-dist-root if x-dflt-dist-root==9
+broken.x-dflt-dist-root if x-dflt-dist-root!=9
+# x-dflt-dist-input
+ok.x-dflt-dist-input if x-dflt-dist-input==9
+broken.x-dflt-dist-input if x-dflt-dist-input!=9
+# x-dflt-dist-other
+ok.x-dflt-dist-other if x-dflt-dist-other==9
+broken.x-dflt-dist-other if x-dflt-dist-other!=9
+# frequently used combo: inst and dist
+ok.if_inst_8_and_dist_9       if instances==8 and x-dflt-dist-root==9
+broken.a.if_inst_8_and_dist_9 if instances!=8 and x-dflt-dist-root==9
+broken.b.if_inst_8_and_dist_9 if instances==8 and x-dflt-dist-root!=9
+broken.c.if_inst_8_and_dist_9 if instances!=8 and x-dflt-dist-root!=9
+#
+# Finally typos
+#
+broken.typo if france==england
+broken.build.relwithdebinfo if build==RelWithDebInfo
+broken.build.debug if build==Debug
+broken.build.release if build==Release
+broken.build.profile if build==Profile
+broken.build.valgrind if build==Valgrind

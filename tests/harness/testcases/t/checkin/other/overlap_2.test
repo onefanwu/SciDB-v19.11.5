@@ -1,0 +1,20 @@
+# ticket no. 998
+
+--setup
+--start-query-logging
+create array A <a:int64> [x=-2:3,2,1]
+store(build(A,x+1),A)
+scan(A)  -- Inserted by scan_doctor
+save(A,'a_test.txt',-1,'store')
+
+create array B <a:int64> [x=-2:*,2,1]
+
+--test
+load(B,'a_test.txt',-1,'store')
+scan(B)  -- Inserted by scan_doctor
+scan(B)
+
+--cleanup
+remove(A)
+remove(B)
+--stop-query-logging

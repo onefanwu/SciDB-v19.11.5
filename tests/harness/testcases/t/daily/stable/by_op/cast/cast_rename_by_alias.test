@@ -1,0 +1,46 @@
+# Test new semantics of cast() intended to make casting easy.
+
+--setup
+create array AA < chr : char, \
+		  i16 : int16 not null, \
+		  str : string, \
+		  i64 : int64, \
+		  u64 : uint64, \
+		  dbl : double, \
+		  flt : float > \
+		[ i=0:3:0:4; j=0:9 ]
+
+store( \
+  redimension( \
+    apply( \
+      build( <i64: int64>[i=0:3], i ), \
+      (chr, char(int8(38))), \
+      (str, 'Yow!'), \
+      (u64, uint64(i*100)), \
+      (dbl, 6.02e23), \
+      (flt, float(3.1415)), \
+      (i16, int16(64000)), \
+      (j, i+4)), \
+    AA), \
+  AA)
+
+store(AA, BB)
+
+--test
+--start-query-logging
+
+cast(join(AA, BB), (AA.str, aa_str))
+cast(join(AA, BB), (BB.str, bb_str))
+cast(join(AA, BB), (AA.str, aa_str), (BB.str, bb_str))
+
+cast( \
+  join( \
+    cast(AA, (str, FOO)), \
+    BB \
+  ) as C, \
+  (C.str, BAR) \
+)
+
+--cleanup
+remove(AA)
+remove(BB)

@@ -1,0 +1,13 @@
+--setup
+--start-query-logging
+create temp array a <q:int64>[i=0:9:0:2]
+store(build(a, i), a)
+
+--test
+add_attributes(a, <s:int64>)
+scan(a)
+--error "store(project(a, q), a)"
+
+--cleanup
+remove(a)
+--stop-query-logging

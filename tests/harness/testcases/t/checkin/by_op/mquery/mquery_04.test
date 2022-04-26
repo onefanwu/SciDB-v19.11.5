@@ -1,0 +1,20 @@
+--setup
+--start-query-logging
+create array s <v:int64>[i=1:*:0:1]
+create array t <v:int64>[i=1:*:0:1]
+create array u <v:int64>[i=1:*:0:1]
+
+--test
+mquery(insert(build(<v:int64>[i=1:9:0:1],1*i),s), \
+               insert(s,t), \
+               insert(t,u))
+
+scan(s)
+scan(t)
+scan(u)
+
+--cleanup
+remove(s)
+remove(t)
+remove(u)
+--stop-query-logging

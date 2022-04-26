@@ -1,0 +1,16 @@
+--setup
+--start-query-logging
+create array a<v:int64>[i=12:24:0:1]
+
+--test
+mquery(insert(build(a,2*i+1),a), \
+               insert(project(apply(a,vnew,5*v+3),vnew),a), \
+               insert(project(apply(a,vnew,5*v+3),vnew),a))
+
+scan(a@1)
+scan(a@2)
+scan(a@3)
+
+--cleanup
+remove(a)
+--stop-query-logging

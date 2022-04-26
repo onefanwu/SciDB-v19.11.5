@@ -1,0 +1,30 @@
+--setup
+--start-query-logging
+
+--test
+# --shell --store used to place a test result in the .out file
+#                 this latter form must be written carefully to be insenstive to
+#                 number of instances, change in library names on different platforms, etc
+
+# scidb
+# 1) must not be linked to libblas
+# 2) must not be linked to liblapack
+# 3) must be linked to libmkl_rt.so which must resolve correctly
+
+--shell --store --command "ldd ${SCIDB_INSTALL_PATH}/bin/scidb | fgrep libblas || true"
+--shell --store --command "ldd ${SCIDB_INSTALL_PATH}/bin/scidb | fgrep liblapack || true"
+--shell --store --command "ldd ${SCIDB_INSTALL_PATH}/bin/scidb | fgrep libmkl_rt | cut -d ' ' -f1-3"
+
+#
+# the same rules apply to mpi_slave_scidb
+# however, it does contain links to libblas and liblapack through scalapack dependency
+# so we will have to have another test for it to make sure
+# that lib{blas,lapack} are never loaded because of libmkl_rt resolving first
+# see ScaLAPACKFlopsTest.test which tries to determine that by performance
+
+#--shell --store --command "ldd ${SCIDB_INSTALL_PATH}/lib/scidb/plugins/mpi_slave_scidb  | fgrep libblas || true"
+#--shell --store --command "ldd ${SCIDB_INSTALL_PATH}/lib/scidb/plugins/mpi_slave_scidb  | fgrep liblapack || true"
+--shell --store --command "ldd ${SCIDB_INSTALL_PATH}/lib/scidb/plugins/mpi_slave_scidb  | fgrep libmkl_rt | cut -d ' ' -f1-3"
+
+--cleanup
+

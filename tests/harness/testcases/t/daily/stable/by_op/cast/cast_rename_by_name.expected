@@ -1,0 +1,149 @@
+Query was executed successfully
+
+Query was executed successfully
+
+SCIDB QUERY : <_show_nodist(CASTME)>
+{i} schema
+{0} 'CASTME<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+Simple attribute renaming.
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (foo, bar))', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, (foo, bar))', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION.]
+
+SCIDB QUERY : <cast(CASTME, (i16, bar))>
+{i,j} chr,bar,str,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (i16, bar))', 'afl')>
+{i} schema
+{0} 'CASTME@1<chr:char,bar:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+SCIDB QUERY : <cast(CASTME, (CASTME.dbl, baz))>
+{i,j} chr,i16,str,i64,u64,baz,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (CASTME.dbl, baz))', 'afl')>
+{i} schema
+{0} 'CASTME@1<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,baz:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+Sorry, no dollar signs.
+SCIDB QUERY : <cast(CASTME, (CASTME.dbl, $baz))>
+[An error expected at this place for the query "cast(CASTME, (CASTME.dbl, $baz))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME.]
+
+SCIDB QUERY : <cast(CASTME, (i16, $baz))>
+[An error expected at this place for the query "cast(CASTME, (i16, $baz))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME.]
+
+Simple dimension renaming.
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (foo, i))', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, (foo, i))', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION.]
+
+SCIDB QUERY : <cast(CASTME, (i, eye))>
+{eye,j} chr,i16,str,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (i, eye))', 'afl')>
+{i} schema
+{0} 'CASTME@1<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [eye=0:3:0:4; j=0:9:0:4]'
+
+SCIDB QUERY : <cast(CASTME, (CASTME.j, frotz))>
+{i,frotz} chr,i16,str,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (CASTME.j, frotz))', 'afl')>
+{i} schema
+{0} 'CASTME@1<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; frotz=0:9:0:4]'
+
+Again, no dollar signs.
+SCIDB QUERY : <cast(CASTME, (CASTME.j, $frotz))>
+[An error expected at this place for the query "cast(CASTME, (CASTME.j, $frotz))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME.]
+
+SCIDB QUERY : <cast(CASTME, (i, $eye))>
+[An error expected at this place for the query "cast(CASTME, (i, $eye))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME.]
+
+Swapping attribute names!
+SCIDB QUERY : <cast(CASTME, (i16, tmp), (str, i16), (tmp, str))>
+{i,j} chr,str,i16,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (i16, tmp), (str, i16), (tmp, str))', 'afl')>
+{i} schema
+{0} 'CASTME@1<chr:char,str:int16 NOT NULL,i16:string,i64:int64,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (i16, tmp), (str, i16), (phoon, str))', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, (i16, tmp), (str, i16), (phoon, str))', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION.]
+
+Swapping dimension names!
+SCIDB QUERY : <cast(CASTME, (i, tmp), (j, i), (tmp, j))>
+{j,i} chr,i16,str,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (i, tmp), (j, i), (tmp, j))', 'afl')>
+{i} schema
+{0} 'CASTME@1<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [j=0:3:0:4; i=0:9:0:4]'
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (i, tmp), (j, i), (phoon, j))', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, (i, tmp), (j, i), (phoon, j))', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION.]
+
+Swapping attribute name vs. dimension name
+SCIDB QUERY : <cast(CASTME, (chr, tmp), (i, chr), (tmp, i))>
+{chr,j} i,i16,str,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (chr, tmp), (i, chr), (tmp, i))', 'afl')>
+{i} schema
+{0} 'CASTME@1<i:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [chr=0:3:0:4; j=0:9:0:4]'
+
+Swapping dimension name vs. attribute name
+SCIDB QUERY : <cast(CASTME, (j, tmp), (i16, j), (tmp, i16))>
+{i,i16} chr,j,str,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (j, tmp), (i16, j), (tmp, i16))', 'afl')>
+{i} schema
+{0} 'CASTME@1<chr:char,j:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; i16=0:9:0:4]'
+
+Target name exists?  Tsk, tsk.
+SCIDB QUERY : <cast(CASTME, (j, i16))>
+[An error expected at this place for the query "cast(CASTME, (j, i16))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_DIMENSION_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_DIMENSION_NAME.]
+
+SCIDB QUERY : <cast(CASTME, (i, j))>
+[An error expected at this place for the query "cast(CASTME, (i, j))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_DIMENSION_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_DIMENSION_NAME.]
+
+SCIDB QUERY : <cast(CASTME, (j, i))>
+[An error expected at this place for the query "cast(CASTME, (j, i))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_DIMENSION_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_DIMENSION_NAME.]
+
+SCIDB QUERY : <cast(CASTME, (i16, j))>
+[An error expected at this place for the query "cast(CASTME, (i16, j))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_ATTRIBUTE_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_ATTRIBUTE_NAME.]
+
+SCIDB QUERY : <cast(CASTME, (i16, u64))>
+[An error expected at this place for the query "cast(CASTME, (i16, u64))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_ATTRIBUTE_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_ATTRIBUTE_NAME.]
+
+SCIDB QUERY : <cast(CASTME, (u64, i16))>
+[An error expected at this place for the query "cast(CASTME, (u64, i16))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_ATTRIBUTE_NAME. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DUPLICATE_ATTRIBUTE_NAME.]
+
+Query was executed successfully
+

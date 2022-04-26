@@ -1,0 +1,57 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{No} name,etcomp
+{0} 'bzlib_etag','bzlib'
+{1} 'uncompressed_etag','none'
+{2} 'zlib_etag','zlib'
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{No} name,uaid,aid,schema,availability,temporary,namespace,distribution,etcomp
+
+{No} name,etcomp
+{0} 'bzlib_etag','bzlib'
+{1} 'uncompressed_etag','none'
+{2} 'zlib_etag','zlib'
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+7
+
+7
+7
+
+7
+
+Query was executed successfully
+
+Query was executed successfully
+
+{No} name,etcomp
+{0} 'uncompressed_etag','none'
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+5
+
+{No} name,distribution,etcomp
+{0} 'uncompressed_etag','hashed','none'
+
+Query was executed successfully
+

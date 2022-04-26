@@ -1,0 +1,28 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Initial sum...
+{i} v_sum
+{0} 45
+
+Once.
+Query was executed successfully
+
+{i} v_sum
+{0} 90
+
+Twice.
+Query was executed successfully
+
+{i} v_sum
+{0} 180
+
+Thrice.
+Query was executed successfully
+
+{i} v_sum
+{0} 360
+
+Query was executed successfully
+

@@ -1,0 +1,14 @@
+# Test cross_between() with dataframe input.
+
+--setup
+create temp array DF<v:int64>
+create temp array REGIONS <iLo:int64,iHi:int64>[rBi=0:1]
+store(build(REGIONS, from:'[(0,0),(1,1)]'), REGIONS)
+
+--test
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "cross_between(DF, REGIONS)"
+
+--cleanup
+remove(DF)
+remove(REGIONS)

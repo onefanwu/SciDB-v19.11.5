@@ -1,0 +1,17 @@
+--setup
+--start-query-logging
+--start-igdata
+store(build(<val:double>[x=1:1000,100,0,y=1:1000,100,0], x*y), sdb6192)
+--stop-igdata
+
+--test
+filter(sdb6192, x=11 and y>5 and y<10)
+filter(sdb6192, x=11.0 and y>5 and y<10)
+filter(sdb6192, x=11 and y>5.0 and y<10)
+filter(sdb6192, x=11 and y>5 and y<10.0)
+filter(sdb6192, x=11.0 and y>5 and y<10.0)
+filter(sdb6192, x=11 and y>=6.0 and y<=9.0)
+
+--cleanup
+remove(sdb6192)
+--stop-query-logging

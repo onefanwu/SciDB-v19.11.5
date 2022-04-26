@@ -1,0 +1,12 @@
+--setup
+create array mult_1 <a:double> [x=0:2,1,0, y=0:2,1,0]
+load(mult_1,'${TEST_DATA_DIR}/mult1.txt')
+scan(mult_1)  -- Inserted by scan_doctor
+
+--test
+--aql select * into a_arr from mult_1 where x<y
+scan(a_arr)  -- Inserted by scan_doctor
+
+--cleanup
+remove(mult_1)
+remove(a_arr)

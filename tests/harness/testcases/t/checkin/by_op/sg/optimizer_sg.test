@@ -1,0 +1,12 @@
+--setup
+create array S <values : double> [x=0:1,1,0]
+store(build(S, 2-(x*2)),S)
+scan(S)  -- Inserted by scan_doctor
+
+--test
+store(project(apply(join(S as A, S as B), c, A.values - B.values), c), R)
+scan(R)  -- Inserted by scan_doctor
+
+--cleanup
+remove(S)
+remove(R)

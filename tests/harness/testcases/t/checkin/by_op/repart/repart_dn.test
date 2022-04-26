@@ -1,0 +1,13 @@
+--setup
+create array dense <a: double > [x=0:5,3,0, y=0:5,3,0]
+CREATE ARRAY dense_2 <a: double > [x=0:5,2,0, y=0:5,2,0]
+load(dense,'${TEST_DATA_DIR}/dense.txt')
+scan(dense)  -- Inserted by scan_doctor
+
+--test
+repart(dense, dense_2)
+
+--cleanup
+remove (dense)
+remove (dense_2)
+

@@ -1,0 +1,13 @@
+# Test regrid() with dataframe input.
+
+--setup
+create temp array DF<v:int64>
+
+--test
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "regrid(DF, 100, sum(v))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DATAFRAMES_NOT_SUPPORTED \
+    "regrid(DF, 1, 100, sum(v))"
+
+--cleanup
+remove(DF)

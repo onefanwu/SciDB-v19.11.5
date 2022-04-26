@@ -1,0 +1,56 @@
+SCIDB QUERY : <store(build(<v:int64>[i=1:10:0:1],i),sapv_arr)>
+Query was executed successfully
+
+SCIDB QUERY : <store(project(apply(sapv_arr,vnew,10*v),vnew),sapv_arr)>
+Query was executed successfully
+
+SCIDB QUERY : <project(versions(sapv_arr),version_id)>
+{VersionNo} version_id
+{1} 1
+{2} 2
+
+SCIDB QUERY : <store(sapv_arr@1, sapv_arr)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(sapv_arr@1)>
+{i} v
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+{5} 5
+{6} 6
+{7} 7
+{8} 8
+{9} 9
+{10} 10
+
+SCIDB QUERY : <scan(sapv_arr@3)>
+{i} v
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+{5} 5
+{6} 6
+{7} 7
+{8} 8
+{9} 9
+{10} 10
+
+SCIDB QUERY : <scan(sapv_arr@2)>
+{i} v
+{1} 10
+{2} 20
+{3} 30
+{4} 40
+{5} 50
+{6} 60
+{7} 70
+{8} 80
+{9} 90
+{10} 100
+
+SCIDB QUERY : <remove(sapv_arr)>
+Query was executed successfully
+

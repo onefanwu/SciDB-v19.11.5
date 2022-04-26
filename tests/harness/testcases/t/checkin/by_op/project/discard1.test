@@ -1,0 +1,25 @@
+# Same as project5 test but uses discard() "macro".
+
+--setup
+create array M4x4 <a:int32, b:int32> [x=0:3,4,0, y=0:3,4,0]
+--igdata "load(M4x4,'${TEST_DATA_DIR}/M4x4_1.txt')"
+
+--test
+
+--start-query-logging
+discard(M4x4, a)
+discard(M4x4, b)
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ILLEGAL_OPERATION \
+    "discard(M4x4, a, b)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ILLEGAL_OPERATION \
+    "discard(M4x4, b, a)"
+
+--error "discard(M4x4)"
+--error "discard(M4x4, c)"
+--error "discard(M4x4, a, b, c)"
+
+--stop-query-logging
+
+--cleanup
+remove (M4x4)

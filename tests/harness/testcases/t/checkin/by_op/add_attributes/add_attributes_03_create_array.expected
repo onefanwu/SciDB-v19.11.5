@@ -1,0 +1,54 @@
+SCIDB QUERY : <create temp array a <q:uint64>[i=0:9:0:2]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(a, i), a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q
+{0} 0
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+{5} 5
+{6} 6
+{7} 7
+{8} 8
+{9} 9
+
+SCIDB QUERY : <add_attributes(a, <r:int64>)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q,r
+{0} 0,null
+{1} 1,null
+{2} 2,null
+{3} 3,null
+{4} 4,null
+{5} 5,null
+{6} 6,null
+{7} 7,null
+{8} 8,null
+{9} 9,null
+
+SCIDB QUERY : <store(project(apply(a, rp, 2*q), q, rp), a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(a)>
+{i} q,r
+{0} 0,0
+{1} 1,2
+{2} 2,4
+{3} 3,6
+{4} 4,8
+{5} 5,10
+{6} 6,12
+{7} 7,14
+{8} 8,16
+{9} 9,18
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+

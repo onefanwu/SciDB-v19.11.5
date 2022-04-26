@@ -1,0 +1,5 @@
+--setup
+# No setup; silences warning in .log file.
+--test
+--shell --command "${TESTDIR}/pg_funcs.py -c ${IQUERY_HOST} -p ${IQUERY_PORT} -r ${HPID} \
+    -u ${DB_USER} -d ${DB_NAME} -H ${DB_HOST} -P ${DB_PORT}"

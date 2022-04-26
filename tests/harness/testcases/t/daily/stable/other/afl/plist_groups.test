@@ -1,0 +1,53 @@
+# SDB-6330.  Test the RE::GROUP nested parameter specification.  The
+# operator that makes the most flexible use of it is redimension(),
+# via its _offset:(...) keyword parameter.
+
+--setup
+
+# Yes, this apply() also uses grouped parameter 2-tuples.  Already
+# known to work.
+store( \
+  apply( \
+    build(<a:int64>[_row=0:9], _row), \
+    (b, 9 - a), \
+    (c, 42)), \
+  FLAT)
+
+--test
+scan(FLAT)
+
+# Redimension with no offset, to see what we normally would get.
+# (The sort(unpack(...)) gets rid of chunking dependencies in the output.)
+sort(unpack(redimension(FLAT, <c:int64>[a=0:*; b=0:*]), n))
+
+# Offset by (10, 0).
+sort(unpack(redimension(FLAT, <c:int64>[a=0:*; b=0:*], _offset:(10, 0)), n))
+
+# Offset by (2, 100).
+sort(unpack(redimension(FLAT, <c:int64>[a=0:*; b=0:*], _offset:(2, 100)), n))
+
+# Fails... but *NOT* because of a parse error on "(42,)", that's fine.
+# SDB-6330 solved!
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DIMENSIONS_DONT_MATCH \
+    "sort(unpack(redimension(FLAT, <c:int64>[a=0:*; b=0:*], _offset:(42,)), n))"
+
+# Same error on too many offset coordinates:
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DIMENSIONS_DONT_MATCH \
+    "sort(unpack(redimension(FLAT, <c:int64>[a=0:*; b=0:*], _offset:(42,0,0)), n))"
+
+# Here (42,) works fine on the 1-D result.
+redimension(FLAT, <b:int64>[a=0:*])
+redimension(FLAT, <b:int64>[a=0:*], _offset:(42,))
+
+# But plain "42" is no longer allowed.
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "redimension(FLAT, <b:int64>[a=0:*], _offset:42)"
+
+# Until there's an actual use-case, no support for empty parameter groups.
+--error --code=scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR \
+    "redimension(FLAT, <b:int64>[a=0:*], _offset:())"
+--error --code=scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR \
+    "redimension(FLAT, <b:int64>[a=0:*], _offset:(,))"
+
+--cleanup
+remove(FLAT)

@@ -1,0 +1,18 @@
+# Test apply() with dataframe input.
+
+--setup
+--start-query-logging
+
+create temp array DF <v:int64>
+store( \
+  project( \
+    flatten(build(<v:int64>[i=0:19], i)), \
+    v), \
+  DF)
+
+--test
+--set-format tsv
+bernoulli(DF, 0.5, 42)
+
+--cleanup
+remove(DF)

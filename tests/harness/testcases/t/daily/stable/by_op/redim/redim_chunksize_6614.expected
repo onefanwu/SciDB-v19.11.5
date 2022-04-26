@@ -1,0 +1,24 @@
+"making a tsv file with long strings, 4i*1500=6000 lines, 1000 chars per string"
+Query was executed successfully
+
+Query was executed successfully
+
+{i} count
+{0} 6000
+
+"Restarting SciDB with mem-array-threshold=1"
+"SciDB restarted."
+Query was executed successfully
+
+[An error expected at this place for the query "store(redimension(project(apply(SRC_DATA, idx2, 6000-idx), idx2, anno), DST_REDIM), DST_REDIM)". And it failed with error code = scidb::SCIDB_SE_STORAGE::SCIDB_LE_MEM_ARRAY_THRESHOLD_EXCEEDED. Expected error code = scidb::SCIDB_SE_STORAGE::SCIDB_LE_MEM_ARRAY_THRESHOLD_EXCEEDED.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+"Restarting SciDB with original config.ini"
+"SciDB restarted."

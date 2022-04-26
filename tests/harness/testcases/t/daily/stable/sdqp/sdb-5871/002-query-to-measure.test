@@ -1,0 +1,6 @@
+--setup
+
+--test
+--shell --command "${TESTDIR}/002-query-to-measure.sh"
+
+--cleanup

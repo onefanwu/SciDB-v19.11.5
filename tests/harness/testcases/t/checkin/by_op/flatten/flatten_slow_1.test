@@ -1,0 +1,30 @@
+--setup
+--start-query-logging
+
+# Version of flatten_1 that uses a specific chunk size, and so uses
+# the "slow path".
+
+--start-igdata
+store(build(<v:int64>[i=0:31:0:8], 8-i), A)
+create temp array TA <v:int64>[i=0:31:0:8]
+store(build(TA, 18-i), TA)
+--stop-igdata
+
+--test
+--start-query-logging
+--set-format csv
+
+sort(flatten(A, cells_per_chunk:16), v)
+store(flatten(A, cells_per_chunk:16), FA)
+sort(scan(FA), v)
+
+sort(flatten(TA, cells_per_chunk:16), v)
+store(flatten(TA, cells_per_chunk:16), FA)
+sort(scan(FA), v)
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(TA)
+remove(FA)

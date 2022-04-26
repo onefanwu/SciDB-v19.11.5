@@ -1,0 +1,64 @@
+--setup
+--start-query-logging
+# Ticket number : 1688
+# Tests for the binary load-save on 1-D unbounded arrays:
+
+create array UNB <a:double NOT NULL,b:double NOT NULL>[x=0:*,5,0]
+create array UNB1 <a:double NOT NULL,b:string NOT NULL>[x=0:*,5,0]
+create array UNB2 <a:double NOT NULL,b:string NOT NULL>[x=0:*,10,0]
+create array UNB3 <a:double NOT NULL,b:string NOT NULL>[x=0:*,10,0]
+create array UNB4 <a:double null,b:string null>[x=0:*,10,0]
+create array UNB5 <a:double NOT NULL>[x=0:*,5,0]
+create array UNB6 <a:double NOT NULL>[x=0:*,5,0]
+
+--test
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "load(UNB, '${TEST_DATA_DIR}/ub_binload.txt')""
+scan(UNB)  -- Inserted by scan_doctor
+save(UNB, 'unb.out', 0, '(double,string)')
+save(UNB, 'unb.txt', 0, '(double,string)')
+load(UNB1,'unb.out', 0, '(double,string)')
+scan(UNB1)  -- Inserted by scan_doctor
+--error --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(UNB2,'unb.txt', 0, 'text')"
+load(UNB2,'unb.out', 0, '(double,string)')
+scan(UNB2)  -- Inserted by scan_doctor
+save(UNB2, 'unb2.txt', 0, '(double,string)')
+load(UNB2, 'unb2.txt', 0, '(double,string)')
+scan(UNB2)  -- Inserted by scan_doctor
+save(UNB2, 'unb2.txt', 0, 'text')
+load(UNB4, 'unb2.txt', -0, 'text')
+scan(UNB4)  -- Inserted by scan_doctor
+
+## Undesired output
+load(UNB3,'unb.out', 0, '(float,float)')
+scan(UNB3)  -- Inserted by scan_doctor
+load(UNB4, 'unb.txt', 0, '(double,string)')
+scan(UNB4)  -- Inserted by scan_doctor
+load(UNB5,'unb.out', 0, '(double,skip)')
+scan(UNB5)  -- Inserted by scan_doctor
+save(UNB5,'unb5.txt')
+load(UNB6,'unb5.txt')
+scan(UNB6)  -- Inserted by scan_doctor
+load(UNB6,'unb5.txt')
+scan(UNB6)  -- Inserted by scan_doctor
+load(UNB6,'unb5.txt',0,'text')
+scan(UNB6)  -- Inserted by scan_doctor
+load(UNB6,'unb5.txt',0,'text',10)
+scan(UNB6)  -- Inserted by scan_doctor
+
+--error --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(UNB6,'unb5.txt',0,'(double)')"
+## Undesired output
+load(UNB6,'unb5.txt',0,'(double)',15)
+scan(UNB6)  -- Inserted by scan_doctor
+load(UNB6,'unb5.txt',0,'text',15)
+scan(UNB6)  -- Inserted by scan_doctor
+
+--cleanup
+remove(UNB)
+remove(UNB1)
+remove(UNB2)
+remove(UNB3)
+remove(UNB4)
+remove(UNB5)
+remove(UNB6)
+
+--stop-query-logging

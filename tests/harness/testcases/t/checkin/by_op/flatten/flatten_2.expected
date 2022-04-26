@@ -1,0 +1,42 @@
+Query was executed successfully
+
+{i,j} v
+{0,10} 8
+{1,11} 7
+{2,12} 6
+{3,13} 5
+{4,14} 4
+{5,15} 3
+{6,16} 2
+{7,17} 1
+
+SCIDB QUERY : <store(flatten(B), FB)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(FB)>
+0,10,8
+1,11,7
+2,12,6
+3,13,5
+4,14,4
+5,15,3
+6,16,2
+7,17,1
+
+SCIDB QUERY : <flatten(B)>
+0,10,8
+1,11,7
+2,12,6
+3,13,5
+4,14,4
+5,15,3
+6,16,2
+7,17,1
+
+No SG in store(flatten(B), FB)
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('store(flatten(B), FB)', 'afl')" | grep impl_sg || true>
+
+Query was executed successfully
+
+Query was executed successfully
+

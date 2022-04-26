@@ -1,0 +1,10 @@
+SCIDB QUERY : <ldd ${SCIDB_INSTALL_PATH}/bin/scidb | fgrep libblas || true>
+
+SCIDB QUERY : <ldd ${SCIDB_INSTALL_PATH}/bin/scidb | fgrep liblapack || true>
+
+SCIDB QUERY : <ldd ${SCIDB_INSTALL_PATH}/bin/scidb | fgrep libmkl_rt | cut -d ' ' -f1-3>
+	libmkl_rt.so => /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so
+
+SCIDB QUERY : <ldd ${SCIDB_INSTALL_PATH}/lib/scidb/plugins/mpi_slave_scidb  | fgrep libmkl_rt | cut -d ' ' -f1-3>
+	libmkl_rt.so => /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so
+

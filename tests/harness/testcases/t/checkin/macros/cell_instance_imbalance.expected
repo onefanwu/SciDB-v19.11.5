@@ -1,0 +1,29 @@
+SCIDB QUERY : <store(build(<a1:int32>[I=0:9,5,0, J=0:9,5,0], 10*I+J), A)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <op_count(A)>
+{i} count
+{0} 100
+
+SCIDB QUERY : <_cell_instance_imbalance('A')>
+{i,i} necells_max,necells_sum,ninstances,necells_ideal,imbalance
+{0,0} 75,100,4,25,3
+
+SCIDB QUERY : <apply(_cell_instance_imbalance('A'),ne_test,int64(imbalance*necells_ideal))>
+{i,i} necells_max,necells_sum,ninstances,necells_ideal,imbalance,ne_test
+{0,0} 75,100,4,25,3,75
+
+SCIDB QUERY : <filter(apply(_cell_instance_imbalance('A'),ne_test,int64(imbalance*necells_ideal)),ne_test=necells_max)>
+{i,i} necells_max,necells_sum,ninstances,necells_ideal,imbalance,ne_test
+{0,0} 75,100,4,25,3,75
+
+SCIDB QUERY : <aggregate(filter(apply(_cell_instance_imbalance('A'),ne_test,int64(imbalance*necells_ideal)),ne_test=necells_max), count(*))>
+{i} count
+{0} 1
+
+SCIDB QUERY : <aggregate(filter(_cell_instance_imbalance('A'), ninstances*necells_ideal <= necells_sum and ninstances*(necells_ideal+1) > necells_sum), count(*))>
+{i} count
+{0} 1
+
+Query was executed successfully
+

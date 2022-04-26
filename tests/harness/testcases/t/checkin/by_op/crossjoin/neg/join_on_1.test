@@ -1,0 +1,15 @@
+--setup
+create array A <a:int32>[x=0:2,3,0]
+store(build(A,x+1),A)
+scan(A)  -- Inserted by scan_doctor
+store(build(A,x+2),B)
+scan(B)  -- Inserted by scan_doctor
+
+--test
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_AMBIGUOUS_DIMENSION "cross_join(A,A,A.x,A.x)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DIMENSION_NOT_EXIST "cross_join(A,B,A.x,A.x)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_DIMENSION_NOT_EXIST "cross_join(A,B,B.x,B.x)"
+
+--cleanup
+remove(A)
+remove(B)

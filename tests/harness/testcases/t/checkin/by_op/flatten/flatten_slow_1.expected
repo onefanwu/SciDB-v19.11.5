@@ -1,0 +1,157 @@
+SCIDB QUERY : <store(build(<v:int64>[i=0:31:0:8], 8-i), A)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create temp array TA <v:int64>[i=0:31:0:8]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(TA, 18-i), TA)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <sort(flatten(A, cells_per_chunk:16), v)>
+31,-23
+30,-22
+29,-21
+28,-20
+27,-19
+26,-18
+25,-17
+24,-16
+23,-15
+22,-14
+21,-13
+20,-12
+19,-11
+18,-10
+17,-9
+16,-8
+15,-7
+14,-6
+13,-5
+12,-4
+11,-3
+10,-2
+9,-1
+8,0
+7,1
+6,2
+5,3
+4,4
+3,5
+2,6
+1,7
+0,8
+
+SCIDB QUERY : <store(flatten(A, cells_per_chunk:16), FA)>
+Query was executed successfully
+
+SCIDB QUERY : <sort(scan(FA), v)>
+31,-23
+30,-22
+29,-21
+28,-20
+27,-19
+26,-18
+25,-17
+24,-16
+23,-15
+22,-14
+21,-13
+20,-12
+19,-11
+18,-10
+17,-9
+16,-8
+15,-7
+14,-6
+13,-5
+12,-4
+11,-3
+10,-2
+9,-1
+8,0
+7,1
+6,2
+5,3
+4,4
+3,5
+2,6
+1,7
+0,8
+
+SCIDB QUERY : <sort(flatten(TA, cells_per_chunk:16), v)>
+31,-13
+30,-12
+29,-11
+28,-10
+27,-9
+26,-8
+25,-7
+24,-6
+23,-5
+22,-4
+21,-3
+20,-2
+19,-1
+18,0
+17,1
+16,2
+15,3
+14,4
+13,5
+12,6
+11,7
+10,8
+9,9
+8,10
+7,11
+6,12
+5,13
+4,14
+3,15
+2,16
+1,17
+0,18
+
+SCIDB QUERY : <store(flatten(TA, cells_per_chunk:16), FA)>
+Query was executed successfully
+
+SCIDB QUERY : <sort(scan(FA), v)>
+31,-13
+30,-12
+29,-11
+28,-10
+27,-9
+26,-8
+25,-7
+24,-6
+23,-5
+22,-4
+21,-3
+20,-2
+19,-1
+18,0
+17,1
+16,2
+15,3
+14,4
+13,5
+12,6
+11,7
+10,8
+9,9
+8,10
+7,11
+6,12
+5,13
+4,14
+3,15
+2,16
+1,17
+0,18
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

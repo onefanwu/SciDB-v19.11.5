@@ -1,0 +1,28 @@
+SCIDB QUERY : <store(build(<v:uint64>[i=0:9:0:1],i),a)>
+Query was executed successfully
+
+SCIDB QUERY : <_broom()>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:uint64>[i=0:9:0:1],i),b)>
+Query was executed successfully
+
+SCIDB QUERY : <_broom()>
+Query was executed successfully
+
+SCIDB QUERY : <remove(a)>
+Query was executed successfully
+
+SCIDB QUERY : <_broom()>
+Query was executed successfully
+
+SCIDB QUERY : <remove(b)>
+Query was executed successfully
+
+SCIDB QUERY : <_broom()>
+Query was executed successfully
+
+[SciDB query execution failed. But continuing, as it was intended to just run.]
+
+[SciDB query execution failed. But continuing, as it was intended to just run.]
+

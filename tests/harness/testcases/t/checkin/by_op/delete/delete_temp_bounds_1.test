@@ -1,0 +1,32 @@
+# SDB-6210: delete() should update dimension bounds in catalog
+# Same as delete_bounds_1 test but with TEMP arrays.
+
+--setup
+
+create temp array T6210 <v:int64>[i=0:999:0:10]
+store(build(T6210, i), T6210)
+
+--test
+project(dimensions(T6210), name, low, high)
+
+--start-query-logging
+
+# Delete by dimension should lower the high bound (not whack it)
+delete(T6210, i > 995)
+project(dimensions(T6210), name, low, high)
+
+# Delete by attribute should raise the low bound (not whack it)
+delete(T6210, v < 3)
+project(dimensions(T6210), name, low, high)
+
+# Delete in the middle.  No change.
+delete(T6210, v > 25 and i < 30)
+delete(T6210, i > 28 and v < 100)
+delete(T6210, i > 125 and i < 210)
+delete(T6210, v > 225 and v < 310)
+project(dimensions(T6210), name, low, high)
+
+--stop-query-logging
+
+--cleanup
+remove(T6210)

@@ -1,0 +1,39 @@
+--setup
+--start-query-logging
+
+# an array with every other value null
+store(build(<val:double>[i=0:1000,100,0], iif(i%2=0,i,null)), WITH_NULLS)
+
+# SUBVAL only needs to have 1 element and in this case there is no measureable
+# difference in speed between replicated and non-replicated
+#
+# however, when SUBVAL is longer than 1 element, then replication makes a difference
+# this is a very artificial case, but since it can be measured, if it were to change
+# we would know to revise the test
+create array SUBVAL      <val:double NOT NULL>[i=0:10,2,0]
+create array SUBVAL_REPL <val:double NOT NULL>[i=0:10,2,0] distribution replicated
+
+store(build(SUBVAL, 99), SUBVAL)
+store(SUBVAL, SUBVAL_REPL)
+
+--test
+
+# right default
+--shell --store-all --command "TIMEFORMAT=%3R; time (iquery -naq 'substitute(WITH_NULLS, SUBVAL)') 2>/tmp/replication99.1.txt"
+
+# right replicated
+--shell --store-all --command "TIMEFORMAT=%3R; time (iquery -naq 'substitute(WITH_NULLS, SUBVAL_REPL)') 2>/tmp/replication99.2.txt"
+
+# output times taken on terminal without affecting the .out file (developer feedback)
+--shell --command "cat /tmp/replication99.1.txt >&2"
+--shell --command "cat /tmp/replication99.2.txt >&2"
+
+# to make the test pass/fail, ensure that the time for the first query is longer than the second
+# outputs a 1 into the .out file when that is true
+--shell --store-all --command "echo "scale=3; $(cat /tmp/replication99.1.txt) > $(cat /tmp/replication99.2.txt)" | bc"
+
+--cleanup
+remove(WITH_NULLS)
+remove(SUBVAL)
+remove(SUBVAL_REPL)
+--shell --store-all --command "rm /tmp/replication99.1.txt /tmp/replication99.2.txt"

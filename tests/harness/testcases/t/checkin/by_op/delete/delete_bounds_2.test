@@ -1,0 +1,80 @@
+# SDB-6210: delete() should update dimension bounds in catalog
+
+# Trickier than delete_bounds_1; here we make a cube and delete
+# regions, sometimes by attribute value and sometimes by dimension
+# range.  Each cell <a, b, c> happens to have the same values as its
+# coordinates [x, y, z].
+
+--setup
+
+create array CUBE <a:int64, b:int64, c:int64>[x=0:19:0:5; y=0:19:0:5; z=0:19:0:5]
+create array CUBE_BUILDER <a:int64>[x=0:19:0:5; y=0:19:0:5; z=0:19:0:5]
+store(apply(build(CUBE_BUILDER, x), b, y, c, z), CUBE)
+
+--test
+project(dimensions(CUBE), name, low, high)
+
+--start-query-logging
+
+# Start easy: carve way one face using dimension.
+delete(CUBE, y = 19)
+project(dimensions(CUBE), name, low, high)
+
+# Carve way another face using values.
+delete(CUBE, c = 19)
+project(dimensions(CUBE), name, low, high)
+
+# Bore a hole into one face of the cube, should be no difference.
+delete(CUBE, x > 3 and x < 7 and \
+             y > 3 and y < 7 and \
+             z > 12)
+project(dimensions(CUBE), name, low, high)
+
+# Shave away from the x-face, but carve some by attribute and some by
+# dimension.
+delete(CUBE, (x = 0 and y < 10) or \
+             (a = 0 and b >= 10))
+project(dimensions(CUBE), name, low, high)
+
+# Shave away just half of the x=1 plane, should be no difference.
+delete(CUBE, x = 1 and y < 10)
+project(dimensions(CUBE), name, low, high)
+
+# Carve away whole chunks at the x-face.
+delete(CUBE, x < 5)
+project(dimensions(CUBE), name, low, high)
+
+# Carve away a chunk and a half at the far end of the z-axis.
+delete(CUBE, z >= 12)
+project(dimensions(CUBE), name, low, high)
+
+# Carve away some stuff that is already gone.
+delete(CUBE, z > 14)
+project(dimensions(CUBE), name, low, high)
+
+# Count what's in the center, hollow it out, and count again.
+# Again, should be no bounds changes.
+op_count(CUBE)
+op_count(filter(CUBE, x >= 7 and x < 12 and \
+                      y >= 7 and y < 12 and \
+                      z >= 7 and z < 12))
+delete(CUBE, x >= 7 and x < 12 and \
+	     y >= 7 and y < 12 and \
+	     z >= 7 and z < 12)
+op_count(CUBE)
+op_count(filter(CUBE, x >= 7 and x < 12 and \
+                      y >= 7 and y < 12 and \
+                      z >= 7 and z < 12))
+project(dimensions(CUBE), name, low, high)
+
+# Carve away from two faces at once.
+delete(CUBE, x > 17 or b < 3)
+project(dimensions(CUBE), name, low, high)
+
+# OK, I guess I'm convinced it works.
+
+--stop-query-logging
+
+--cleanup
+remove(CUBE)
+remove(CUBE_BUILDER)

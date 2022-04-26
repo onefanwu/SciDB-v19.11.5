@@ -1,0 +1,50 @@
+--setup
+--start-query-logging
+
+--test
+
+########
+# create
+########
+
+create array DF < \
+    lname: string, \
+    fname: string, \
+    dept: string, \
+    course: string, \
+    gpa: float, \
+    remarks: string >
+show(DF)
+
+create array DF_REPL < \
+    lname: string, \
+    fname: string, \
+    dept: string, \
+    course: string, \
+    gpa: float, \
+    remarks: string > \
+  distribution replicated
+show(DF_REPL)
+
+########
+# input
+########
+
+--stop-query-logging
+--echo "show('input(DF, <DATAFILE>, format:\'tsv:l\')','afl')"
+show('input(DF, \'${TEST_DATA_DIR}/grades.tsv\', format:\'tsv:l\')', 'afl')
+
+# With DF_REPL the input operator show()s as 'dataframe', but that's OK.
+--echo "show('input(DF_REPL, <DATAFILE>, format:\'tsv:l\')','afl')"
+show('input(DF_REPL, \'${TEST_DATA_DIR}/grades.tsv\')', 'afl')
+
+# The important point is that when we load into DF_REPL, all instances
+# get all eleven data cells.
+load(DF_REPL, '${TEST_DATA_DIR}/grades.tsv', format:'tsv:l')
+filter(summarize(DF_REPL, by_instance:1), count <> 11)
+
+--start-query-logging
+
+--cleanup
+remove(DF)
+remove(DF_REPL)

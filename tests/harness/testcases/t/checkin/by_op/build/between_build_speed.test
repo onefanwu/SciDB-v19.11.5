@@ -1,0 +1,50 @@
+--setup
+--start-query-logging
+
+--test
+create array MEGACHUNK_HA <val:int64> [i=0:1000*1000,1,0] distribution hashed
+create array MEGACHUNK_RE <val:int64> [i=0:1000*1000,1,0] distribution replicated
+create array MEGACHUNK_RC <val:int64> [i=0:1000*1000,1,0] distribution row_cyclic
+create array MEGACHUNK_CC <val:int64> [i=0:1000,1,0;j=0:1000,1,0] distribution col_cyclic
+
+create array TERACHUNK_HA <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0] distribution hashed
+create array TERACHUNK_RE <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0] distribution replicated
+create array TERACHUNK_RC <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0] distribution row_cyclic
+create array TERACHUNK_CC <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0] distribution col_cyclic
+
+create array EXACHUNK_HA  <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0, k=0:1000*1000,1,0] distribution hashed
+create array EXACHUNK_RE  <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0, k=0:1000*1000,1,0] distribution replicated
+create array EXACHUNK_RC  <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0, k=0:1000*1000,1,0] distribution row_cyclic
+create array EXACHUNK_CC  <val:int64> [i=0:1000*1000,1,0, j=0:1000*1000,1,0, k=0:1000*1000,1,0] distribution col_cyclic
+
+between(build(MEGACHUNK_HA,i), 500*1000, 500*1000)
+between(build(MEGACHUNK_RE,i), 500*1000, 500*1000)
+between(build(MEGACHUNK_RC,i), 500*1000, 500*1000)
+between(build(MEGACHUNK_CC,i), 500, 500, 500, 500)
+
+between(build(TERACHUNK_HA,i), 500*1000, 500*1000, 500*1000, 500*1000)
+between(build(TERACHUNK_RE,i), 500*1000, 500*1000, 500*1000, 500*1000)
+between(build(TERACHUNK_RC,i), 500*1000, 500*1000, 500*1000, 500*1000)
+between(build(TERACHUNK_CC,i), 500*1000, 500*1000, 500*1000, 500*1000)
+
+between(build(EXACHUNK_HA,i),  500*1000, 500*1000, 500*1000, 500*1000, 500*1000, 500*1000)
+between(build(EXACHUNK_RE,i),  500*1000, 500*1000, 500*1000, 500*1000, 500*1000, 500*1000)
+between(build(EXACHUNK_RC,i),  500*1000, 500*1000, 500*1000, 500*1000, 500*1000, 500*1000)
+between(build(EXACHUNK_CC,i),  500*1000, 500*1000, 500*1000, 500*1000, 500*1000, 500*1000)
+
+--cleanup
+
+remove(MEGACHUNK_HA)
+remove(MEGACHUNK_RE)
+remove(MEGACHUNK_RC)
+remove(MEGACHUNK_CC)
+
+remove(TERACHUNK_HA)
+remove(TERACHUNK_RE)
+remove(TERACHUNK_RC)
+remove(TERACHUNK_CC)
+
+remove(EXACHUNK_HA)
+remove(EXACHUNK_RE)
+remove(EXACHUNK_RC)
+remove(EXACHUNK_CC)

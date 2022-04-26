@@ -1,0 +1,5 @@
+--test
+# This used to fail, but now it creates a dataframe.
+--aql create array A <a:int64,b:int32>
+--cleanup
+remove(A)

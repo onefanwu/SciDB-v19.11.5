@@ -1,0 +1,12 @@
+SCIDB QUERY : <create array f <v:int64>[i=1:*]>
+Query was executed successfully
+
+SCIDB QUERY : <_explain_logical('mquery(insert(build(<v:int64>[i=1:9],1*i),f))','afl')>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <_explain_physical('mquery(insert(build(<v:int64>[i=1:9],1*i),f))','afl')>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(f)>
+Query was executed successfully
+

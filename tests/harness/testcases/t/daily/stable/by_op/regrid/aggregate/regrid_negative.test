@@ -1,0 +1,29 @@
+--setup
+create temp array A <a:int32> [x=0:8,3,0; y=0:8,3,0]
+
+--test
+--start-query-logging
+
+# A maze of twisty little argument errors, all different (and some slightly bogus).
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT2 \
+    "regrid(A,1,sum(a))"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_WRONG_OPERATOR_ARGUMENT \
+    "regrid(A,1,2,3,sum(a))"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_REGEX \
+    "regrid(A,1,2)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "regrid(A,sum(a),max(a))"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "regrid(A,1,2,sum(a),42,max(a))"
+
+# The trailing chunk size parameters are undocumented.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_NUM_CHUNKSIZES_NOT_MATCH_NUM_DIMS \
+    "regrid(A,1,2,sum(a),42)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_NUM_CHUNKSIZES_NOT_MATCH_NUM_DIMS \
+    "regrid(A,1,2,sum(a),42,17,1952)"
+
+--stop-query-logging
+
+--cleanup
+remove(A)

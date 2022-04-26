@@ -1,0 +1,38 @@
+# Test append() to replicated dataframe.
+
+--setup
+--start-query-logging
+
+store(flatten(build(<v:int64>[i=0:9:0:2], i)), DF1)
+show(DF1)
+op_sum(DF1, v)
+store(flatten(build(<v:int64>[i=0:9:0:2], i*100)), DF1_REPL, distribution:replicated)
+show(DF1_REPL)
+op_sum(DF1_REPL, v)
+
+store(flatten(build(<v:int64>[i=0:9:0:5], i*10000)), DF2)
+show(DF2)
+op_sum(DF2, v)
+store(flatten(build(<v:int64>[i=0:9:0:5], i*1000000)), DF2_REPL, distribution:replicated)
+show(DF2_REPL)
+op_sum(DF2_REPL, v)
+
+--test
+
+append(DF1, DF2)
+op_sum(DF2, v)
+
+append(DF1_REPL, DF2)
+op_sum(DF2, v)
+
+append(DF2, DF1_REPL)
+op_sum(DF1_REPL, v)
+
+append(DF2_REPL, DF1_REPL)
+op_sum(DF1_REPL, v)
+
+--cleanup
+remove(DF1)
+remove(DF1_REPL)
+remove(DF2)
+remove(DF2_REPL)

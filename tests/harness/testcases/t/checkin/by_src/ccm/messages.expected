@@ -1,0 +1,131 @@
+#-*- mode: org -*-
+* Starting unathsession.test
+** authlogon
+authlogon (unauthsession) -> new sessionid
+Session-0
+Session-1
+** authresponse
+authresponse (unauthsession) -> error and null session
+Session-0
+ERROR returned from AuthResponse: 5 RESTART_HANDSHAKE: Authentication must be (re)started from the beginning of the 4-way handshake.
+Session-0
+** executequery
+executequery (unauthsession) -> error and null session
+Session-0
+ERROR returned from ExecuteQuery: 7 UNAUTH_EXECUTE: Unable to execute query. Session is unauthenticated or session timed out.
+Session-0
+** fetchingot
+fetchingot (unauthsession) -> error and null session
+Session-0
+ERROR returned from FetchIngot: 8 UNAUTH_FETCH: Unable to fetch data. Session is unauthenticated or session timed out.
+Session-0
+
+* Starting authingsession.test
+** authlogon, authlogon
+*** calling authlogon
+Session-1
+*** recalling authlogon
+Session-2
+** authlogon, authresponse
+*** calling authlogon
+Session-1
+*** calling authresponse
+Session-1
+** authlogon, executequery
+*** calling authlogon
+Session-1
+*** calling executequery
+ERROR returned from ExecuteQuery: 10 EXEC_IN_START: Unable to execute query. Session is still authenticating.
+Session-1
+** authlogon, fetchingot
+*** calling authlogon
+Session-1
+*** calling fetchingot
+ERROR returned from FetchIngot: 11 FETCH_IN_START: Unable to Fetch data. Session is still authenticating.
+Session-1
+
+* Starting authenticatedSesssion.test
+** authlogon, authresponse, authlogon
+*** authlogon, authresponse setup
+**** calling authlogon
+Session-1
+**** calling authresponse
+Session-1
+*** calling authlogon
+Session-2
+** authlogon, authresponse, authresponse
+*** authlogon, authresponse setup
+**** calling authlogon
+Session-1
+**** calling authresponse
+Session-1
+*** calling authresponse
+ERROR returned from AuthResponse: 6 UNEXPECTED_MSGTYPE: Unexpected message request Received
+Session-1
+** authlogon, authresponse, executequery
+*** authlogon, authresponse setup
+**** calling authlogon
+Session-1
+**** calling authresponse
+Session-1
+*** calling executequery
+Session-1
+** authlogon, authresponse, fetchingot
+*** authlogon, authresponse setup
+**** calling authlogon
+Session-1
+**** calling authresponse
+Session-1
+*** calling fetchingot
+ERROR returned from FetchIngot: 14 NOQUERY_FETCH: No active query from which to fetch data.
+Session-1
+
+* Starting badquery.test
+** Setup authlogon, authresponse
+*** calling authlogon
+Session-1
+*** calling authresponse
+Session-1
+** calling (bad) executequery
+ERROR returned from ExecuteQuery: 12 INVALID_QUERY: Invalid query string
+Session-1
+** calling (good) executequery (same session)
+*** Calling executequery
+Session-1
+*** Calling fetchingot
+{No} name,uaid,aid,schema,availability,temporary,namespace,distribution,etcomp
+
+Session-1
+** calling (good) executequery (store A)
+*** Calling executequery
+Session-1
+*** Calling fetch ingot
+Session-1
+** calling (good) executequery (store B -- using call to self.default())
+Session-1
+** calling (good - ddl) executequery (remove A)
+*** Calling executequery
+Session-1
+*** Calling fetch ingot
+Session-1
+** calling (good - ddl) executequery (remove B -- using call to self.default())
+Session-1
+
+* Starting InvalidMessages.in
+** Sending Invalid request type (an ExecuteQueryResponse rather than ExecuteQuery)
+Received expected response from server: 3 INVALID_REQUEST: Invalid mesasge type.
+
+* TODO InvalidProtobuf is incomplete
+       Until the ccmtest.py client can establish a (server-side) severed ~socket~
+       The test *actually* exits prematurely on the second call.
+       - For phase 1 that's good enough. The test is to see that the connection is severed by the server.
+* Starting invalidProtobuf.test
+** MessageTypes.AuthLogon
+header_type: 1
+Received expected response from server: 2 MALFORMED_REQUEST: Malformed protocol buffer payload
+Session-1
+** MessageTypes.AuthResponse
+header_type: 3
+We could not read the header
+Exception: 'NoneType' object has no attribute 'do_print'
+

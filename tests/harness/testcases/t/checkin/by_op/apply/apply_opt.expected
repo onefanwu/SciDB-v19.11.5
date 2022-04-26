@@ -1,0 +1,60 @@
+SCIDB QUERY : <store(build(<v:int64>[i=0:1,1,0,j=0:1,1,0],1), BUILD_HA, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:1,1,0,j=0:1,1,0],1), BUILD_RC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:1,1,0,j=0:1,1,0],1), BUILD_CC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<v:int64>[i=0:1,1,0,j=0:1,1,0],1), BUILD_RE, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <_sgcount('store(apply(BUILD_HA,w, i), UNWRITTEN, distribution: hashed)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(apply(BUILD_RC,w, i), UNWRITTEN, distribution: row_cyclic)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(apply(BUILD_CC,w, i), UNWRITTEN, distribution: col_cyclic)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(apply(BUILD_RE,w, i), UNWRITTEN, distribution: replicated)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(apply(BUILD_HA,w, instanceid()), UNWRITTEN, distribution: hashed)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(apply(BUILD_RC,w, 3*random()),   UNWRITTEN, distribution: row_cyclic)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(apply(BUILD_CC,w, instanceid()), UNWRITTEN, distribution: col_cyclic)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('store(apply(BUILD_RE,w, instanceid()), UNWRITTEN, distribution: replicated)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <_sgcount('store(apply(BUILD_RE,w, 3*random()),   UNWRITTEN, distribution: replicated)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <remove(BUILD_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(BUILD_RC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(BUILD_CC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(BUILD_RE)>
+Query was executed successfully
+

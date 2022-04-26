@@ -1,0 +1,6 @@
+--setup
+
+--test
+--shell --command "${TESTDIR}/cleanup.sh"
+
+--cleanup

@@ -1,0 +1,25 @@
+--setup
+--start-query-logging
+store(apply(build(<v:int64>[i=0:9],i),w,2*(i+1)+1),ar)
+
+--test
+# Filtering with a top-level non-deterministic function should fail.
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_CONSTANT_EXPRESSION_EXPECTED \
+    "filter(ar, v=random())"
+
+# Filtering with a nested non-deterministic function should fail.
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_CONSTANT_EXPRESSION_EXPECTED \
+    "filter(ar, v=(random()%3))"
+
+# Filtering with a deeply-nested non-deterministic function should fail, even
+# mixed with other deterministic functions.
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_CONSTANT_EXPRESSION_EXPECTED \
+    "filter(ar, v>=((random()%5)+(8%5)))"
+
+# Removing the non-deterministic functions should result in an expression
+# that filter accepts.
+filter(ar, v>=((4%5)+(8%5)))
+
+--cleanup
+remove(ar)
+--stop-query-logging

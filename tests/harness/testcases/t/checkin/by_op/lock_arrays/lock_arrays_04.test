@@ -1,0 +1,30 @@
+--setup
+--start-query-logging
+store(build(<v:int64>[i=0:9:0:1],2*i+1),lock_arrays_test_array)
+
+--test
+
+# Acquire the global lock and try to remove an array, which will not succeed.  Try to
+# create a new version of the same array, which will not succeed.
+# The number of arrays and array versions must be the same after the three AFL queries as before.
+op_count(list('arrays'))
+op_count(list('arrays',true))
+lock_arrays(true)
+--shell --store --command "timeout 3 iquery -aq 'remove(lock_arrays_test_array)' || true"
+--shell --store --command "timeout 3 iquery -aq 'remove_versions(lock_arrays_test_array)' || true"
+--shell --store --command "timeout 3 iquery -aq 'store(build(lock_arrays_test_array, 1), lock_arrays_test_array)' || true"
+lock_arrays(false)
+# These counts must match the counts from above for us to know that the arrays were not modified.
+op_count(list('arrays'))
+op_count(list('arrays',true))
+
+# Acquire the global lock and then perform a read-only operation on
+# an array, which must succeed, as read-only queries are permitted
+# while the global lock is in place.
+lock_arrays(true)
+aggregate(lock_arrays_test_array,sum(v))
+lock_arrays(false)
+
+--cleanup
+remove(lock_arrays_test_array)
+--stop-query-logging

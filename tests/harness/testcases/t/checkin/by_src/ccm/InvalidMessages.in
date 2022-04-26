@@ -1,0 +1,7 @@
+# --*- Mode: shell-script -*--
+echo * Starting InvalidMessages.in
+  set encode=On
+  reset_sessions
+#  execute a Bad Request (like)
+  echo ** Sending Invalid request type (an ExecuteQueryResponse rather than ExecuteQuery)
+    send_invalid_type

@@ -1,0 +1,29 @@
+# SDB-6210: delete() should update dimension bounds in catalog
+
+--setup
+store(build(<v:int64>[i=0:999:0:10], i), A6210)
+
+--test
+project(dimensions(A6210), name, low, high)
+
+--start-query-logging
+
+# Delete by dimension should lower the high bound (not whack it)
+delete(A6210, i > 995)
+project(dimensions(A6210), name, low, high)
+
+# Delete by attribute should raise the low bound (not whack it)
+delete(A6210, v < 3)
+project(dimensions(A6210), name, low, high)
+
+# Delete in the middle.  No change.
+delete(A6210, v > 25 and i < 30)
+delete(A6210, i > 28 and v < 100)
+delete(A6210, i > 125 and i < 210)
+delete(A6210, v > 225 and v < 310)
+project(dimensions(A6210), name, low, high)
+
+--stop-query-logging
+
+--cleanup
+remove(A6210)

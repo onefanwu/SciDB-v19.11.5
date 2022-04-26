@@ -1,0 +1,24 @@
+# Test cast() with dataframe input.
+
+--setup
+create temp array DF <v:int32, w:char>
+store( \
+  project( \
+    apply( \
+      flatten(build(<v:int32>[i=0:19], i)), \
+      (w, char(42))), \
+    i, inverse:1), \
+  DF)
+
+--test
+--set-format tsv
+cast(DF, <v:int64, doubleyou:char>)
+
+cast(DF, <v:int64, doubleyou:char>[foo; bar])
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME \
+    "cast(build(<v:int32>[i=0:9], i), <dummy:char>[\$seq])"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME \
+    "cast(build(<v:int32>[i=0:9], i), (i, \$seq))"
+
+--cleanup
+remove(DF)

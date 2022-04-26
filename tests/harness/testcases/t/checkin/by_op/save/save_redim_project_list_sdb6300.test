@@ -1,0 +1,10 @@
+--setup
+--start-query-logging
+--test
+
+# sdb-6300 SCIDB_ASSERT() for the following query
+save(redimension(project(list('operators'), name), <name:string>[i=0:*,1000000,0]),'/tmp/foo', -2, 'tsv')
+
+--cleanup
+
+--shell --command "rm -rf /tmp/foo"

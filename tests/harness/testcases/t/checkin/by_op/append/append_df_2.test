@@ -1,0 +1,24 @@
+# Append empty dataframe (a) to itself, (b) to another empty
+# dataframe, (c) to a non-empty dataframe.
+
+--setup
+create array DF<v:int64 not null, s:string>
+create array DF2<v:int64 not null, s:string>
+store(flatten(build(<s:string>[i=0:19:0:5], 'Hello')), DF3)
+
+--test
+--set-format tsv
+
+append(DF, DF)
+sort(DF)
+
+append(DF, DF2)
+sort(DF2)
+
+append(DF, DF3)
+sort(DF3)
+
+--cleanup
+remove(DF)
+remove(DF2)
+remove(DF3)

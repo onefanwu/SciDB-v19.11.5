@@ -1,0 +1,18 @@
+--setup
+--start-query-logging
+
+--test
+
+# test_abort_remove() lives in misc
+load_library('misc')
+
+--shell --command "${TESTDIR}/remove_neg_01_kill_coordinator.sh 2>&1"
+
+# This test kills the coordinator, to which we're connected as a client, so reconnect.
+--reconnect
+
+--cleanup
+# If this remove doesn't cause a query failure, then the array wasn't successfully
+# reaped on coordinator restart and the test should fail.
+--justrun "remove(remove_neg_01_arr)"
+--stop-query-logging

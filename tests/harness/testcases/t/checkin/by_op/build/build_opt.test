@@ -1,0 +1,51 @@
+#
+# Tests to demonstrate that
+# build() outputs its inherited distribution,
+# when possible.
+#
+# Store will be used to set the inheritance.
+# The use of store will also cause an sg operator
+# to be inserted when build does not build in
+# the distribution specified to store.
+# distribution.
+# The number of sg operators is counted with
+# _sgcount()
+
+--setup
+--start-query-logging
+--test
+
+#
+# simple: instance-identical expressions
+#
+_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], i*2+j), BUILD_OUT1_HA, distribution: hashed)')
+_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], i*2+j), BUILD_OUT1_RC, distribution: row_cyclic)')
+_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], i*2+j), BUILD_OUT1_CC, distribution: col_cyclic)')
+_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], i*2+j), BUILD_OUT1_RE, distribution: replicated)')
+
+#
+# non-instance-identical expressions like instanceid() and random()
+# can still be output in non-replicated distributions.
+# if replicated inherited, must output in another distribution with an sg inserted to the target distribution
+#
+# still permitted: count should be 0
+_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], random())    , BUILD_OUT2_HA, distribution: hashed)')
+_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], instanceid()), BUILD_OUT2_RC, distribution: row_cyclic)')
+_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], 3*random())  , BUILD_OUT2_CC, distribution: col_cyclic)')
+
+# not permitted: count should be 1
+--echo "count should be 1"
+_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], instanceid()), BUILD_OUT2_RE, distribution: replicated)')
+_sgcount('store(build(<v:int64>[i=0:1,1,0, j=0:1,1,0], 3*random()),   BUILD_OUT2_RE2,distribution: replicated)')
+
+#
+# build literal outputs dtLocalDistribution, so count will always be 1
+#
+--echo "count should be 1"
+_sgcount('store(build(<v:int64>[i=0:0,1,0, j=0:0,1,0],\'[[(1)],[(2)]]\',true), BUILD_OUT3_HA, distribution: hashed)')
+_sgcount('store(build(<v:int64>[i=0:0,1,0, j=0:0,1,0],\'[[(1)],[(2)]]\',true), BUILD_OUT3_RC, distribution: row_cyclic)')
+_sgcount('store(build(<v:int64>[i=0:0,1,0, j=0:0,1,0],\'[[(1)],[(2)]]\',true), BUILD_OUT3_CC, distribution: col_cyclic)')
+_sgcount('store(build(<v:int64>[i=0:0,1,0, j=0:0,1,0],\'[[(1)],[(2)]]\',true), BUILD_OUT3_RE, distribution: replicated)')
+
+--cleanup
+

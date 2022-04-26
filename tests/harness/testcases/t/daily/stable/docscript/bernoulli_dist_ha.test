@@ -1,0 +1,26 @@
+
+--test
+--start-query-logging
+--set-format dcsv
+
+CREATE ARRAY bernoulli_array<val:double>[i=0:4,5,0,j=0:4,5,0] distribution hashed
+
+store(build(bernoulli_array,i*5+1+j),bernoulli_array)
+
+scan(bernoulli_array)  -- Inserted by scan_doctor
+
+# this one would vary each time
+# an example from two runs as below
+# is included in the doc
+--start-igdata
+bernoulli(bernoulli_array,0.5)
+bernoulli(bernoulli_array,0.5)
+--stop-igdata
+
+bernoulli(bernoulli_array,0.5,15)
+
+bernoulli(bernoulli_array,0.5,seed:15)
+
+--cleanup
+
+remove(bernoulli_array)

@@ -1,0 +1,36 @@
+SCIDB QUERY : <store(build(<v:int64> [i=0:0:0:1000000], 0), sparse)>
+Query was executed successfully
+
+SCIDB QUERY : <store(op_count(build(<v:int64> [i=0:7:0:1000000], 1)), dense)>
+Query was executed successfully
+
+SCIDB QUERY : <_show_nodist(sparse)>
+{i} schema
+{0} 'sparse<v:int64> [i=0:0:0:1000000]'
+
+SCIDB QUERY : <_show_nodist(dense)>
+{i} schema
+{0} 'not empty dense<count:uint64> [i=0:0:0:1]'
+
+SCIDB QUERY : <join(sparse, dense)>
+{i} v,count
+{0} 0,8
+
+SCIDB QUERY : <join(dense, sparse)>
+{i} count,v
+{0} 8,0
+
+SCIDB QUERY : <join(sparse, sparse)>
+{i} v,v
+{0} 0,0
+
+SCIDB QUERY : <join(dense, dense)>
+{i} count,count
+{0} 8,8
+
+SCIDB QUERY : <remove(sparse)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(dense)>
+Query was executed successfully
+

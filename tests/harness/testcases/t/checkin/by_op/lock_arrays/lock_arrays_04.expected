@@ -1,0 +1,44 @@
+SCIDB QUERY : <store(build(<v:int64>[i=0:9:0:1],2*i+1),lock_arrays_test_array)>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(list('arrays'))>
+{i} count
+{0} 1
+
+SCIDB QUERY : <op_count(list('arrays',true))>
+{i} count
+{0} 2
+
+SCIDB QUERY : <lock_arrays(true)>
+Query was executed successfully
+
+SCIDB QUERY : <timeout 3 iquery -aq 'remove(lock_arrays_test_array)' || true>
+
+SCIDB QUERY : <timeout 3 iquery -aq 'remove_versions(lock_arrays_test_array)' || true>
+
+SCIDB QUERY : <timeout 3 iquery -aq 'store(build(lock_arrays_test_array, 1), lock_arrays_test_array)' || true>
+
+SCIDB QUERY : <lock_arrays(false)>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(list('arrays'))>
+{i} count
+{0} 1
+
+SCIDB QUERY : <op_count(list('arrays',true))>
+{i} count
+{0} 2
+
+SCIDB QUERY : <lock_arrays(true)>
+Query was executed successfully
+
+SCIDB QUERY : <aggregate(lock_arrays_test_array,sum(v))>
+{i} v_sum
+{0} 100
+
+SCIDB QUERY : <lock_arrays(false)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(lock_arrays_test_array)>
+Query was executed successfully
+

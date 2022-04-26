@@ -1,0 +1,23 @@
+# Append dense array to itself.
+--setup
+create array A<v:int64>[i=0:*:0:5]
+store(build(<v:int64>[i=0:9], i), A)
+
+--test
+--echo Initial sum...
+op_sum(A, v)
+
+--echo Once.
+append(A, A)
+op_sum(A, v)
+
+--echo Twice.
+append(A, A)
+op_sum(A, v)
+
+--echo Thrice.
+append(A, A)
+op_sum(A, v)
+
+--cleanup
+remove(A)

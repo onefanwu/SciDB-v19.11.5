@@ -1,0 +1,38 @@
+#
+# test test_clear_cache(), establish conditions under which it can be called
+# safely from apply() for use in the inject tests
+#
+--setup
+--start-query-logging
+
+create      array DATA_ON_EVERY_INSTANCE <v:int8>[I=0:3,1,0,J=0:10,1,0] distribution row_cyclic
+create TEMP array DEST_TEMP              <v:int8>[I=0:3,1,0,J=0:10,1,0] distribution row_cyclic
+
+--test
+
+# clear the cache (unknown initial contents)
+test_clear_cache()
+# now cache should be clearn
+
+# clear again (case: already empty)
+test_clear_cache()
+
+# now lets put something into the cache, and leave it dirty
+# a TEMP array will not be destaged automatically
+store(build(DATA_ON_EVERY_INSTANCE,0),DEST_TEMP)
+# clear again (case: full of dirty)
+test_clear_cache()
+
+# now lets put something into the cache, but this time clean
+# a regular array will be destaged at query completion
+store(build(DATA_ON_EVERY_INSTANCE,0),DEST_REGULAR)
+# clear again (case: full of clean)
+test_clear_cache()
+
+
+--cleanup
+remove(DATA_ON_EVERY_INSTANCE)
+remove(DEST_TEMP)
+remove(DEST_REGULAR)
+
+--stop-query-logging

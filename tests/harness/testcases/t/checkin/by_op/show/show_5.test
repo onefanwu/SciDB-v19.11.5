@@ -1,0 +1,17 @@
+--setup
+--start-query-logging
+create array A <a:string> [x=-2:3,2,1]
+
+--test
+_show_nodist('select * from A')
+_show_nodist('select sum(a) from A')
+_show2_nodist('select sum(a) from A', 'aql')
+_show2_nodist('select sum(a) from A', 'AQL')
+_show2_nodist('scan(A)', 'afl')
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_WRONG_LANGUAGE_STRING "_show2_nodist('scan(A)', 'blah')"
+--error --code=scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR "_show_nodist('scan(A)')"
+
+--cleanup
+remove(A)
+--stop-query-logging

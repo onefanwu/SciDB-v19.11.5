@@ -1,0 +1,37 @@
+# SDB-6629.  Just because cross_join(DF1, DF2) exposes the $inst and
+# $seq dimensions in the non-dataframe output, doesn't mean cast()
+# should throw a SCIDB_LE_RESERVED_NAME exception (and worse, dump
+# core while doing so).
+
+--setup
+store(flatten(build(<v:int64>[i=0:3], i)), DF1)
+store(flatten(build(<w:int64>[j=0:2], j)), DF2)
+
+--test
+--start-query-logging
+
+show('cross_join(DF1, DF2)', 'afl')
+
+# TSV won't show coordinates, which hides the installation-dependent
+# $inst coordinate that causes false FILES_DIFFER errors.
+--set-format tsv
+
+cast(cross_join(DF1, DF2), (w, double_u))
+
+# This proves that we can rename the $inst and $seq dimensions without seg fault.
+# The dimensions and their values are not emitted because we're using TSV format to
+# avoid the installation-dependent race, as noted above.
+cast(cross_join(DF1, DF2), ($_0, flim), ($_1, flam))
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME \
+    "cast(cross_join(DF1, DF2), (w, \$double_u))"
+
+--set-format dcsv
+cast(sort(build(<v:int64>[i=0:9], 10-i)), (v, vee))
+cast(sort(build(<v:int64>[i=0:9], 10-i)), ($0, foo), ($n, N))
+
+--start-query-logging
+
+--cleanup
+remove(DF1)
+remove(DF2)

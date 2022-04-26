@@ -1,0 +1,3 @@
+SCIDB QUERY : <save(redimension(project(list('operators'), name), <name:string>[i=0:*,1000000,0]),'/tmp/foo', -2, 'tsv')>
+{i} name
+

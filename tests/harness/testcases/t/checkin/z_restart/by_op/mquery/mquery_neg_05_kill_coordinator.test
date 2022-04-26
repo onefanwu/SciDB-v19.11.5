@@ -1,0 +1,16 @@
+--setup
+--start-query-logging
+
+--test
+load_library('misc')
+load_library('perf_time_test')
+--shell --command "${TESTDIR}/mquery_neg_05_kill_coordinator.sh 2>&1"
+# This test kills the coordinator, to which we're connected as a client, so reconnect.
+--reconnect
+
+--cleanup
+--justrun "remove(f)"
+# killInstanceArray shouldn't exist anymore, but if there was a test failure,
+# ensure that it's gone.
+--justrun "remove(killInstanceArray)"
+--stop-query-logging

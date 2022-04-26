@@ -1,0 +1,69 @@
+SCIDB QUERY : <CREATE ARRAY bernoulli_array<val:double>[i=0:4,5,0,j=0:4,5,0] distribution hashed>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(bernoulli_array,i*5+1+j),bernoulli_array)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(bernoulli_array)  -- Inserted by scan_doctor>
+{i,j} val
+{0,0} 1
+{0,1} 2
+{0,2} 3
+{0,3} 4
+{0,4} 5
+{1,0} 6
+{1,1} 7
+{1,2} 8
+{1,3} 9
+{1,4} 10
+{2,0} 11
+{2,1} 12
+{2,2} 13
+{2,3} 14
+{2,4} 15
+{3,0} 16
+{3,1} 17
+{3,2} 18
+{3,3} 19
+{3,4} 20
+{4,0} 21
+{4,1} 22
+{4,2} 23
+{4,3} 24
+{4,4} 25
+
+SCIDB QUERY : <bernoulli(bernoulli_array,0.5)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <bernoulli(bernoulli_array,0.5)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <bernoulli(bernoulli_array,0.5,15)>
+{i,j} val
+{0,2} 3
+{1,0} 6
+{1,4} 10
+{2,0} 11
+{2,3} 14
+{3,1} 17
+{3,3} 19
+{4,1} 22
+{4,2} 23
+{4,3} 24
+
+SCIDB QUERY : <bernoulli(bernoulli_array,0.5,seed:15)>
+{i,j} val
+{0,2} 3
+{1,0} 6
+{1,4} 10
+{2,0} 11
+{2,3} 14
+{3,1} 17
+{3,3} 19
+{4,1} 22
+{4,2} 23
+{4,3} 24
+
+SCIDB QUERY : <remove(bernoulli_array)>
+Query was executed successfully
+

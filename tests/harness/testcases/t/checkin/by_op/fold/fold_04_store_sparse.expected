@@ -1,0 +1,120 @@
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=0:2;j=0:2],i+j+1),j!=1)),fold_array_a)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_a)>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=0:2:0:3;j=0:2],i+j+1),j!=1)),fold_array_b)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_b)>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=0:2:0:2;j=0:2],i+j+1),j!=1)),fold_array_c)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_c)>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=0:2:0:1;j=0:2],i+j+1),j!=1)),fold_array_d)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_d)>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=0:2:0:1;j=0:2:0:3],i+j+1),j!=1)),fold_array_e)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_e)>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),j!=8)),fold_array_f)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_f)>
+{i} v,$v_1,$v_2
+{3} 11,null,13
+{4} 12,null,14
+{5} 13,null,15
+
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=3:5:0:3;j=7:9],i+j+1),j!=8)),fold_array_g)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_g)>
+{i} v,$v_1,$v_2
+{3} 11,null,13
+{4} 12,null,14
+{5} 13,null,15
+
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=3:5:0:2;j=7:9],i+j+1),j!=8)),fold_array_h)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_h)>
+{i} v,$v_1,$v_2
+{3} 11,null,13
+{4} 12,null,14
+{5} 13,null,15
+
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=3:5:0:1;j=7:9],i+j+1),j!=8)),fold_array_i)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_i)>
+{i} v,$v_1,$v_2
+{3} 11,null,13
+{4} 12,null,14
+{5} 13,null,15
+
+SCIDB QUERY : <store(_fold(filter(build(<v:int64>[i=3:5:0:1;j=7:9:0:3],i+j+1),j!=8)),fold_array_j)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(fold_array_j)>
+{i} v,$v_1,$v_2
+{3} 11,null,13
+{4} 12,null,14
+{5} 13,null,15
+
+SCIDB QUERY : <remove(fold_array_a)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fold_array_b)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fold_array_c)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fold_array_d)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fold_array_e)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fold_array_f)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fold_array_g)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fold_array_h)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fold_array_i)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(fold_array_j)>
+Query was executed successfully
+

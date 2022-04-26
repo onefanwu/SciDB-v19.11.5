@@ -1,0 +1,52 @@
+--setup
+--start-query-logging
+
+--test
+
+########
+# create
+########
+create array DAY_HA <daystr: string>[day=0:6,1,0] distribution hashed
+show(DAY_HA)
+
+create array DAY_RE <daystr: string>[day=0:6,1,0] distribution replicated
+# show dist
+show(DAY_RE)
+
+########
+# store
+########
+store(build(DAY_HA, 'DAY'+string(day)), DAY_HA)
+show(DAY_HA)
+
+store(build(DAY_RE, 'DAY'+string(day)), DAY_RE)
+# show dist
+show(DAY_RE)
+
+store(DAY_RE, DAY_RE_COPY)
+# show dist
+show(DAY_RE_COPY)
+
+########
+# load
+########
+
+########
+# insert
+########
+show('insert(DAY_HA, DAY_HA)','afl')
+show('insert(DAY_HA, DAY_RE)','afl')
+
+show('insert(DAY_RE, DAY_HA)','afl')
+show('insert(DAY_RE, DAY_RE)','afl')
+
+########
+# delete
+########
+delete(DAY_HA, day=0)
+delete(DAY_RE, day=0)
+
+--cleanup
+remove(DAY_HA)
+remove(DAY_RE)
+remove(DAY_RE_COPY)

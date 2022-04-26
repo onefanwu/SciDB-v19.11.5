@@ -1,0 +1,39 @@
+# --*- Mode: shell-script -*--
+echo * Starting invalidProtobuf.test
+  set encode=On
+  echo ** MessageTypes.AuthLogon
+    reset_sessions
+    send_bad_protobuf MessageTypes.AuthLogon
+    get session
+  echo ** MessageTypes.AuthResponse
+    reset_sessions
+    send_bad_protobuf MessageTypes.AuthResponse
+    get session
+  echo ** MessageTypes.ExecuteQuery
+    reset_sessions
+    send_bad_protobuf MessageTypes.ExecuteQuery
+    get session
+  echo ** MessageTypes.FetchIngot
+    reset_sessions
+    send_bad_protobuf MessageTypes.FetchIngot
+    get session
+  echo ** MessageTypes.Error
+    reset_sessions
+    send_bad_protobuf MessageTypes.Error
+    get session
+  echo ** MessageTypes.AuthChallenge
+    reset_sessions
+    send_bad_protobuf MessageTypes.AuthChallenge
+    get session
+  echo ** MessageTypes.AuthComplete
+    reset_sessions
+    send_bad_protobuf MessageTypes.AuthComplete
+    get session
+  echo ** MessageTypes.ExecuteQueryResponse
+    reset_sessions
+    send_bad_protobuf MessageTypes.ExecuteQueryResponse
+    get session
+  echo ** MessageTypes.FetchIngotResponse
+    reset_sessions
+    send_bad_protobuf MessageTypes.FetchIngotResponse
+    get session

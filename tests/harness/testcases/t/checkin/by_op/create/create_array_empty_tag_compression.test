@@ -1,0 +1,27 @@
+--setup
+--start-query-logging
+
+--test
+create array arr <v:int64>[i=0:9]
+project(list('arrays'), distribution, etcomp)
+project(show(arr), etcomp)
+remove(arr)
+
+create array arr <v:int64>[i=0:9] distribution hashed
+project(list('arrays'), distribution, etcomp)
+project(show(arr), etcomp)
+remove(arr)
+
+create array arr <v:int64>[i=0:9] distribution default emptytag compression 'zlib'
+project(list('arrays'), distribution, etcomp)
+project(show(arr), etcomp)
+
+# "trick" to create array without empty bitmap
+store(show('show(arr)','afl'), no_ebm)
+remove(arr)
+project(list('arrays'), distribution, etcomp)
+project(show(no_ebm), etcomp)
+remove(no_ebm)
+
+--cleanup
+--stop-query-logging

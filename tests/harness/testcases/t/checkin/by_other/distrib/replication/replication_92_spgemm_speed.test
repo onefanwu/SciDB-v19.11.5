@@ -1,0 +1,34 @@
+--setup
+--start-query-logging
+load_library('linear_algebra')
+
+create array LEFT <value:double NOT NULL>[r=0:3,1,0; c=0:3,1,0] distribution row_cyclic
+store(build(LEFT, r*10+c), LEFT)
+
+create array RIGHT <value:double NOT NULL>[r=0:3,1,0; c=0:400-1,1,0]
+store(build(RIGHT, r*10+c), RIGHT)
+
+store(RIGHT, RIGHT_REPL, distribution: replicated)
+
+--test
+
+
+# right default
+--shell --store-all --command "TIMEFORMAT=%3R; time (iquery -naq 'spgemm(LEFT, RIGHT)') 2>/tmp/replication99.1.txt"
+
+# right replicated
+--shell --store-all --command "TIMEFORMAT=%3R; time (iquery -naq 'spgemm(LEFT, RIGHT_REPL)') 2>/tmp/replication99.2.txt"
+
+# output times taken on terminal without affecting the .out file (developer feedback)
+--shell --command "cat /tmp/replication99.1.txt >&2"
+--shell --command "cat /tmp/replication99.2.txt >&2"
+
+# to make the test pass/fail, ensure that the time for the first query is longer than the second
+# outputs a 1 into the .out file when that is true
+--shell --store-all --command "echo "scale=3; $(cat /tmp/replication99.1.txt) > $(cat /tmp/replication99.2.txt)" | bc"
+
+--cleanup
+remove(LEFT)
+remove(RIGHT)
+remove(RIGHT_REPL)
+--shell --store-all --command "rm /tmp/replication99.1.txt /tmp/replication99.2.txt"

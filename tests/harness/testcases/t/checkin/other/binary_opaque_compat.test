@@ -1,0 +1,6 @@
+--setup
+--test
+--shell --command "${TESTDIR}/binary_opaque_compat.py \
+    -c ${IQUERY_HOST} -p ${IQUERY_PORT} --run-id=${HPID} \
+    ${TEST_DATA_DIR}/compat.d"
+--cleanup

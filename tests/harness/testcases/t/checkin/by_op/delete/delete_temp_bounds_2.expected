@@ -1,0 +1,121 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{No} name,low,high
+{0} 'x',0,19
+{1} 'y',0,19
+{2} 'z',0,19
+
+SCIDB QUERY : <delete(TCUBE, y = 19)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',0,19
+{1} 'y',0,18
+{2} 'z',0,19
+
+SCIDB QUERY : <delete(TCUBE, c = 19)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',0,19
+{1} 'y',0,18
+{2} 'z',0,18
+
+SCIDB QUERY : <delete(TCUBE, x > 3 and x < 7 and y > 3 and y < 7 and z > 12)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',0,19
+{1} 'y',0,18
+{2} 'z',0,18
+
+SCIDB QUERY : <delete(TCUBE, (x = 0 and y < 10) or (a = 0 and b >= 10))>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',1,19
+{1} 'y',0,18
+{2} 'z',0,18
+
+SCIDB QUERY : <delete(TCUBE, x = 1 and y < 10)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',1,19
+{1} 'y',0,18
+{2} 'z',0,18
+
+SCIDB QUERY : <delete(TCUBE, x < 5)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',5,19
+{1} 'y',0,18
+{2} 'z',0,18
+
+SCIDB QUERY : <delete(TCUBE, z >= 12)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',5,19
+{1} 'y',0,18
+{2} 'z',0,11
+
+SCIDB QUERY : <delete(TCUBE, z > 14)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',5,19
+{1} 'y',0,18
+{2} 'z',0,11
+
+SCIDB QUERY : <op_count(TCUBE)>
+{i} count
+{0} 3420
+
+SCIDB QUERY : <op_count(filter(TCUBE, x >= 7 and x < 12 and y >= 7 and y < 12 and z >= 7 and z < 12))>
+{i} count
+{0} 125
+
+SCIDB QUERY : <delete(TCUBE, x >= 7 and x < 12 and y >= 7 and y < 12 and z >= 7 and z < 12)>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(TCUBE)>
+{i} count
+{0} 3295
+
+SCIDB QUERY : <op_count(filter(TCUBE, x >= 7 and x < 12 and y >= 7 and y < 12 and z >= 7 and z < 12))>
+{i} count
+{0} 0
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',5,19
+{1} 'y',0,18
+{2} 'z',0,11
+
+SCIDB QUERY : <delete(TCUBE, x > 17 or b < 3)>
+Query was executed successfully
+
+SCIDB QUERY : <project(dimensions(TCUBE), name, low, high)>
+{No} name,low,high
+{0} 'x',5,17
+{1} 'y',3,18
+{2} 'z',0,11
+
+Query was executed successfully
+
+Query was executed successfully
+

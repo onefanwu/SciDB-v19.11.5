@@ -1,0 +1,12 @@
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -C -naq "list()">
+Query "list()" was executed successfully
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -C -naq "list('arrays',true)">
+Query "list('arra..." was executed successfully
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT --confirm -naq "list()">
+Query "list()" was executed successfully
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT --confirm -naq "list('arrays',true)">
+Query "list('arra..." was executed successfully
+

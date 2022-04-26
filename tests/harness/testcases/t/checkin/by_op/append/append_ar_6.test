@@ -1,0 +1,30 @@
+# Append array, requiring left shift of input.
+--setup
+
+store(build(<v:int64>[i=80:100], i), A)
+store(build(<v:int64>[i=60:360], i), B)
+
+create array X<v:int64>[j=-90:90:0:5]
+create array Y<v:int64>[j=-90:90:0:5]
+
+--test
+--echo Initial sum...
+op_sum(A, v)
+
+--start-query-logging
+
+append(A, X)
+op_sum(X, v)
+append(A, X)
+op_sum(X, v)
+
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES \
+    "append(B, Y)"
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(B)
+remove(X)
+remove(Y)

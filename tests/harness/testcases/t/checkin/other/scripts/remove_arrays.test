@@ -1,0 +1,23 @@
+--setup
+create array fdafdarfewqfveqfeq<v:int64>[i]
+create array fdafdarfewqfveqfeq2<v:int64>[i]
+
+create array someotherveqfeq<v:int64>[i]
+create array veqfeq<v:int64>[i]
+
+--test
+--start-query-logging
+op_count(filter(list(), name='fdafdarfewqfveqfeq' or name='fdafdarfewqfveqfeq2'))
+--shell --command "${SCIDB_INSTALL_PATH}/bin/arrays.py \
+    --host ${IQUERY_HOST} --port ${IQUERY_PORT} --remove fdafda --force"
+op_count(filter(list(), regex(name, 'fda.*')))
+
+sort(project(filter(list(), regex(name, '.*veq.*')), name))
+--shell --command "${SCIDB_INSTALL_PATH}/bin/arrays.py \
+    --host ${IQUERY_HOST} --port ${IQUERY_PORT} --remove '^veq' --force"
+sort(project(filter(list(), regex(name, '.*veq.*')), name))
+
+--stop-query-logging
+
+--cleanup
+remove(someotherveqfeq)

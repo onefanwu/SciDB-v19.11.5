@@ -1,0 +1,17 @@
+# Test flatten "unpack mode" with dataframe input.
+--setup
+store( \
+  flatten( \
+    build(<v:int64>[row=0:9:0:10], row)), \
+  A)
+
+create array B <v: int64>
+store(project(A, v), B)
+
+--test
+flatten(A, p)
+flatten(B, q)
+
+--cleanup
+remove(A)
+remove(B)

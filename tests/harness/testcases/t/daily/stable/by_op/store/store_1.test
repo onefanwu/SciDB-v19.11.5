@@ -1,0 +1,19 @@
+# ticket no 1023
+
+--setup
+--start-query-logging
+create array B <a:int32> [x=0:8,3,0,y=0:2,3,0]
+store(filter(build(B,x+10+y),true),B)
+scan(B)  -- Inserted by scan_doctor
+
+--test
+store(build(B,x+10+y),B)
+scan(B)  -- Inserted by scan_doctor
+store(filter(build(B,x+10),true),B)
+scan(B)  -- Inserted by scan_doctor
+store(build(B,10+y),B)
+scan(B)  -- Inserted by scan_doctor
+
+--cleanup
+remove(B)
+--stop-query-logging

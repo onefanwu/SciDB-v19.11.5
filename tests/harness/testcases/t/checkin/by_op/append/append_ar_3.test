@@ -1,0 +1,50 @@
+# Append array to empty arrays.  Use varying dimension low bounds.
+--setup
+store(build(<v:int64>[i=0:9], i), A)
+
+create array U<v:int64>[j=-30:-10:0:5]
+create array W<v:int64>[j=0:*:0:5]
+create array X<v:int64>[j=3:*:0:5]
+create array Y<v:int64>[j=-10:*:0:5]
+create array Z<v:int64>[j=-17:*:0:5]
+
+--test
+--echo Initial sum...
+op_sum(A, v)
+
+--start-query-logging
+
+append(A, W)
+op_sum(W, v)
+append(A, W)
+op_sum(W, v)
+
+append(A, X)
+op_sum(X, v)
+append(A, X)
+op_sum(X, v)
+
+append(A, Y)
+op_sum(Y, v)
+append(A, Y)
+op_sum(Y, v)
+
+append(A, Z)
+op_sum(Z, v)
+append(A, Z)
+op_sum(Z, v)
+
+append(A, U)
+op_sum(U, v)
+append(A, U)
+op_sum(U, v)
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(W)
+remove(U)
+remove(X)
+remove(Y)
+remove(Z)

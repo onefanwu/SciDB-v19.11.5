@@ -1,0 +1,13 @@
+--setup
+--start-query-logging
+create temp array M8x8_default <val:double default 0.0> [x=0:*,32,0,y=0:*,32,0]
+create array M8x8_default_stored <val:double default 0.0> [x=0:*,32,0,y=0:*,32,0]
+
+--test
+store(build(<val:double>[i=0:9;j=0:9],i*j),M8x8_default)
+store(build(<val:double>[i=0:9;j=0:9],i*j),M8x8_default_stored)
+
+--cleanup
+remove(M8x8_default)
+remove(M8x8_default_stored)
+--stop-query-logging

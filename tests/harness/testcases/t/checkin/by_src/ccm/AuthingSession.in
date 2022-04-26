@@ -1,0 +1,48 @@
+# --*- Mode: shell-script -*--
+echo * Starting authingsession.test
+  set encode=On
+  reset_sessions
+#
+#  authlogon, authlogon
+#
+  echo ** authlogon, authlogon
+    reset_sessions
+    echo *** calling authlogon
+      authlogon scidbadmin
+      get session
+    echo *** recalling authlogon
+      authlogon scidbadmin
+      get session
+#
+#  authlogon, authresponse
+#
+  echo ** authlogon, authresponse
+    reset_sessions
+    echo *** calling authlogon
+      authlogon scidbadmin
+      get session
+    echo *** calling authresponse
+      authresponse Paradigm4
+      get session
+#
+#  authlogon, executequery
+#
+  echo ** authlogon, executequery
+    reset_sessions
+    echo *** calling authlogon
+      authlogon scidbadmin
+      get session
+    echo *** calling executequery
+      executequery list()
+      get session
+#
+#  authlogon, fetchingot
+#
+  echo ** authlogon, fetchingot
+    reset_sessions
+    echo *** calling authlogon
+      authlogon scidbadmin
+      get session
+    echo *** calling fetchingot
+      fetchingot
+      get session

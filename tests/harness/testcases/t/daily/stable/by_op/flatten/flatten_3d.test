@@ -1,0 +1,35 @@
+# Convert 3-D array to a dataframe.
+
+--setup
+
+--shell --command "box_of_points.py --lower-corner=-1800,-900,0 \
+                       --upper-corner=1800,900,99 \
+                       --cells=3000000 --seed 42.7 -f tsv > /tmp/fl_3_points.tsv"
+
+create array POINTS <v:int64>[lon=-1800:1800:0:100; lat=-900:900:0:100; lol=0:99:0:50]
+
+store( \
+  redimension( \
+    input(<v:int64, lon:int64, lat:int64, lol:int64>[dummy], \
+          '/tmp/fl_3_points.tsv', format:'tsv'), \
+    POINTS), \
+  POINTS)
+
+--test
+
+--start-query-logging
+aggregate(POINTS, sum(v))
+store(flatten(POINTS), FPOINTS)
+aggregate(project(FPOINTS, v), sum(v))
+--stop-query-logging
+
+--shell --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT \
+    -aq "flatten(POINTS)" > /tmp/fl_3_no_store.out"
+--shell --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT \
+    -aq "scan(FPOINTS)" > /tmp/fl_3_store.out"
+--shell --store --command "diff /tmp/fl_3_store.out /tmp/fl_3_no_store.out || true"
+
+--cleanup
+--shell --command "rm -f /tmp/fl_3_*"
+remove(POINTS)
+remove(FPOINTS)

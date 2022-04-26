@@ -1,0 +1,14 @@
+--setup
+--start-query-logging
+
+--test
+load_library('misc')
+load_library('perf_time_test')
+--shell --command "${TESTDIR}/mquery_neg_04_kill_worker.sh 2>&1"
+
+--cleanup
+--justrun "remove(f)"
+# killInstanceArray shouldn't exist anymore, but if there was a test failure,
+# ensure that it's gone.
+--justrun "remove(killInstanceArray)"
+--stop-query-logging

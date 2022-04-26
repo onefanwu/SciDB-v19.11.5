@@ -1,0 +1,50 @@
+SCIDB QUERY : <store(build(<a:double>[i=0:0;j=0:0], 1.0), LEFT_CC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<a:double>[i=0:0;j=0:0], 1.0), RIGHT_CC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<a:double>[i=0:0;j=0:0], 1.0), RIGHT_HA, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<a:double>[i=0:0;j=0:0], 1.0), RIGHT_RC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(<a:double>[i=0:0;j=0:0], 1.0), RIGHT_RE, distribution: replicated)>
+Query was executed successfully
+
+same distributions, no sg should be inserted
+SCIDB QUERY : <_sgcount('join(LEFT_CC,RIGHT_CC)')>
+{$dummy} $count
+{0} 0
+
+different distributions, one sg should be inserted
+SCIDB QUERY : <_sgcount('join(LEFT_CC,RIGHT_HA)')>
+{$dummy} $count
+{0} 1
+
+different distributions, one sg should be inserted
+SCIDB QUERY : <_sgcount('join(LEFT_CC,RIGHT_RC)')>
+{$dummy} $count
+{0} 1
+
+different distributions, replicated should be reduced rather than an sg inserted
+SCIDB QUERY : <_sgcount('join(LEFT_CC,RIGHT_RE)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <remove(LEFT_CC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(RIGHT_CC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(RIGHT_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(RIGHT_RC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(RIGHT_RE)>
+Query was executed successfully
+

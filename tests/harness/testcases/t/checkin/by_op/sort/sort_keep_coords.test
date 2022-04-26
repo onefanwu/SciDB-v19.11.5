@@ -1,0 +1,31 @@
+# Various sort() calls using ``_coords: true''.
+
+--setup
+
+create  array A0 <a:double, b:double>[lat=-9:9; lon=-18:18]
+
+store(                                                  \
+  redimension(                                          \
+    apply(                                              \
+      build(<a:double>[i=0:702], float(i) * 0.01),      \
+      b, cos(a),                                        \
+      lat, (i % 19) - 9,                                \
+      lon, (i / 19) - 18),                              \
+    A0),                                                \
+  A0)
+
+--test
+--start-query-logging
+
+scan(A0)
+sort(A0, b, _coords: true)
+sort(A0, b, dimension: by_cos, _coords:1)
+sort(A0, a, _coords:1, dimension: $by_a)
+sort(A0, a desc, _coords:1, dimension: by_a_desc)
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "sort(A0, lat)"
+
+--stop-query-logging
+--cleanup
+
+remove(A0)

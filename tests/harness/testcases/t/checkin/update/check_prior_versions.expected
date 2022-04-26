@@ -1,0 +1,281 @@
+SCIDB QUERY : <store(apply(build(<v:int64>[i=0:9],i+1), u, 2*i), g)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(g)>
+{i} v,u
+{0} 1,0
+{1} 2,2
+{2} 3,4
+{3} 4,6
+{4} 5,8
+{5} 6,10
+{6} 7,12
+{7} 8,14
+{8} 9,16
+{9} 10,18
+
+SCIDB QUERY : <sort(project(list('datastores'), file_bytes), file_bytes)>
+{$n} file_bytes
+{0} 0
+{1} 0
+{2} 4096
+{3} 4096
+
+SCIDB QUERY : <store(project(apply(g, uprime, 2*i+1), v, uprime), g)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(g)>
+{i} v,u
+{0} 1,1
+{1} 2,3
+{2} 3,5
+{3} 4,7
+{4} 5,9
+{5} 6,11
+{6} 7,13
+{7} 8,15
+{8} 9,17
+{9} 10,19
+
+SCIDB QUERY : <sort(project(list('datastores'), file_bytes), file_bytes)>
+{$n} file_bytes
+{0} 0
+{1} 0
+{2} 4096
+{3} 4096
+
+SCIDB QUERY : <store(project(apply(g, vprime, 3*i+2), vprime, u), g)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(g)>
+{i} v,u
+{0} 2,1
+{1} 5,3
+{2} 8,5
+{3} 11,7
+{4} 14,9
+{5} 17,11
+{6} 20,13
+{7} 23,15
+{8} 26,17
+{9} 29,19
+
+SCIDB QUERY : <sort(project(list('datastores'), file_bytes), file_bytes)>
+{$n} file_bytes
+{0} 0
+{1} 0
+{2} 4096
+{3} 4096
+
+SCIDB QUERY : <store(project(apply(g, vprime, 10*i, uprime, 20*i), vprime, uprime), g)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(g)>
+{i} v,u
+{0} 0,0
+{1} 10,20
+{2} 20,40
+{3} 30,60
+{4} 40,80
+{5} 50,100
+{6} 60,120
+{7} 70,140
+{8} 80,160
+{9} 90,180
+
+SCIDB QUERY : <sort(project(list('datastores'), file_bytes), file_bytes)>
+{$n} file_bytes
+{0} 0
+{1} 0
+{2} 4096
+{3} 4096
+
+SCIDB QUERY : <scan(g@1)>
+{i} v,u
+{0} 1,0
+{1} 2,2
+{2} 3,4
+{3} 4,6
+{4} 5,8
+{5} 6,10
+{6} 7,12
+{7} 8,14
+{8} 9,16
+{9} 10,18
+
+SCIDB QUERY : <scan(g@2)>
+{i} v,u
+{0} 1,1
+{1} 2,3
+{2} 3,5
+{3} 4,7
+{4} 5,9
+{5} 6,11
+{6} 7,13
+{7} 8,15
+{8} 9,17
+{9} 10,19
+
+SCIDB QUERY : <scan(g@3)>
+{i} v,u
+{0} 2,1
+{1} 5,3
+{2} 8,5
+{3} 11,7
+{4} 14,9
+{5} 17,11
+{6} 20,13
+{7} 23,15
+{8} 26,17
+{9} 29,19
+
+SCIDB QUERY : <scan(g@4)>
+{i} v,u
+{0} 0,0
+{1} 10,20
+{2} 20,40
+{3} 30,60
+{4} 40,80
+{5} 50,100
+{6} 60,120
+{7} 70,140
+{8} 80,160
+{9} 90,180
+
+SCIDB QUERY : <remove_versions(g, 2)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(g@1)>
+[An error expected at this place for the query "scan(g@1)". And it failed.]
+
+SCIDB QUERY : <scan(g@2)>
+{i} v,u
+{0} 1,1
+{1} 2,3
+{2} 3,5
+{3} 4,7
+{4} 5,9
+{5} 6,11
+{6} 7,13
+{7} 8,15
+{8} 9,17
+{9} 10,19
+
+SCIDB QUERY : <scan(g@3)>
+{i} v,u
+{0} 2,1
+{1} 5,3
+{2} 8,5
+{3} 11,7
+{4} 14,9
+{5} 17,11
+{6} 20,13
+{7} 23,15
+{8} 26,17
+{9} 29,19
+
+SCIDB QUERY : <scan(g@4)>
+{i} v,u
+{0} 0,0
+{1} 10,20
+{2} 20,40
+{3} 30,60
+{4} 40,80
+{5} 50,100
+{6} 60,120
+{7} 70,140
+{8} 80,160
+{9} 90,180
+
+SCIDB QUERY : <remove_versions(g, keep:2)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(g@1)>
+[An error expected at this place for the query "scan(g@1)". And it failed.]
+
+SCIDB QUERY : <scan(g@2)>
+[An error expected at this place for the query "scan(g@2)". And it failed.]
+
+SCIDB QUERY : <scan(g@3)>
+{i} v,u
+{0} 2,1
+{1} 5,3
+{2} 8,5
+{3} 11,7
+{4} 14,9
+{5} 17,11
+{6} 20,13
+{7} 23,15
+{8} 26,17
+{9} 29,19
+
+SCIDB QUERY : <scan(g@4)>
+{i} v,u
+{0} 0,0
+{1} 10,20
+{2} 20,40
+{3} 30,60
+{4} 40,80
+{5} 50,100
+{6} 60,120
+{7} 70,140
+{8} 80,160
+{9} 90,180
+
+SCIDB QUERY : <remove_versions(g)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(g@1)>
+[An error expected at this place for the query "scan(g@1)". And it failed.]
+
+SCIDB QUERY : <scan(g@2)>
+[An error expected at this place for the query "scan(g@2)". And it failed.]
+
+SCIDB QUERY : <scan(g@3)>
+[An error expected at this place for the query "scan(g@3)". And it failed.]
+
+SCIDB QUERY : <scan(g@4)>
+{i} v,u
+{0} 0,0
+{1} 10,20
+{2} 20,40
+{3} 30,60
+{4} 40,80
+{5} 50,100
+{6} 60,120
+{7} 70,140
+{8} 80,160
+{9} 90,180
+
+SCIDB QUERY : <scan(g)>
+{i} v,u
+{0} 0,0
+{1} 10,20
+{2} 20,40
+{3} 30,60
+{4} 40,80
+{5} 50,100
+{6} 60,120
+{7} 70,140
+{8} 80,160
+{9} 90,180
+
+SCIDB QUERY : <store(project(project(project(project(apply(g, vprime, 5*(i+1), uprime, 7*(i+1)), uprime, vprime), vprime, uprime), uprime, vprime), vprime, uprime),g)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(g)>
+{i} v,u
+{0} 5,7
+{1} 10,14
+{2} 15,21
+{3} 20,28
+{4} 25,35
+{5} 30,42
+{6} 35,49
+{7} 40,56
+{8} 45,63
+{9} 50,70
+
+SCIDB QUERY : <remove(g)>
+Query was executed successfully
+

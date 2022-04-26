@@ -1,0 +1,12 @@
+--setup
+--start-query-logging
+
+# why does this test need the next line?
+--shell --command "rm -f /dev/shm/SciDB* 2>/dev/null"
+
+load_library('mpi_test')
+
+--test
+
+# test _mpi_test() by itself
+_mpi_test()

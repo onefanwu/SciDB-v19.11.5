@@ -1,0 +1,17 @@
+--setup
+
+CREATE array LongString < I : int64, J : int64, V : double NULL, W : string > [ Line=0:*,6,0 ]
+load ( LongString, '${TEST_DATA_DIR}/longstring.txt')
+scan(LongString)  -- Inserted by scan_doctor
+
+--test
+--start-query-logging
+
+_show_nodist(LongString)
+scan(LongString)
+
+--stop-query-logging
+--cleanup
+
+remove(LongString)
+

@@ -1,0 +1,68 @@
+--setup
+create array Xa <a:int64> [ X=0:9,5,0]
+create array Xb <b:int64> [ X=0:9,5,0]
+create array Xc <c:int64> [ X=0:9,5,0]
+create array Xd <d:int64> [ X=0:9,5,0]
+
+store(build(Xa, 1+X), Xa)
+scan(Xa)  -- Inserted by scan_doctor
+store(build(Xb, 1+X), Xb)
+scan(Xb)  -- Inserted by scan_doctor
+store(build(Xc, 1+X), Xc)
+scan(Xc)  -- Inserted by scan_doctor
+store(build(Xd, 1+X), Xd)
+scan(Xd)  -- Inserted by scan_doctor
+
+store(join(Xa, Xb), X1)
+scan(X1)  -- Inserted by scan_doctor
+store(join(X1, Xc), X2)
+scan(X2)  -- Inserted by scan_doctor
+store(join(X2, Xd), X3)
+scan(X3)  -- Inserted by scan_doctor
+
+create array Ya <a:int64>[x=0:*,5,0]
+create array Yb <b:int64>[x=0:*,5,0]
+create array Yc <c:int64>[x=0:*,5,0]
+create array Yd <d:int64>[x=0:*,5,0]
+
+load(Ya, '${TEST_DATA_DIR}/unbounded_cross.txt')
+scan(Ya)  -- Inserted by scan_doctor
+load(Yb, '${TEST_DATA_DIR}/unbounded_cross.txt')
+scan(Yb)  -- Inserted by scan_doctor
+load(Yc, '${TEST_DATA_DIR}/unbounded_cross.txt')
+scan(Yc)  -- Inserted by scan_doctor
+load(Yd, '${TEST_DATA_DIR}/unbounded_cross.txt')
+scan(Yd)  -- Inserted by scan_doctor
+
+store(join(Ya, Yb), Y1)
+scan(Y1)  -- Inserted by scan_doctor
+store(join(Y1, Yc), Y2)
+scan(Y2)  -- Inserted by scan_doctor
+store(join(Y2, Yd), Y3)
+scan(Y3)  -- Inserted by scan_doctor
+
+--test
+
+consume(merge(Y3,X3))
+consume(merge(Y3,X3),2)
+consume(merge(Y3,X3),4)
+consume(merge(Y3,X3),-1)
+consume(merge(Y3,X3),0)
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT --afl="consume(merge(Y3,X3),4,5)"
+--error --code=scidb::SCIDB_SE_TYPE::SCIDB_LE_CANT_FIND_IMPLICIT_CONVERTER --afl="consume(merge(Y3,X3),4.5)"
+
+--cleanup
+remove(Xa)
+remove(Xb)
+remove(Xc)
+remove(Xd)
+remove(X1)
+remove(X2)
+remove(X3)
+remove(Ya)
+remove(Yb)
+remove(Yc)
+remove(Yd)
+remove(Y1)
+remove(Y2)
+remove(Y3)

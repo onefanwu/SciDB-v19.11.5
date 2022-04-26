@@ -1,0 +1,45 @@
+# Test BINARY input()/load() into dataframes.
+--setup
+store(apply(build(<v:int64>[i=0:199:0:10], i), (w, 2*i), (s, 'Hi.')), A)
+save(A, '/tmp/df_input_binary.bin', format:'(int64,int64,string)')
+
+--test
+--echo Baseline sums.
+op_sum(A, v)
+op_sum(A, w)
+
+--echo Sums from input()
+--igdata "input(<v:int64, w:int64, s:string>, '/tmp/df_input_binary.bin', \
+    format:'(int64,int64,string)')"
+op_sum(input(<v:int64, w:int64, s:string>, '/tmp/df_input_binary.bin', \
+    format:'(int64,int64,string)'), v)
+op_sum(input(<v:int64, w:int64, s:string>, '/tmp/df_input_binary.bin', \
+    format:'(int64,int64,string)'), w)
+
+create temp array DF <a:int64, b:int64, c:string>
+load(DF, '/tmp/df_input_binary.bin', format:'(int64,int64,string)')
+#show(DF)
+project(apply(show(DF), nschema, substr(schema, 0, 38)+'-'+substr(schema, 39, 100)), nschema)
+op_sum(DF, a)
+op_sum(DF, b)
+
+--echo No SG storing a dataframe
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'store(input(<v:int64, w:int64, x:string>, \'/tmp/df_input_binary.bin\', \
+                     format:\'(int64,int64,string)\'), DF)', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+
+--echo SG found storing an array
+--shell --store --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq \
+    "_explain_physical( \
+        'store(input(<v:int64, w:int64, x:string>[dummy], \'/tmp/df_input_binary.bin\', \
+                     format:\'(int64,int64,string)\'), B)', \
+        'afl')" | \
+    awk '/impl_sg/ { print "Found SG"; found = 1 } END { if (!found) print "No SG found" }' "
+
+--cleanup
+remove(A)
+remove(DF)
+--shell --command "rm -f /tmp/df_input_binary.bin"

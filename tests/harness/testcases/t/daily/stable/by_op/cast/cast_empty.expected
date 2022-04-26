@@ -1,0 +1,34 @@
+SCIDB QUERY : <create array A <a:int32> [x=0:2,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(A,x+1),A)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(A)  -- Inserted by scan_doctor>
+{x} a
+{0} 1
+{1} 2
+{2} 3
+
+SCIDB QUERY : <create array B <b:int32> [y=0:2,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(cast(A,B),C)>
+Query was executed successfully
+
+SCIDB QUERY : <scan(C)  -- Inserted by scan_doctor>
+{y} b
+{0} 1
+{1} 2
+{2} 3
+
+SCIDB QUERY : <_show_nodist(C)>
+{i} schema
+{0} 'C<b:int32> [y=0:2:0:3]'
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

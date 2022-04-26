@@ -1,0 +1,14 @@
+Query was executed successfully
+
+Query was executed successfully
+
+[An error expected at this place for the query "apply(APPLYNEG)". And it failed.]
+
+[An error expected at this place for the query "apply(APPLYNEG, w)". And it failed.]
+
+[An error expected at this place for the query "apply(APPLYNEG, w, 5, x)". And it failed.]
+
+[An error expected at this place for the query "apply()". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT2. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT2.]
+
+Query was executed successfully
+

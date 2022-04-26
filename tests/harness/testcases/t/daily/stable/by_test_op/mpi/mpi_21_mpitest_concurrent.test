@@ -1,0 +1,62 @@
+--setup
+--start-query-logging
+
+# why does this test need the next line?
+--shell --command "rm -f /dev/shm/SciDB* 2>/dev/null"
+
+load_library('mpi_test')
+
+--test
+
+# start 2 concurrent _mpi_test-based queries, which are expected to take more than 10 sec each.
+#
+# one could manually check to see whether the total time took less than the time for one of them, which
+# would demonstrate they were concurrent, but this test does not go that far
+#
+# [ cleanup note: if interrupted, this shell command will kill the current process group (typically scidbtestharness+children).
+#   this way the background iquery started here does not stay behind - best effort cleanup attempt. ]
+#
+--shell --store --command "trap 'kill 0' SIGINT SIGTERM SIGHUP SIGQUIT ; ( iquery -p ${IQUERY_PORT:=1239} -c ${IQUERY_HOST:=localhost} -odcsv -aq '_mpi_test()' 1> /tmp/${HPID}_mpitest1.stdout 2> /tmp/${HPID}_mpitest1.stderr ) & export pid=$! ; export rc=0 ; iquery -p ${IQUERY_PORT:=1239} -c ${IQUERY_HOST:=localhost} -odcsv -aq '_mpi_test()' 1> /tmp/${HPID}_mpitest2.stdout 2> /tmp/${HPID}_mpitest2.stderr || export rc=${rc}2 ; wait $pid || export rc=${rc}1 ; echo $rc && [ $rc == 0 ];"
+
+# check that no files from this test were left behind in /dev/shm 
+--shell --store --command "ls /dev/shm/SciDB* 2>/dev/null || true"
+
+--cleanup
+# log the test outputs here (so that it is captured regardless of success/failure)
+--shell --store --command "cat /tmp/${HPID}_mpitest1.stdout"
+--shell --store --command "cat /tmp/${HPID}_mpitest1.stderr"
+
+--shell --store --command "cat /tmp/${HPID}_mpitest2.stdout"
+--shell --store --command "cat /tmp/${HPID}_mpitest2.stderr"
+
+# and remove those log files
+--shell --command "rm -f /tmp/${HPID}_mpitest* 2>/dev/null"
+
+# and the shm files
+--shell --command "rm -f /dev/shm/SciDB* 2>/dev/null"
+
+# _mpi_test has been failing in CDASH, but not in the developer sandbox.
+# temporarily we add code here to capture the scidb.log on the coordinator to give more insight into
+# the causes of the timeout error that is being thrown.  at the same time, we have changed
+# the _mpi_test() operator to use INFO logging for everything, rather than debug, so we will always
+# be able to obtain such failure information.
+# after resolving this issue, we will return here and comment out this code, but leave it for future
+# convenience.
+#
+# backup logs
+# copy scidb log(s) to the stdout of this harness test (testname.log) file.
+#NOTE: the following way did not work
+#      the --shell doc mentions "$BASE_PATH" but is ambiguous as to whether that applies only to the --cwd== argument
+# --shell --command "find ${BASEPATH} -name 'scidb.log' | xargs cat ; echo $?"
+#NOTE: this did not work either.  the documentation explicitly says "$BASE_PATH" without braces
+--shell --command "find $BASE_PATH -name 'scidb.log' | xargs cat ; echo $?"
+
+# first, create base_path.txt
+
+--shell --command "iquery -o csv -aq "project(filter(list('instances'), instance_id=0), instance_path)" | head -n1  | sed -e "s/'\(.*\)'/\1/" > /tmp/${HPID}.base_path.txt"
+
+# now, print the scidb.log path and tail the scidb.log so that it appears in the log for this test script
+--shell --command "BASEPATH=`cat /tmp/${HPID}.base_path.txt` ; [ -n "${BASEPATH}" ] && find ${BASEPATH} -name 'scidb.log' ; echo $?"
+--shell --command "BASEPATH=`cat /tmp/${HPID}.base_path.txt` ; [ -n "${BASEPATH}" ] && find ${BASEPATH} -name 'scidb.log' | xargs tail -n 10000; echo $?"
+
+# the command above to be commented out when tests operating normally.

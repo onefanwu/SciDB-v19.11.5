@@ -1,0 +1,66 @@
+# Test new semantics of cast() intended to make casting easy.
+
+--setup
+create array CASTME < chr : char, \
+		      i16 : int16 not null, \
+		      str : string, \
+		      i64 : int64, \
+		      u64 : uint64, \
+		      dbl : double, \
+		      flt : float > \
+		    [ i=0:3:0:4; j=0:9 ]
+
+store( \
+  redimension( \
+    apply( \
+      build( <i64: int64>[i=0:3], i ), \
+      (chr, char(int8(37))), \
+      (str, 'hi mom'), \
+      (u64, uint64(42)), \
+      (dbl, 6.02e23), \
+      (flt, float(3.14)), \
+      (i16, int16(64000)), \
+      (j, i+4)), \
+    CASTME), \
+  CASTME)
+
+--test
+--set-format tsv+:l
+--start-query-logging
+
+--echo Rename fourth attribute.
+cast(CASTME, ($4, four))
+_show2_nodist('cast(CASTME, ($4, four))', 'afl')
+
+--echo Rename 27th attribute fails utterly.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION \
+    "_show2_nodist('cast(CASTME, (\$27, twentyseven))', 'afl')"
+
+--echo Rename zeroth dimension.
+cast(CASTME, ($_0, zero))
+_show2_nodist('cast(CASTME, ($_0, zero))', 'afl')
+
+--echo Rename both dimensions by position.
+cast(CASTME, ($_0, zero), ($_1, one))
+_show2_nodist('cast(CASTME, ($_0, zero), ($_1, one))', 'afl')
+
+--echo Rename 42nd dimension fails utterly.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION \
+    "_show2_nodist('cast(CASTME, (\$_42, fourtytwo))', 'afl')"
+
+--echo Don't be so negative.  The $-5 looks like an expression.
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "_show2_nodist('cast(CASTME, (\$-5, minus_five))', 'afl')"
+
+--echo Same story with dimensions:  The $_-1 looks like an expression.
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "_show2_nodist('cast(CASTME, (\$_-1, minus_one))', 'afl')"
+
+--echo We want to reserve $ names for the system, so no renaming to $anything.
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_RESERVED_NAME \
+    "cast(CASTME, (u64, \$2), (i, \$_1))"
+
+--start-query-logging
+
+--cleanup
+remove(CASTME)

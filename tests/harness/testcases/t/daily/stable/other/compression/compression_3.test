@@ -1,0 +1,137 @@
+--setup
+--start-query-logging
+create array Ts <a:string> [x=-2:3,2,1]
+create array Ts_rle <a:string compression 'bzlib'> [x=-2:3,2,1]
+create array Ts_d <a:string compression 'zlib'> [x=-2:3,2,1]
+create array Ts_ns <a:string compression 'zlib'> [x=-2:3,2,1]
+create array Ts_be <a:string compression 'zlib'> [x=-2:3,2,1]
+create array Ts_z <a:string compression 'zlib'> [x=-2:3,2,1]
+create array Ts_bz <a:string compression 'bzlib'> [x=-2:3,2,1]
+create array Ts_nf <a:string compression 'bzlib'> [x=-2:3,2,1]
+
+create array eTs <a:string> [x=-2:3,2,1]
+create array eTs_rle <a:string compression 'bzlib'> [x=-2:3,2,1]
+create array eTs_d <a:string compression 'zlib'> [x=-2:3,2,1]
+create array eTs_ns <a:string compression 'zlib'> [x=-2:3,2,1]
+create array eTs_be <a:string compression 'zlib'> [x=-2:3,2,1]
+create array eTs_z <a:string compression 'zlib'> [x=-2:3,2,1]
+create array eTs_bz <a:string compression 'bzlib'> [x=-2:3,2,1]
+create array eTs_nf <a:string compression 'bzlib'> [x=-2:3,2,1]
+
+create array dTs <a:string default 'default'> [x=-2:3,2,1]
+create array dTs_rle <a:string default 'default' compression 'bzlib'> [x=-2:3,2,1]
+create array dTs_d <a:string default 'default' compression 'zlib'> [x=-2:3,2,1]
+create array dTs_ns <a:string default 'default' compression 'zlib'> [x=-2:3,2,1]
+create array dTs_be <a:string default 'default' compression 'zlib'> [x=-2:3,2,1]
+create array dTs_z <a:string default 'default' compression 'zlib'> [x=-2:3,2,1]
+create array dTs_bz <a:string default 'default' compression 'bzlib'> [x=-2:3,2,1]
+create array dTs_nf <a:string default 'default' compression 'bzlib'> [x=-2:3,2,1]
+
+create array edTs <a:string default 'default'> [x=-2:3,2,1]
+create array edTs_rle <a:string default 'default' compression 'bzlib'> [x=-2:3,2,1]
+create array edTs_d <a:string default 'default' compression 'zlib'> [x=-2:3,2,1]
+create array edTs_ns <a:string default 'default' compression 'zlib'> [x=-2:3,2,1]
+create array edTs_be <a:string default 'default' compression 'zlib'> [x=-2:3,2,1]
+create array edTs_z <a:string default 'default' compression 'zlib'> [x=-2:3,2,1]
+create array edTs_bz <a:string default 'default' compression 'bzlib'> [x=-2:3,2,1]
+create array edTs_nf <a:string default 'default' compression 'bzlib'> [x=-2:3,2,1]
+
+
+--test
+--aql select * into Ts_rle from filter(build(Ts,string(x)),x<>0)
+scan(Ts_rle)  -- Inserted by scan_doctor
+--aql select * into Ts_d from filter(build(Ts,string(x)),x<>x)
+scan(Ts_d)  -- Inserted by scan_doctor
+--aql select * into Ts_ns from filter(build(Ts,string(x)),x<>1 or x<>-1)
+scan(Ts_ns)  -- Inserted by scan_doctor
+--aql select * into Ts_be from filter(build(Ts,string(x)),x=0 or x=3)
+scan(Ts_be)  -- Inserted by scan_doctor
+--aql select * into Ts_z from filter(build(Ts,string(x)),x=-1)
+scan(Ts_z)  -- Inserted by scan_doctor
+--aql select * into Ts_bz from filter(build(Ts,string(x)),x=9)
+scan(Ts_bz)  -- Inserted by scan_doctor
+--aql select * into Ts_nf from filter(build(Ts,string(x)),x=x)
+scan(Ts_nf)  -- Inserted by scan_doctor
+
+--aql select * into eTs_rle from filter(build(eTs,string(x)),x<>0)
+scan(eTs_rle)  -- Inserted by scan_doctor
+--aql select * into eTs_d from filter(build(eTs,string(x)),x<>x)
+scan(eTs_d)  -- Inserted by scan_doctor
+--aql select * into eTs_ns from filter(build(eTs,string(x)),x<>1 or x<>-1)
+scan(eTs_ns)  -- Inserted by scan_doctor
+--aql select * into eTs_be from filter(build(eTs,string(x)),x=0 or x=3)
+scan(eTs_be)  -- Inserted by scan_doctor
+--aql select * into eTs_z from filter(build(eTs,string(x)),x=-1)
+scan(eTs_z)  -- Inserted by scan_doctor
+--aql select * into eTs_bz from filter(build(eTs,string(x)),x=9)
+scan(eTs_bz)  -- Inserted by scan_doctor
+--aql select * into eTs_nf from filter(build(eTs,string(x)),x=x)
+scan(eTs_nf)  -- Inserted by scan_doctor
+
+--aql select * into dTs_rle from filter(build(dTs,string(x)),true)
+scan(dTs_rle)  -- Inserted by scan_doctor
+--aql select * into dTs_d from filter(build(dTs,string(x)),true)
+scan(dTs_d)  -- Inserted by scan_doctor
+--aql select * into dTs_ns from filter(build(dTs,string(x)),true)
+scan(dTs_ns)  -- Inserted by scan_doctor
+--aql select * into dTs_be from filter(build(dTs,string(x)),true)
+scan(dTs_be)  -- Inserted by scan_doctor
+--aql select * into dTs_z from filter(build(dTs,string(x)),true)
+scan(dTs_z)  -- Inserted by scan_doctor
+--aql select * into dTs_bz from filter(build(dTs,string(x)),true)
+scan(dTs_bz)  -- Inserted by scan_doctor
+--aql select * into dTs_nf from filter(build(dTs,string(x)),true)
+scan(dTs_nf)  -- Inserted by scan_doctor
+
+--aql select * into edTs_rle from filter(build(edTs,string(x)),x<>0)
+scan(edTs_rle)  -- Inserted by scan_doctor
+--aql select * into edTs_d from filter(build(edTs,string(x)),x<>x)
+scan(edTs_d)  -- Inserted by scan_doctor
+--aql select * into edTs_ns from filter(build(edTs,string(x)),x<>1 or x<>-1)
+scan(edTs_ns)  -- Inserted by scan_doctor
+--aql select * into edTs_be from filter(build(edTs,string(x)),x=0 or x=3)
+scan(edTs_be)  -- Inserted by scan_doctor
+--aql select * into edTs_z from filter(build(edTs,string(x)),x=-1)
+scan(edTs_z)  -- Inserted by scan_doctor
+--aql select * into edTs_bz from filter(build(edTs,string(x)),x=9)
+scan(edTs_bz)  -- Inserted by scan_doctor
+--aql select * into edTs_nf from filter(build(edTs,string(x)),x=x)
+scan(edTs_nf)  -- Inserted by scan_doctor
+
+--cleanup
+remove(Ts)
+remove(Ts_rle)
+remove(Ts_d)
+remove(Ts_ns)
+remove(Ts_be)
+remove(Ts_z)
+remove(Ts_bz)
+remove(Ts_nf)
+
+remove(eTs)
+remove(eTs_rle)
+remove(eTs_d)
+remove(eTs_ns)
+remove(eTs_be)
+remove(eTs_z)
+remove(eTs_bz)
+remove(eTs_nf)
+
+remove(dTs)
+remove(dTs_rle)
+remove(dTs_d)
+remove(dTs_ns)
+remove(dTs_be)
+remove(dTs_z)
+remove(dTs_bz)
+remove(dTs_nf)
+
+remove(edTs)
+remove(edTs_rle)
+remove(edTs_d)
+remove(edTs_ns)
+remove(edTs_be)
+remove(edTs_z)
+remove(edTs_bz)
+remove(edTs_nf)
+--stop-query-logging

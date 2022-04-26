@@ -1,0 +1,46 @@
+--setup
+--start-query-logging
+
+# Store two versions of the array remove_array_test, later removing
+# one version at a time and observing the remaining chunk count in
+# rocksdb.
+store(build(<v:int64>[i=1:100:0:1], 2*i+1), remove_array_test)
+store(project(apply(remove_array_test, vnew, 3*v), vnew), remove_array_test)
+
+--test
+# Total number of array versions.
+op_count(versions(remove_array_test))
+
+# Number of chunks across all versions.  Expect 800 chunks:  200 per
+# array, including empty bitmap, plus replicated chunks for redundancy.
+# Don't need to specify list('arrays', true) here because _dskeys
+# works on the unversioned array ID, and will show chunks for all
+# array versions.  If we cared about a specific array version, then
+# we would filter the result of _dskeys by the arrverid attribute for
+# that version.
+store(project(filter(list(), name = 'remove_array_test'), uaid), uaids, distribution:replicated)
+
+# This models how to properly use _dskeys in the production case.
+# It's not strictly necessary to lock_arrays() in test as long as the
+# query execution environment is tightly controlled.
+lock_arrays(true)
+op_count(_dskeys(uaids))
+lock_arrays(false)
+
+# Remove the oldest versions and observe the remaining array version
+# and chunk counts.
+remove_versions(remove_array_test, keep:1)
+op_count(versions(remove_array_test))
+lock_arrays(true)
+op_count(_dskeys(uaids))
+lock_arrays(false)
+
+# Remove the array entirely.
+remove(remove_array_test)
+lock_arrays(true)
+op_count(_dskeys(uaids))
+lock_arrays(false)
+
+--cleanup
+remove(uaids)
+--stop-query-logging

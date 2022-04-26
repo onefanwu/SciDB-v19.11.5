@@ -1,0 +1,23 @@
+# Test for SDB-6365.
+
+--setup
+store(build(<v:int64>[i=0:2,1,0,j=0:2,2,0],3*i+j), VIJ)
+
+--test
+
+# We have to throw away the output because chunk order will differ
+# depending on cluster configuration.  We can't just wrap the queries
+# in sort() or consume(), because that disturbs the execution pipeline
+# and the code path we want to test (ConstChunk::getEmptyBitmap()
+# maybe calls setPosition()) won't be followed.
+
+--shell --command "iquery -aq 'project(flatten(VIJ), v)' ; exit 0"
+--shell --command "iquery -aq 'project(flatten(VIJ), i)' ; exit 0"
+--shell --command "iquery -aq 'project(flatten(VIJ), j)' ; exit 0"
+
+# This failure is due to SDB-6644.  Must fix!!!
+--error --code=scidb::SCIDB_SE_EXECUTION::SCIDB_LE_NO_CURRENT_CHUNK \
+    "filter(flatten(VIJ), v%2=0)"
+
+--cleanup
+remove(VIJ)

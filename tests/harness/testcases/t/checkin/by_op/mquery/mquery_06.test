@@ -1,0 +1,16 @@
+--setup
+--start-query-logging
+store(build(<v:int64>[i=1:30:0:1],2*i+1),a)
+
+--test
+mquery(delete(a,i<11), \
+               delete(a,i>20), \
+               delete(a,i=15))
+scan(a@1)
+scan(a@2)
+scan(a@3)
+scan(a@4)
+
+--cleanup
+remove(a)
+--stop-query-logging

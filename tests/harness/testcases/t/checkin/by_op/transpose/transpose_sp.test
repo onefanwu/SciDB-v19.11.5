@@ -1,0 +1,13 @@
+--setup
+create array xyz <a:double> [x=0:1999,100,0, y=0:1999,100,0]
+load(xyz,'${TEST_DATA_DIR}/xyz_small.txt')
+scan(xyz)  -- Inserted by scan_doctor
+
+--test
+transpose(xyz)
+join(build(<v:double>[r=0:64,32,0, c=0:64,32,0], 100*r+c), transpose(build( <v:double>[r=0:64,32,0, c=0:64,32,0], r+100*c)))
+filter(join(build(<v:double>[r=0:64,32,0,c=0:64,32,0],100*r+c) as L, transpose(build(<v:double>[r=0:64,32,0,c=0:64,32,0],r+100*c)) as R), L.v != R.v)
+
+
+--cleanup
+remove (xyz)

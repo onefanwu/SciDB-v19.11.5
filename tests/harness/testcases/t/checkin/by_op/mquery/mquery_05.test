@@ -1,0 +1,48 @@
+--setup
+--start-query-logging
+create array q<v:int64>[i=1:10:0:1]
+create array r<v:int64>[i=1:10:0:1]
+create array s<v:int64>[i=1:10:0:1]
+create array t<v:int64>[i=1:10:0:1]
+create array u<v:int64>[i=1:10:0:1]
+create array v<v:int64>[i=1:10:0:1]
+create array w<v:int64>[i=1:10:0:1]
+create array x<v:int64>[i=1:10:0:1]
+create array y<v:int64>[i=1:10:0:1]
+create array z<v:int64>[i=1:10:0:1]
+
+--test
+mquery( \
+  insert(build(q,2*i+1),q), \
+  insert(project(apply(q,vnew,2*v),vnew),r), \
+  insert(project(apply(r,vnew,2*v),vnew),s), \
+  insert(project(apply(s,vnew,2*v),vnew),t), \
+  insert(project(apply(t,vnew,2*v),vnew),u), \
+  insert(project(apply(u,vnew,2*v),vnew),v), \
+  insert(project(apply(v,vnew,2*v),vnew),w), \
+  insert(project(apply(w,vnew,2*v),vnew),x), \
+  insert(project(apply(x,vnew,2*v),vnew),y), \
+  insert(project(apply(y,vnew,2*v),vnew),z))
+scan(q)
+scan(r)
+scan(s)
+scan(t)
+scan(u)
+scan(v)
+scan(w)
+scan(x)
+scan(y)
+scan(z)
+
+--cleanup
+remove(q)
+remove(r)
+remove(s)
+remove(t)
+remove(u)
+remove(v)
+remove(w)
+remove(x)
+remove(y)
+remove(z)
+--stop-query-logging

@@ -1,0 +1,21 @@
+--setup
+--start-query-logging
+
+--test
+
+#
+# Attempt to create an array after the global array lock has been installed.
+#
+# Install the global array lock and then try to create an array with 'create array'.
+# 'create array' will block until the global array lock has been removed.
+--shell --store --command "${TESTDIR}/create-array-test-case.sh"
+
+# After the create-array-test-case.sh script runs, there must be no entries
+# in the array_version_lock table in postgres.
+--shell --store --command "psql -e -d ${DB_NAME} -U ${DB_USER} -p ${DB_PORT} -h ${DB_HOST} -t -c 'select count(*) from array_version_lock'"
+
+# There should be no arrays in the database, either.
+op_count(list())
+
+--cleanup
+--stop-query-logging

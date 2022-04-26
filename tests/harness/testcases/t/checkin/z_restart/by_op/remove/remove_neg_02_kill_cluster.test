@@ -1,0 +1,47 @@
+--setup
+--start-query-logging
+load_library('misc')
+load_library('system')
+
+# Create 800 chunks around the cluster in two array versions.
+# 400 = (2 array versions * (100 for attribute v) + (100 for EBM))
+# 800 total with array redundancy enabled.
+store(build(<v:int64>[i=1:100:0:1], i), remove_neg_02)
+store(project(apply(remove_neg_02, vnew, 3*v), vnew), remove_neg_02)
+
+--test
+# Take baseline, two versions of the array and 800 chunks.
+op_count(versions(remove_neg_02))
+store(project(filter(list(), name = 'remove_neg_02'), uaid), uaid_list, distribution:replicated)
+lock_arrays(true)
+op_count(_dskeys(uaid_list))
+lock_arrays(false)
+
+# Use the test operator to start removing versions of the array
+# and, part way through, force all instances to abort.
+--shell --command "${TESTDIR}/remove_neg_02_kill_cluster.sh 2"
+--reconnect
+# There will be one fewer version in the catalog.
+op_count(versions(remove_neg_02))
+# The count this time around will be greater-than 400 when
+# it should be 400 (400 for the single array version, including
+# redundancy.  Due to races, this value could be slightly different
+# from test to test, so transform it to a zero-or-one result.
+lock_arrays(true)
+op_count(filter(op_count(_dskeys(uaid_list)), count > 400))
+lock_arrays(false)
+
+# Repeating remove_versions() after the crash will cleanup the
+# data that should have been cleaned in the first pass.  However,
+# this is a bug because the data should have been cleaned-up on
+# restart, just as the catalog entry was.  After fixing, this
+# call to remove_versions should be removed.
+remove_versions(remove_neg_02, 2)
+
+# This should now be exactly 400.
+op_count(_dskeys(uaid_list))
+
+--cleanup
+remove(remove_neg_02)
+remove(uaid_list)
+--stop-query-logging

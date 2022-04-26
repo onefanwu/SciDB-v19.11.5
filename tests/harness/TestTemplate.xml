@@ -1,0 +1,9 @@
+<Test Status="notrun">
+<Name>TIMED_OUT_TEST</Name>
+<Results>
+<NamedMeasurement type="numeric/double" name="Execution Time"><Value>TIMEOUT</Value></NamedMeasurement>
+<NamedMeasurement type="text/string" name="Completion Status"><Value>NotRun</Value></NamedMeasurement>
+<NamedMeasurement type="text/string" name="TestcaseResult"><Value>FAIL</Value></NamedMeasurement>
+<Measurement><Value>Not Applicable</Value></Measurement>
+</Results>
+</Test>

@@ -1,0 +1,53 @@
+#
+# Tests to demonstrate that
+# build() outputs its inherited distribution,
+# when possible.
+#
+# Store will be used to set the inheritance.
+# The use of store will also cause an sg operator
+# to be inserted when build does not build in
+# the distribution specified to store.
+# distribution. 
+# The number of sg operators is counted with
+# _sgcount()
+
+--setup
+--start-query-logging
+
+# need source of 4 distributions
+store(build(<v:int64>[i=0:1,1,0,j=0:1,1,0],1), BUILD_HA, distribution: hashed)
+store(build(<v:int64>[i=0:1,1,0,j=0:1,1,0],1), BUILD_RC, distribution: row_cyclic)
+store(build(<v:int64>[i=0:1,1,0,j=0:1,1,0],1), BUILD_CC, distribution: col_cyclic)
+store(build(<v:int64>[i=0:1,1,0,j=0:1,1,0],1), BUILD_RE, distribution: replicated)
+
+--test
+
+#
+# simple: instance-identical expressions, no sgs required
+#
+_sgcount('store(apply(BUILD_HA,w, i), UNWRITTEN, distribution: hashed)')
+_sgcount('store(apply(BUILD_RC,w, i), UNWRITTEN, distribution: row_cyclic)')
+_sgcount('store(apply(BUILD_CC,w, i), UNWRITTEN, distribution: col_cyclic)')
+_sgcount('store(apply(BUILD_RE,w, i), UNWRITTEN, distribution: replicated)')
+
+#
+# non-instance-identical expressions like instanceid() and random()
+# can still be applied to non-replicated distributions.
+# otherwise, an sg is inserted
+#
+# still permitted: count should be 0
+_sgcount('store(apply(BUILD_HA,w, instanceid()), UNWRITTEN, distribution: hashed)')
+_sgcount('store(apply(BUILD_RC,w, 3*random()),   UNWRITTEN, distribution: row_cyclic)')
+_sgcount('store(apply(BUILD_CC,w, instanceid()), UNWRITTEN, distribution: col_cyclic)')
+# not permitted: count should be 1:
+#     apply will be preceded by a reducer and followed by an sg to replicated
+_sgcount('store(apply(BUILD_RE,w, instanceid()), UNWRITTEN, distribution: replicated)')
+_sgcount('store(apply(BUILD_RE,w, 3*random()),   UNWRITTEN, distribution: replicated)')
+
+--cleanup
+
+remove(BUILD_HA)
+remove(BUILD_RC)
+remove(BUILD_CC)
+remove(BUILD_RE)
+

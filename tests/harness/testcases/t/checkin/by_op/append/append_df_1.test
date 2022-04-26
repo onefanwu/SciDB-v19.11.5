@@ -1,0 +1,25 @@
+--setup
+store(build(<v:int64>[i=0:9], i), A)
+store(build(<w:int64>[i=0:9; j=10:12], i+j), B)
+
+--test
+--start-query-logging
+
+# Apply a nullable 'x' attribute before storing.
+store(flatten(apply(A, x, iif(true,42,null))), DF)
+append(flatten(B), DF)
+op_count(DF)
+sort(DF, i, v, x)
+
+store(flatten(B), FB)
+append(FB, DF)
+op_count(DF)
+sort(DF, i, v, x)
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(B)
+remove(FB)
+remove(DF)

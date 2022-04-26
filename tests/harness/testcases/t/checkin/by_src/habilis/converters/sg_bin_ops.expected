@@ -1,0 +1,344 @@
+setup inputs
+SCIDB QUERY : <create array SCHEMA_BINOP  <v:double>[r=0:1,1,0, c=0:1,1,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array SCHEMA_REPART <v:double>[r=0:1,2,0, c=0:1,2,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(SCHEMA_BINOP, 1), A_BINOP_HA, distribution: hashed)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(SCHEMA_BINOP, 1), A_BINOP_RC, distribution: row_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(SCHEMA_BINOP, 1), A_BINOP_CC, distribution: col_cyclic)>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(SCHEMA_BINOP, 1), A_BINOP_RE, distribution: replicated)>
+Query was executed successfully
+
+check assumptions that can be checked:
+should be null distribution
+SCIDB QUERY : <show('build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true)','afl')>
+{i} schema,distribution,etcomp
+{0} 'SCHEMA_BINOP<v:double> [r=0:1:0:1; c=0:1:0:1]',null,null
+
+check vanilla case (hashed (except cross_join replicated on right), no sg insertions required:
+SCIDB QUERY : <join  (A_BINOP_HA, A_BINOP_HA)>
+{r,c} v,v
+{0,0} 1,1
+{0,1} 1,1
+{1,0} 1,1
+{1,1} 1,1
+
+SCIDB QUERY : <cross_join(A_BINOP_HA, A_BINOP_RE)>
+{r,c,r,c} v,v
+{0,0,0,0} 1,1
+{0,0,0,1} 1,1
+{0,0,1,0} 1,1
+{0,0,1,1} 1,1
+{0,1,0,0} 1,1
+{0,1,0,1} 1,1
+{0,1,1,0} 1,1
+{0,1,1,1} 1,1
+{1,0,0,0} 1,1
+{1,0,0,1} 1,1
+{1,0,1,0} 1,1
+{1,0,1,1} 1,1
+{1,1,0,0} 1,1
+{1,1,0,1} 1,1
+{1,1,1,0} 1,1
+{1,1,1,1} 1,1
+
+sg count should be 0
+SCIDB QUERY : <_sgcount('join  (A_BINOP_HA, A_BINOP_HA)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <_sgcount('cross_join(A_BINOP_HA, A_BINOP_RE)')>
+{$dummy} $count
+{0} 0
+
+exercise sg insertion cases by code path:
+cases sg for lhs required, regardless of the rhs
+SCIDB QUERY : <join  (build(SCHEMA_BINOP, '[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]',true), A_BINOP_HA)>
+{r,c} v,v
+{0,0} 1,1
+{0,1} 1,1
+{1,0} 1,1
+{1,1} 1,1
+
+SCIDB QUERY : <join  (repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP),                 A_BINOP_HA)>
+{r,c} v,v
+{0,0} 1,1
+{0,1} 1,1
+{1,0} 1,1
+{1,1} 1,1
+
+sg count should be 1, Habilis case 2c1a
+SCIDB QUERY : <_sgcount('join  (build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true), A_BINOP_HA)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <_sgcount('join  (repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP),                   A_BINOP_HA)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <cross_join(build(SCHEMA_BINOP, '[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]',true), A_BINOP_RE)>
+{r,c,r,c} v,v
+{0,0,0,0} 1,1
+{0,0,0,1} 1,1
+{0,0,1,0} 1,1
+{0,0,1,1} 1,1
+{0,1,0,0} 1,1
+{0,1,0,1} 1,1
+{0,1,1,0} 1,1
+{0,1,1,1} 1,1
+{1,0,0,0} 1,1
+{1,0,0,1} 1,1
+{1,0,1,0} 1,1
+{1,0,1,1} 1,1
+{1,1,0,0} 1,1
+{1,1,0,1} 1,1
+{1,1,1,0} 1,1
+{1,1,1,1} 1,1
+
+SCIDB QUERY : <cross_join(repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP),                 A_BINOP_RE)>
+{r,c,r,c} v,v
+{0,0,0,0} 1,1
+{0,0,0,1} 1,1
+{0,0,1,0} 1,1
+{0,0,1,1} 1,1
+{0,1,0,0} 1,1
+{0,1,0,1} 1,1
+{0,1,1,0} 1,1
+{0,1,1,1} 1,1
+{1,0,0,0} 1,1
+{1,0,0,1} 1,1
+{1,0,1,0} 1,1
+{1,0,1,1} 1,1
+{1,1,0,0} 1,1
+{1,1,0,1} 1,1
+{1,1,1,0} 1,1
+{1,1,1,1} 1,1
+
+sg count should be 1, Habilis case 2c1b
+SCIDB QUERY : <_sgcount('cross_join(build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true), A_BINOP_RE)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <_sgcount('cross_join(repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP),                   A_BINOP_RE)')>
+{$dummy} $count
+{0} 1
+
+cases sg for rhs required, regardless of the lhs
+SCIDB QUERY : <join  (A_BINOP_HA, build(SCHEMA_BINOP, '[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]',true))>
+{r,c} v,v
+{0,0} 1,1
+{0,1} 1,1
+{1,0} 1,1
+{1,1} 1,1
+
+SCIDB QUERY : <join  (A_BINOP_HA, repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP))>
+{r,c} v,v
+{0,0} 1,1
+{0,1} 1,1
+{1,0} 1,1
+{1,1} 1,1
+
+sg count should be 1, Habilis case 2c2a
+SCIDB QUERY : <_sgcount('join  (A_BINOP_HA, build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true))')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <_sgcount('join  (A_BINOP_HA, repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP))')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <cross_join(A_BINOP_HA, build(SCHEMA_BINOP, '[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]',true))>
+{r,c,r,c} v,v
+{0,0,0,0} 1,1
+{0,0,0,1} 1,1
+{0,0,1,0} 1,1
+{0,0,1,1} 1,1
+{0,1,0,0} 1,1
+{0,1,0,1} 1,1
+{0,1,1,0} 1,1
+{0,1,1,1} 1,1
+{1,0,0,0} 1,1
+{1,0,0,1} 1,1
+{1,0,1,0} 1,1
+{1,0,1,1} 1,1
+{1,1,0,0} 1,1
+{1,1,0,1} 1,1
+{1,1,1,0} 1,1
+{1,1,1,1} 1,1
+
+SCIDB QUERY : <cross_join(A_BINOP_HA, repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP))>
+{r,c,r,c} v,v
+{0,0,0,0} 1,1
+{0,0,0,1} 1,1
+{0,0,1,0} 1,1
+{0,0,1,1} 1,1
+{0,1,0,0} 1,1
+{0,1,0,1} 1,1
+{0,1,1,0} 1,1
+{0,1,1,1} 1,1
+{1,0,0,0} 1,1
+{1,0,0,1} 1,1
+{1,0,1,0} 1,1
+{1,0,1,1} 1,1
+{1,1,0,0} 1,1
+{1,1,0,1} 1,1
+{1,1,1,0} 1,1
+{1,1,1,1} 1,1
+
+sg count should be 1, Habilis case 2c2b
+SCIDB QUERY : <_sgcount('cross_join(A_BINOP_HA, build(SCHEMA_BINOP, \'[[(1.)]];[[(1.)]];[[(1.)]];[[(1.)]]\',true))')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <_sgcount('cross_join(A_BINOP_HA, repart(build(SCHEMA_REPART, 1.0), SCHEMA_BINOP))')>
+{$dummy} $count
+{0} 1
+
+cases where colocation requested, but can be resolved by sending one to the other
+SCIDB QUERY : <join(A_BINOP_RC, A_BINOP_CC)>
+{r,c} v,v
+{0,0} 1,1
+{0,1} 1,1
+{1,0} 1,1
+{1,1} 1,1
+
+sg count should be 1, because lhs or rhs can be sent to the other
+SCIDB QUERY : <_sgcount('join(A_BINOP_RC, A_BINOP_CC)')>
+{$dummy} $count
+{0} 1
+
+SCIDB QUERY : <join(A_BINOP_CC, A_BINOP_CC)>
+{r,c} v,v
+{0,0} 1,1
+{0,1} 1,1
+{1,0} 1,1
+{1,1} 1,1
+
+cases no sg required (SDB-6542) since already colocated (an optimization, not for correctness)
+SCIDB QUERY : <_sgcount('join(A_BINOP_CC, A_BINOP_CC)')>
+{$dummy} $count
+{0} 0
+
+cases whoere colocation not requested, so the lhs and rhs choices are independent
+SCIDB QUERY : <cross_join(A_BINOP_HA, A_BINOP_RE)>
+{r,c,r,c} v,v
+{0,0,0,0} 1,1
+{0,0,0,1} 1,1
+{0,0,1,0} 1,1
+{0,0,1,1} 1,1
+{0,1,0,0} 1,1
+{0,1,0,1} 1,1
+{0,1,1,0} 1,1
+{0,1,1,1} 1,1
+{1,0,0,0} 1,1
+{1,0,0,1} 1,1
+{1,0,1,0} 1,1
+{1,0,1,1} 1,1
+{1,1,0,0} 1,1
+{1,1,0,1} 1,1
+{1,1,1,0} 1,1
+{1,1,1,1} 1,1
+
+0 sg required on the left
+SCIDB QUERY : <_sgcount('cross_join(A_BINOP_HA, A_BINOP_RE)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <cross_join(A_BINOP_RE, A_BINOP_RE)>
+{r,c,r,c} v,v
+{0,0,0,0} 1,1
+{0,0,0,1} 1,1
+{0,0,1,0} 1,1
+{0,0,1,1} 1,1
+{0,1,0,0} 1,1
+{0,1,0,1} 1,1
+{0,1,1,0} 1,1
+{0,1,1,1} 1,1
+{1,0,0,0} 1,1
+{1,0,0,1} 1,1
+{1,0,1,0} 1,1
+{1,0,1,1} 1,1
+{1,1,0,0} 1,1
+{1,1,0,1} 1,1
+{1,1,1,0} 1,1
+{1,1,1,1} 1,1
+
+0 sg required on the left (because RE is handled by a reducer, not an sg)
+SCIDB QUERY : <_sgcount('cross_join(A_BINOP_RE, A_BINOP_RE)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <cross_join(A_BINOP_RC, A_BINOP_RE)>
+{r,c,r,c} v,v
+{0,0,0,0} 1,1
+{0,0,0,1} 1,1
+{0,0,1,0} 1,1
+{0,0,1,1} 1,1
+{0,1,0,0} 1,1
+{0,1,0,1} 1,1
+{0,1,1,0} 1,1
+{0,1,1,1} 1,1
+{1,0,0,0} 1,1
+{1,0,0,1} 1,1
+{1,0,1,0} 1,1
+{1,0,1,1} 1,1
+{1,1,0,0} 1,1
+{1,1,0,1} 1,1
+{1,1,1,0} 1,1
+{1,1,1,1} 1,1
+
+0 sg required on the left
+SCIDB QUERY : <_sgcount('cross_join(A_BINOP_RC, A_BINOP_RE)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <cross_join(A_BINOP_CC, A_BINOP_RE)>
+{r,c,r,c} v,v
+{0,0,0,0} 1,1
+{0,0,0,1} 1,1
+{0,0,1,0} 1,1
+{0,0,1,1} 1,1
+{0,1,0,0} 1,1
+{0,1,0,1} 1,1
+{0,1,1,0} 1,1
+{0,1,1,1} 1,1
+{1,0,0,0} 1,1
+{1,0,0,1} 1,1
+{1,0,1,0} 1,1
+{1,0,1,1} 1,1
+{1,1,0,0} 1,1
+{1,1,0,1} 1,1
+{1,1,1,0} 1,1
+{1,1,1,1} 1,1
+
+0 sg required on the left
+SCIDB QUERY : <_sgcount('cross_join(A_BINOP_CC, A_BINOP_RE)')>
+{$dummy} $count
+{0} 0
+
+SCIDB QUERY : <remove (SCHEMA_BINOP)>
+Query was executed successfully
+
+SCIDB QUERY : <remove (SCHEMA_REPART)>
+Query was executed successfully
+
+SCIDB QUERY : <remove (A_BINOP_HA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove (A_BINOP_RC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove (A_BINOP_CC)>
+Query was executed successfully
+
+SCIDB QUERY : <remove (A_BINOP_RE)>
+Query was executed successfully
+

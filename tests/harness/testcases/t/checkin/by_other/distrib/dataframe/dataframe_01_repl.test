@@ -1,0 +1,189 @@
+# SDB-6626: Replicated dataframes: basic tests modelled on
+# distrib/bootstrap10.test (but we don't use summarize(X, by_instance:1),
+# because the dataframe $inst dimension is a physical instance id,
+# subject to the non-deterministic instance_id_seq race at cluster
+# installation time).
+
+--setup
+--start-query-logging
+--test
+
+# create
+create array DF <i:int64, v:int64>
+create array DF_REPL <i:int64, v:int64> distribution replicated
+
+# show
+show(DF)
+show(DF_REPL)
+
+--echo subtest: store to created
+store(flatten(build(<v:int64>[i=0:31:0:4], i+10)), DF)
+store(flatten(build(<v:int64>[i=0:31:0:4], i+10)), DF_REPL)
+
+    # show again, no change expected
+    show(DF)
+    show(DF_REPL)
+    # sort (not scan) to accomodate various cluster topologies (8i2n etc.)
+    sort(DF)
+    sort(DF_REPL)
+    # aggregate
+    aggregate(DF, count(v))
+    aggregate(DF_REPL, count(v))
+
+--echo remove so we can re-create
+remove(DF)
+remove(DF_REPL)
+
+--echo subtest: store with creation
+store(flatten(build(<v:int64>[i=0:31:04], i+10)), DF)
+store(flatten(build(<v:int64>[i=0:31:04], i+10)), DF_REPL, distribution: replicated)
+
+    # show again, no change expected
+    show(DF)
+    show(DF_REPL)
+    # sort (not scan) to accomodate various cluster topologies (8i2n etc.)
+    sort(DF)
+    sort(DF_REPL)
+    # aggregate
+    aggregate(DF, count(v))
+    aggregate(DF_REPL, count(v))
+
+--echo subtest: filter
+filter(DF, v%2=0)
+filter(DF_REPL, v%2=0)
+# prepares good inheritance
+## XXX NOTE: When SDB-6365 is fixed, remove these _sg(..., 1) calls!!!
+store(filter(_sg(flatten(build(<v:int64>[i=0:31:0:4], i+10)), 1), v%2=0), DF_OUT)
+store(filter(_sg(flatten(build(<v:int64>[i=0:31:0:4], i+10)), 1), v%2=0), DF_REPL_OUT, distribution: replicated)
+
+    # show again, no change expected
+    show(DF_OUT)
+    show(DF_REPL_OUT)
+    # sort (not scan) to accomodate various cluster topologies (8i2n etc.)
+    sort(DF_OUT)
+    sort(DF_REPL_OUT)
+    # aggregate
+    aggregate(DF_OUT, count(v))
+    aggregate(DF_REPL_OUT, count(v))
+    # remove
+    remove(DF_OUT)
+    remove(DF_REPL_OUT)
+
+--echo subtest: apply
+#    handle input dists
+apply(DF, w, v)
+apply(DF_REPL, w, v)
+#    prepares good inheritance
+store(apply(flatten(build(<v:int64>[i=0:31:0:4], i+10)), w, v), DF_OUT)
+store(apply(flatten(build(<v:int64>[i=0:31:0:4], i+10)), w, v), DF_REPL_OUT, distribution: replicated)
+
+    # show again, no change expected
+    show(DF_OUT)
+    show(DF_REPL_OUT)
+    # sort (not scan) to accomodate various cluster topologies (8i2n etc.)
+    sort(DF_OUT)
+    sort(DF_REPL_OUT)
+    # aggregate
+    aggregate(DF_OUT, count(v))
+    aggregate(DF_REPL_OUT, count(v))
+    # remove
+    remove(DF_OUT)
+    remove(DF_REPL_OUT)
+
+# Can't store an aggregate as a dataframe (yet).
+# Can't use cumulate() on dataframes.
+
+--echo subtest: project
+project(apply(DF, w, v),w)
+project(apply(DF_REPL, w, v),w)
+
+# Can't use join() on dataframes, but cross_join() is OK without "join-along" dimensions.
+--echo subtest: cross_join
+store(build(<a:int64>[x=0:11:0:3], 20+x), ONE)
+store(build(<a:int64>[x=0:4:0:5; y=1:8:0:2], x+y), TWO)
+
+--echo 12 * 32 == 384
+store(cross_join(ONE, DF), OUT_A_1)
+store(cross_join(ONE, DF_REPL), OUT_A_2)
+store(cross_join(DF, ONE), OUT_A_3)
+store(cross_join(DF_REPL, ONE), OUT_A_4)
+    show(OUT_A_1)
+    show(OUT_A_2)
+    show(OUT_A_3)
+    show(OUT_A_4)
+    op_count(OUT_A_1)
+    op_count(OUT_A_2)
+    op_count(OUT_A_3)
+    op_count(OUT_A_4)
+    remove(OUT_A_1)
+    remove(OUT_A_2)
+    remove(OUT_A_3)
+    remove(OUT_A_4)
+
+--echo 40 * 32 == 1280
+store(cross_join(TWO, DF), OUT_B_1)
+store(cross_join(TWO, DF_REPL), OUT_B_2)
+store(cross_join(DF, TWO), OUT_B_3)
+store(cross_join(DF_REPL, TWO), OUT_B_4)
+    show(OUT_B_1)
+    show(OUT_B_2)
+    show(OUT_B_3)
+    show(OUT_B_4)
+    op_count(OUT_B_1)
+    op_count(OUT_B_2)
+    op_count(OUT_B_3)
+    op_count(OUT_B_4)
+    remove(OUT_B_1)
+    remove(OUT_B_2)
+    remove(OUT_B_3)
+    remove(OUT_B_4)
+
+--echo 32 * 32 == 1024
+store(cross_join(DF, DF), OUT_C_1)
+store(cross_join(DF, DF_REPL), OUT_C_2)
+store(cross_join(DF_REPL, DF), OUT_C_3)
+store(cross_join(DF_REPL, DF_REPL), OUT_C_4)
+    show(OUT_C_1)
+    show(OUT_C_2)
+    show(OUT_C_3)
+    show(OUT_C_4)
+    op_count(OUT_C_1)
+    op_count(OUT_C_2)
+    op_count(OUT_C_3)
+    op_count(OUT_C_4)
+    remove(OUT_C_1)
+    remove(OUT_C_2)
+    remove(OUT_C_3)
+    remove(OUT_C_4)
+
+# Can't use transpose() on dataframes.
+
+# avg_rank
+#     handle input dists
+avg_rank(DF)
+avg_rank(DF, v)
+avg_rank(DF_REPL)
+avg_rank(DF_REPL, v)
+#     prepares good inheritance
+store(flatten(avg_rank(DF, v)), OUT_D_1)
+store(flatten(avg_rank(DF, v)), OUT_D_2, distribution:replicated)
+store(flatten(avg_rank(DF_REPL, v)), OUT_D_3)
+store(flatten(avg_rank(DF_REPL, v)), OUT_D_4, distribution:replicated)
+    show(OUT_D_1)
+    show(OUT_D_2)
+    show(OUT_D_3)
+    show(OUT_D_4)
+    op_count(OUT_D_1)
+    op_count(OUT_D_2)
+    op_count(OUT_D_3)
+    op_count(OUT_D_4)
+    remove(OUT_D_1)
+    remove(OUT_D_2)
+    remove(OUT_D_3)
+    remove(OUT_D_4)
+
+--cleanup
+remove(DF)
+remove(DF_REPL)
+remove(ONE)
+remove(TWO)

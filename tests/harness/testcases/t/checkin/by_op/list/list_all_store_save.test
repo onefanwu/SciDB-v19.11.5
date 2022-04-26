@@ -1,0 +1,101 @@
+--setup
+--start-query-logging
+
+--test
+
+# modes of list as of 2018.11.09
+
+# this is not a test of the output, it is an exercising of internal
+# checks on distribution behavior
+# so we ignore the output to make the test more stable across
+# so as to not vary depending on what plugins are loaded
+
+# the one exception to that is arrays, because there should
+# be no arrays present at the start of a harness test
+
+list('arrays')
+--start-igdata
+list('aggregates')
+list('operators')
+list('types')
+list('functions')
+list('macros')
+list('queries')
+list('instances')
+list('users')
+list('roles')
+list('namespaces')
+list('chunk map')
+list('disk indexes')
+list('buffer stats')
+list('libraries')
+list('datastores')
+list('counters')
+--stop-igdata
+
+
+store(list('arrays'), A0)
+store(list('aggregates'), A1)
+store(list('operators'), A2)
+store(list('types'), A3)
+store(list('functions'), A4)
+store(list('functions'), A5)
+store(list('macros'), A6)
+store(list('queries'), A7)
+store(list('instances'), A8)
+store(list('users'), A9)
+store(list('roles'), A10)
+store(list('namespaces'), A11)
+store(list('chunk map'), A12)
+store(list('disk indexes'), A13)
+store(list('buffer stats'), A14)
+store(list('libraries'), A15)
+store(list('datastores'), A16)
+store(list('counters'), A17)
+
+# whole number = instance
+# -1 save as distributed
+# -2 save on coordinator, default
+
+save(list('arrays'), '/tmp/foo', -2, 'tsv')
+save(list('aggregates'), '/tmp/foo', -2, 'tsv')
+save(list('operators'), '/tmp/foo', -2, 'tsv')
+save(list('types'), '/tmp/foo', -2, 'tsv')
+save(list('functions'), '/tmp/foo', -2, 'tsv')
+save(list('functions'), '/tmp/foo', -2, 'tsv')
+save(list('macros'), '/tmp/foo', -2, 'tsv')
+save(list('queries'), '/tmp/foo', -2, 'tsv')
+save(list('instances'), '/tmp/foo', -2, 'tsv')
+save(list('users'), '/tmp/foo', -2, 'tsv')
+save(list('roles'), '/tmp/foo', -2, 'tsv')
+save(list('namespaces'), '/tmp/foo', -2, 'tsv')
+save(list('chunk map'), '/tmp/foo', -2, 'tsv')
+save(list('disk indexes'), '/tmp/foo', -2, 'tsv')
+save(list('buffer stats'), '/tmp/foo', -2, 'tsv')
+save(list('libraries'), '/tmp/foo', -2, 'tsv')
+save(list('datastores'), '/tmp/foo', -2, 'tsv')
+save(list('counters'), '/tmp/foo', -2, 'tsv')
+
+# consider adding other consuming operators
+
+--cleanup
+
+remove(A0)
+remove(A1)
+remove(A2)
+remove(A3)
+remove(A4)
+remove(A5)
+remove(A6)
+remove(A7)
+remove(A8)
+remove(A9)
+remove(A10)
+remove(A11)
+remove(A12)
+remove(A13)
+remove(A14)
+remove(A15)
+remove(A16)
+remove(A17)
+

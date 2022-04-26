@@ -1,0 +1,36 @@
+--setup
+--start-query-logging
+
+--test
+create array arr <v:int64>[i=0:9] distribution default emptytag compression 'zlib'
+store(build(arr, i), arr)
+project(list('arrays', true), name, etcomp)
+
+store(build(arr, i), arr, etcomp:'zlib')
+project(list('arrays', true), name, etcomp)
+
+store(build(arr, i), arr, etcomp:'bzlib')
+project(list('arrays', true), name, etcomp)
+
+store(build(arr, i), arr, etcomp:'none')
+project(list('arrays', true), name, etcomp)
+
+store(arr, uncompressed_ebm)
+project(list('arrays', true), name, etcomp)
+
+store(arr@3, bzlib_compressed_ebm)
+project(list('arrays', true), name, etcomp)
+
+store(arr@2, zlib_compressed_ebm)
+project(list('arrays', true), name, etcomp)
+
+store(show(arr), no_ebm_array, etcomp:'zlib')
+project(list('arrays', true), name, etcomp)
+
+--cleanup
+remove(arr)
+remove(uncompressed_ebm)
+remove(bzlib_compressed_ebm)
+remove(zlib_compressed_ebm)
+remove(no_ebm_array)
+--stop-query-logging

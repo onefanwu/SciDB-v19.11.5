@@ -1,0 +1,9 @@
+--setup
+--start-query-logging
+
+--test
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_OPERATOR_FAILED \
+  "mquery(build(<v:int64>[i=0:9],i))"
+
+--cleanup
+--stop-query-logging

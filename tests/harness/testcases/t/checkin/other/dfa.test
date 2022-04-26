@@ -1,0 +1,4 @@
+--setup
+--test
+--shell --command "dfa_tests"
+--cleanup

@@ -1,0 +1,48 @@
+Query was executed successfully
+
+Query was executed successfully
+
+SCIDB QUERY : <apply(AG, w, 10+i)>
+{i} v,w
+{0} 0,10
+{1} 1,11
+{2} 2,12
+{3} 3,13
+{4} 4,14
+{5} 5,15
+{6} 6,16
+{7} 7,17
+{8} 8,18
+{9} 9,19
+
+SCIDB QUERY : <apply(AG, (w, 10+i))>
+{i} v,w
+{0} 0,10
+{1} 1,11
+{2} 2,12
+{3} 3,13
+{4} 4,14
+{5} 5,15
+{6} 6,16
+{7} 7,17
+{8} 8,18
+{9} 9,19
+
+SCIDB QUERY : <apply(AG, (w, 10+i), (x, float(i)/2.0))>
+{i} v,w,x
+{0} 0,10,0
+{1} 1,11,0.5
+{2} 2,12,1
+{3} 3,13,1.5
+{4} 4,14,2
+{5} 5,15,2.5
+{6} 6,16,3
+{7} 7,17,3.5
+{8} 8,18,4
+{9} 9,19,4.5
+
+SCIDB QUERY : <apply(AG, (w, 10+i), (x, float(i)/2.0), y, 2*i)>
+[An error expected at this place for the query "apply(AG, (w, 10+i), (x, float(i)/2.0), y, 2*i)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+Query was executed successfully
+

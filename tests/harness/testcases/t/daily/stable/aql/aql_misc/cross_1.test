@@ -1,0 +1,27 @@
+--setup
+create  array A <a:int32>[x=0:2,3,0]
+create  array C <a:int32>[x=0:2,3,0]
+store(build(A,x+1),A)
+scan(A)  -- Inserted by scan_doctor
+store(build(A,x+10),B)
+scan(B)  -- Inserted by scan_doctor
+store(build(C,x+100),C)
+scan(C)  -- Inserted by scan_doctor
+
+--test
+--aql update A set a = a + 10
+scan(A)  -- Inserted by scan_doctor
+
+--aql update C set a = a + 50
+scan(C)  -- Inserted by scan_doctor
+
+--aql select * from A cross join B
+--aql select * from A cross join C
+--aql select * into D from A cross join A
+scan(D)  -- Inserted by scan_doctor
+
+--cleanup
+remove(A)
+remove(B)
+remove(C)
+remove(D)

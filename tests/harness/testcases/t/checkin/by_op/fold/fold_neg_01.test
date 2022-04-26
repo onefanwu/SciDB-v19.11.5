@@ -1,0 +1,11 @@
+--setup
+--start-query-logging
+
+--test
+
+# Chunk interval in last dimension must cover dimension interval
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_CHUNK_INTERVAL_TOO_SMALL \
+    "_fold(build(<v:int64>[i=0:9;j=0:1:0:1],i+j+1))"
+
+--cleanup
+--stop-query-logging

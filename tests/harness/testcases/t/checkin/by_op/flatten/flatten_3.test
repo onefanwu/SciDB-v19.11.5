@@ -1,0 +1,40 @@
+# Convert large 3-D array to a dataframe.
+
+--setup
+
+store( \
+  redimension( \
+    apply( \
+      build(<v:int64>[_row=0:99999], _row), \
+      (i, _row / 100000), \
+      (j, _row % 100000), \
+      (k, _row % 1000) \
+    ), \
+    <v:int64>[i=0:*:0:10; j=0:*:0:100; k=0:*:0:10] \
+  ), \
+  C)
+
+--test
+--start-query-logging
+
+store(flatten(C), FC)
+--stop-query-logging
+--echo scan(FC)
+--shell --command "iquery -aq "scan(FC)" > /tmp/fl3_scan_${HPID}.out 2>&1"
+--echo flatten(C)
+--shell --command "iquery -aq "flatten(C)" > /tmp/fl3_iq_${HPID}.out 2>&1"
+--echo The diff...
+--shell --store --command "diff -u /tmp/fl3_scan_${HPID}.out /tmp/fl3_iq_${HPID}.out 2>&1 || true"
+--start-query-logging
+
+--echo No SG in store(flatten(C), FC)
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq \
+    "_explain_physical('store(flatten(C), FC)', 'afl')" | \
+    grep impl_sg || true"
+
+--stop-query-logging
+
+--cleanup
+--shell --command "rm -f /tmp/fl3_*.out"
+remove(C)
+remove(FC)

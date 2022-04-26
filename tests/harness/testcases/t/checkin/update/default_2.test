@@ -1,0 +1,30 @@
+--setup
+--start-query-logging
+create array A <a:int32 default 5> [x=0:2,3,0]
+
+--test
+--aql select * into A from filter(build(A,x+3),true)
+scan(A)  -- Inserted by scan_doctor
+--aql select * into A from filter(build(A,x+3),x<>1)
+scan(A)  -- Inserted by scan_doctor
+--aql select a+0 from A
+--aql update A set a = a + 1
+scan(A)  -- Inserted by scan_doctor
+--aql update A set a = a - 1
+scan(A)  -- Inserted by scan_doctor
+--aql update A set a = a * 1
+scan(A)  -- Inserted by scan_doctor
+--aql update A set a = a / 1
+scan(A)  -- Inserted by scan_doctor
+--aql update A set a = a * 10
+scan(A)  -- Inserted by scan_doctor
+--aql update A set a = a / 10
+scan(A)  -- Inserted by scan_doctor
+--aql update A set a = a / 2
+scan(A)  -- Inserted by scan_doctor
+--aql select * into A from filter(build(A,x+3),true)
+scan(A)  -- Inserted by scan_doctor
+
+--cleanup
+remove(A)
+--stop-query-logging

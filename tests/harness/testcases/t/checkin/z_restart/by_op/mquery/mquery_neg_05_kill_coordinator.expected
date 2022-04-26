@@ -1,0 +1,11 @@
+SCIDB QUERY : <load_library('misc')>
+Query was executed successfully
+
+SCIDB QUERY : <load_library('perf_time_test')>
+Query was executed successfully
+
+SCIDB QUERY : <remove(f)>
+[Query was executed successfully. It was only intended to just run.]
+SCIDB QUERY : <remove(killInstanceArray)>
+[SciDB query execution failed. But continuing, as it was intended to just run.]
+

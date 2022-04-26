@@ -1,0 +1,33 @@
+--setup
+--start-query-logging
+create array a <q:int64>[i=0:9:0:2]
+store(build(a, i), a)
+
+--test
+add_attributes(a, <r:int64, s:int64, t:int64, u:int64, v:int64, w:int64>)
+scan(a)
+store(project(apply(a, sp, 3*q), q, r, sp, t, u, v, w), a)
+scan(a)
+store(project(apply(a, up, 5*q), q, r, s, t, up, v, w), a)
+scan(a)
+store(project(apply(a, wp, 7*q), q, r, s, t, u, v, wp), a)
+scan(a)
+store(project(apply(a, rp, 2*q), q, rp, s, t, u, v, w), a)
+scan(a)
+store(project(apply(a, tp, 4*q), q, r, s, tp, u, v, w), a)
+scan(a)
+store(project(apply(a, vp, 6*q), q, r, s, t, u, vp, w), a)
+scan(a)
+scan(a@2)
+scan(a@4)
+scan(a@6)
+scan(a@8)
+scan(a@1)
+scan(a@3)
+scan(a@5)
+scan(a@7)
+
+--cleanup
+remove(a)
+
+--stop-query-logging

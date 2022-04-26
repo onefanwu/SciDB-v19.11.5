@@ -1,0 +1,140 @@
+Query was executed successfully
+
+Query was executed successfully
+
+{i} schema
+{0} 'CASTME<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+Cast NOT NULL to nullable.
+SCIDB QUERY : <cast(CASTME, (str, bar), <i16 : int16>[_r=0:0])>
+{i,j} chr,i16,bar,i64,u64,dbl,flt
+{0,4} '\'',13013,'Yikes!',0,500,6.674e-11,2.71828
+{1,5} '\'',13013,'Yikes!',1,501,6.674e-11,2.71828
+{2,6} '\'',13013,'Yikes!',2,502,6.674e-11,2.71828
+{3,7} '\'',13013,'Yikes!',3,503,6.674e-11,2.71828
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (str, bar), <i16 : int16>[_r=0:0])', 'afl')>
+{i} schema
+{0} 'CASTME<chr:char,i16:int16,bar:string,i64:int64,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+Cast nullable to NOT NULL?  Nope.
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (str, baz), <i64 : int64 not null>[_r=0:0])', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, (str, baz), <i64 : int64 not null>[_r=0:0])', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_FLAG_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_FLAG_MISMATCH.]
+
+Rename i16, then try to use it.
+SCIDB QUERY : <_show2_nodist('cast(CASTME, (i16, bar), <i16 : int16>[_r=0:0])', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, (i16, bar), <i16 : int16>[_r=0:0])', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_SCHEMA_NOT_USED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_SCHEMA_NOT_USED.]
+
+Change low dimension bound?  Ignored.
+SCIDB QUERY : <cast(CASTME, <_foo : int16>[i=-5:3])>
+{i,j} chr,i16,str,i64,u64,dbl,flt
+{0,4} '\'',13013,'Yikes!',0,500,6.674e-11,2.71828
+{1,5} '\'',13013,'Yikes!',1,501,6.674e-11,2.71828
+{2,6} '\'',13013,'Yikes!',2,502,6.674e-11,2.71828
+{3,7} '\'',13013,'Yikes!',3,503,6.674e-11,2.71828
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, <_foo : int16>[i=-5:3])', 'afl')>
+{i} schema
+{0} 'CASTME<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+Change high dimension bound?  Works.
+SCIDB QUERY : <cast(CASTME, <_foo : int16>[i=0:99])>
+{i,j} chr,i16,str,i64,u64,dbl,flt
+{0,4} '\'',13013,'Yikes!',0,500,6.674e-11,2.71828
+{1,5} '\'',13013,'Yikes!',1,501,6.674e-11,2.71828
+{2,6} '\'',13013,'Yikes!',2,502,6.674e-11,2.71828
+{3,7} '\'',13013,'Yikes!',3,503,6.674e-11,2.71828
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, <_foo : int16>[i=0:99])', 'afl')>
+{i} schema
+{0} 'CASTME<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:double,flt:float> [i=0:99:0:4; j=0:9:0:4]'
+
+Change high dimension bound so data won't fit?  Nope.
+SCIDB QUERY : <cast(CASTME, <_foo : int16>[i=0:2])>
+[An error expected at this place for the query "cast(CASTME, <_foo : int16>[i=0:2])". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_BAD_DIMENSION_LENGTH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_BAD_DIMENSION_LENGTH.]
+
+Got int64 --> double conversion?
+SCIDB QUERY : <cast(CASTME, <i64: double>[_i=0:0])>
+{i,j} chr,i16,str,i64,u64,dbl,flt
+{0,4} '\'',13013,'Yikes!',0,500,6.674e-11,2.71828
+{1,5} '\'',13013,'Yikes!',1,501,6.674e-11,2.71828
+{2,6} '\'',13013,'Yikes!',2,502,6.674e-11,2.71828
+{3,7} '\'',13013,'Yikes!',3,503,6.674e-11,2.71828
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, <i64: double>[_i=0:0])', 'afl')>
+{i} schema
+{0} 'CASTME<chr:char,i16:int16 NOT NULL,str:string,i64:double,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+Got double --> int64 conversion?
+SCIDB QUERY : <cast(CASTME, <dbl: int64>[_i=0:0])>
+{i,j} chr,i16,str,i64,u64,dbl,flt
+{0,4} '\'',13013,'Yikes!',0,500,0,2.71828
+{1,5} '\'',13013,'Yikes!',1,501,0,2.71828
+{2,6} '\'',13013,'Yikes!',2,502,0,2.71828
+{3,7} '\'',13013,'Yikes!',3,503,0,2.71828
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, <dbl: int64>[_i=0:0])', 'afl')>
+{i} schema
+{0} 'CASTME<chr:char,i16:int16 NOT NULL,str:string,i64:int64,u64:uint64,dbl:int64,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+Got int64 --> uint64 conversion?  Hmmm, may be unsafe for negative values...
+SCIDB QUERY : <cast(CASTME, <i64: uint64>[_i=0:0])>
+{i,j} chr,i16,str,i64,u64,dbl,flt
+{0,4} '\'',13013,'Yikes!',0,500,6.674e-11,2.71828
+{1,5} '\'',13013,'Yikes!',1,501,6.674e-11,2.71828
+{2,6} '\'',13013,'Yikes!',2,502,6.674e-11,2.71828
+{3,7} '\'',13013,'Yikes!',3,503,6.674e-11,2.71828
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, <i64: uint64>[_i=0:0])', 'afl')>
+{i} schema
+{0} 'CASTME<chr:char,i16:int16 NOT NULL,str:string,i64:uint64,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+Got int64 --> int16 conversion?  (SDB-2708 not fixed yet, so yeah.)
+SCIDB QUERY : <cast(CASTME, <i64: int16>[_i=0:0])>
+{i,j} chr,i16,str,i64,u64,dbl,flt
+{0,4} '\'',13013,'Yikes!',0,500,6.674e-11,2.71828
+{1,5} '\'',13013,'Yikes!',1,501,6.674e-11,2.71828
+{2,6} '\'',13013,'Yikes!',2,502,6.674e-11,2.71828
+{3,7} '\'',13013,'Yikes!',3,503,6.674e-11,2.71828
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, <i64: int16>[_i=0:0])', 'afl')>
+{i} schema
+{0} 'CASTME<chr:char,i16:int16 NOT NULL,str:string,i64:int16,u64:uint64,dbl:double,flt:float> [i=0:3:0:4; j=0:9:0:4]'
+
+String-to-char fails (using an exemplar array)
+SCIDB QUERY : <create temp array T1 < str:char, i16:uint64>[i=0:100]>
+Query was executed successfully
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, T1)', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, T1)', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_BAD_TYPE_CONVERSION. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_BAD_TYPE_CONVERSION.]
+
+Cannot cast away nullability (using an exemplar array)
+SCIDB QUERY : <create temp array T2 <str: string not null, i16:uint64>[i=0:100]>
+Query was executed successfully
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, T2)', 'afl')>
+[An error expected at this place for the query "_show2_nodist('cast(CASTME, T2)', 'afl')". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_FLAG_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_CAST_FLAG_MISMATCH.]
+
+Absorb several changes at once from an exemplar array schema.
+SCIDB QUERY : <create temp array T3 <i16:int16 null, u64:double, unrelated:char> [i=0:100; also_unrelated=-5:5]>
+Query was executed successfully
+
+SCIDB QUERY : <cast(CASTME, T3)>
+{i,j} chr,i16,str,i64,u64,dbl,flt
+{0,4} '\'',13013,'Yikes!',0,500,6.674e-11,2.71828
+{1,5} '\'',13013,'Yikes!',1,501,6.674e-11,2.71828
+{2,6} '\'',13013,'Yikes!',2,502,6.674e-11,2.71828
+{3,7} '\'',13013,'Yikes!',3,503,6.674e-11,2.71828
+
+SCIDB QUERY : <_show2_nodist('cast(CASTME, T3)', 'afl')>
+{i} schema
+{0} 'CASTME<chr:char,i16:int16,str:string,i64:int64,u64:double,dbl:double,flt:float> [i=0:100:0:4; j=0:9:0:4]'
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

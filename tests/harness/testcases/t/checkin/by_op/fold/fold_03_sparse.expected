@@ -1,0 +1,60 @@
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=0:2;j=0:2],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=0:2:0:3;j=0:2],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=0:2:0:2;j=0:2],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=0:2:0:1;j=0:2],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=0:2:0:1;j=0:2:0:3],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{0} 1,null,3
+{1} 2,null,4
+{2} 3,null,5
+
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{3} 11,12,13
+{4} 12,13,14
+{5} 13,14,15
+
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=3:5:0:3;j=7:9],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{3} 11,12,13
+{4} 12,13,14
+{5} 13,14,15
+
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=3:5:0:2;j=7:9],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{3} 11,12,13
+{4} 12,13,14
+{5} 13,14,15
+
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=3:5:0:1;j=7:9],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{3} 11,12,13
+{4} 12,13,14
+{5} 13,14,15
+
+SCIDB QUERY : <_fold(filter(build(<v:int64>[i=3:5:0:1;j=7:9:0:3],i+j+1),j!=1))>
+{i} v,$v_1,$v_2
+{3} 11,12,13
+{4} 12,13,14
+{5} 13,14,15
+

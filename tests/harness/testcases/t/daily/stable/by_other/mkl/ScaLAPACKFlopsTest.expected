@@ -1,0 +1,33 @@
+SCIDB QUERY : <load_library('dense_linear_algebra')>
+Query was executed successfully
+
+SCIDB QUERY : <create array DIAG_SCHEMA <v:double>[r=0:4*1000-1,1000,0,c=0:4*1000-1,1000,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(apply(build(<v:double>[r=0:4*1000-1,1000,0], 7.0), c, r), DIAG_SCHEMA), DIAG7)>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(apply(build(<v:double>[r=0:4*1000-1,1000,0], 1.0), c, r), DIAG_SCHEMA), DIAG1)>
+Query was executed successfully
+
+SCIDB QUERY : <create array ZEROS <v:double>[r=0:4*1000-1,1000,0,c=0:4*1000-1,1000,0]>
+Query was executed successfully
+
+SCIDB QUERY : <TIMEFORMAT=%3R; time (iquery -naq 'consume(gemm(DIAG7,DIAG1,ZEROS))') 2>/tmp/ScaLAPACKFlopsTest.txt>
+Query was executed successfully
+
+SCIDB QUERY : <echo "scale=3; $(cat /tmp/ScaLAPACKFlopsTest.txt) < 21" | bc>
+1
+
+SCIDB QUERY : <remove(DIAG_SCHEMA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DIAG7)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DIAG1)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(ZEROS)>
+Query was executed successfully
+

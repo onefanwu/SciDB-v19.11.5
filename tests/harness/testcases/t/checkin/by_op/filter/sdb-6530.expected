@@ -1,0 +1,66 @@
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5],i+1),(i<4 or i>4))>
+{i} v
+{3} 4
+{5} 6
+
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5:0:1;j=7:9],i+j+1),(i<4 or i>4) and (j<8 or j>8))>
+{i,j} v
+{3,7} 11
+{3,9} 13
+{5,7} 13
+{5,9} 15
+
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5;j=7:9;k=11:13],i+j+k+1),(i<4 or i>4) and (j<8 or j>8) and (k<12 or k>12))>
+{i,j,k} v
+{3,7,11} 22
+{3,7,13} 24
+{3,9,11} 24
+{3,9,13} 26
+{5,7,11} 24
+{5,7,13} 26
+{5,9,11} 26
+{5,9,13} 28
+
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),(i<4 or i>4) and (i<3 or i>3) and (j<8 or j>8))>
+{i,j} v
+{5,7} 13
+{5,9} 15
+
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),(i<4 or i>4) and (j<8 or j>8) and (j<7 or j>7))>
+{i,j} v
+{3,9} 13
+{5,9} 15
+
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5],i+1),(i<4 or i>4) and (i!=4))>
+{i} v
+{3} 4
+{5} 6
+
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5:0:1;j=7:9],i+j+1),(i<4 or i>4) and (j!=8))>
+{i,j} v
+{3,7} 11
+{3,9} 13
+{5,7} 13
+{5,9} 15
+
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5;j=7:9;k=11:13],i+j+k+1),(i!=4) and (j!=8) and (k<12 or k>12))>
+{i,j,k} v
+{3,7,11} 22
+{3,7,13} 24
+{3,9,11} 24
+{3,9,13} 26
+{5,7,11} 24
+{5,7,13} 26
+{5,9,11} 26
+{5,9,13} 28
+
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),(i<4 or i>4) and (i<3 or i>3) and (j!=8))>
+{i,j} v
+{5,7} 13
+{5,9} 15
+
+SCIDB QUERY : <filter(build(<v:int64>[i=3:5;j=7:9],i+j+1),(i<4 or i>4) and (j<8 or j>8) and (j!=7))>
+{i,j} v
+{3,9} 13
+{5,9} 15
+

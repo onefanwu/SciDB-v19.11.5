@@ -1,0 +1,9 @@
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',3001110,84352184,14294,0,419.912,2790,24,5901.23,66984
+
+Query was executed successfully
+

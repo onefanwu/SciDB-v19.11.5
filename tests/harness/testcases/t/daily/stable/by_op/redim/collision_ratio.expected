@@ -1,0 +1,104 @@
+SCIDB QUERY : <create array cr<v:uint64>[i;j]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(build(<v:uint64>[i=0:9999],i),cr),cr)>
+Query was executed successfully
+
+SCIDB QUERY : <summarize(cr)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',10000,320960,20,784,1000,1024,6344,16048,24600
+
+SCIDB QUERY : <remove(cr)>
+Query was executed successfully
+
+SCIDB QUERY : <create array cr<v:uint64>[i;j]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(build(<v:uint64>[i=0:9999],i),cr,_collision_ratio:0.0),cr)>
+Query was executed successfully
+
+SCIDB QUERY : <summarize(cr)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',10000,80240,4,1808,5000,8192,48,20060,65608
+
+SCIDB QUERY : <remove(cr)>
+Query was executed successfully
+
+SCIDB QUERY : <create array cr<v:uint64>[i;j]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(build(<v:uint64>[i=0:9999],i),cr,cells_per_chunk:100),cr)>
+Query was executed successfully
+
+SCIDB QUERY : <summarize(cr)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',10000,440000,2500,8,8,8,136,176,216
+
+SCIDB QUERY : <remove(cr)>
+Query was executed successfully
+
+SCIDB QUERY : <create array cr<v:uint64>[i;j]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(build(<v:uint64>[i=0:9999],i),cr,cells_per_chunk:100,_collision_ratio:1.0),cr)>
+Query was executed successfully
+
+SCIDB QUERY : <summarize(cr)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',10000,440000,2500,8,8,8,136,176,216
+
+SCIDB QUERY : <remove(cr)>
+Query was executed successfully
+
+SCIDB QUERY : <create array cr<v:uint64>[i;j]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(build(<v:uint64>[i=0:9999],i),cr,cells_per_chunk:100,_collision_ratio:0.0),cr)>
+Query was executed successfully
+
+SCIDB QUERY : <summarize(cr)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',10000,89480,158,16,126.582,128,48,566.329,1096
+
+SCIDB QUERY : <remove(cr)>
+Query was executed successfully
+
+SCIDB QUERY : <create array cr<v:uint64>[i;j]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(build(<v:uint64>[i=0:9999],i),cr,cells_per_chunk:100,_collision_ratio:0.67),cr)>
+Query was executed successfully
+
+SCIDB QUERY : <summarize(cr)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',10000,380000,1250,16,16,16,200,304,408
+
+SCIDB QUERY : <remove(cr)>
+Query was executed successfully
+
+SCIDB QUERY : <create array cr<v:uint64>[i;j]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(build(<v:uint64>[i=0:132000],i),cr,phys_chunk_size:1),cr)>
+Query was executed successfully
+
+SCIDB QUERY : <summarize(cr)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',132001,4226048,42,1,6285.76,6600,48,100620,158424
+
+SCIDB QUERY : <remove(cr)>
+Query was executed successfully
+
+SCIDB QUERY : <create array cr<v:uint64>[i;j]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(build(<v:uint64>[i=0:132000],i),cr,phys_chunk_size:1,_collision_ratio:0.0),cr)>
+Query was executed successfully
+
+SCIDB QUERY : <summarize(cr)>
+{inst,attid} att,count,bytes,chunks,min_count,avg_count,max_count,min_bytes,avg_bytes,max_bytes
+{0,0} 'all',132001,1056128,2,132001,132001,132001,48,528064,1056080
+
+SCIDB QUERY : <remove(cr)>
+Query was executed successfully
+

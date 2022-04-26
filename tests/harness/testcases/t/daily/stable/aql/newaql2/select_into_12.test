@@ -1,0 +1,74 @@
+--setup
+--start-query-logging
+create array A <a:int64> [x=0:*,3,0]
+create array B <b:int64> [x=0:*,3,0]
+create array C <b:int64> [x=0:*,3,0]
+create array D <b:int64> [y=0:*,3,0]
+create array E <b:int64> [x=0:*,3,0]
+create array F <b:int64> [x=0:*,3,0]
+create array G <b:int64> [y=0:*,3,0]
+
+--test
+--aql select * into A from build(<a:int64> [x=0:2,3,0],x+10)
+scan(A)  -- Inserted by scan_doctor
+--aql select * into B from A
+scan(B)  -- Inserted by scan_doctor
+--aql select * into C from A
+scan(C)  -- Inserted by scan_doctor
+--aql select * into D from A
+scan(D)  -- Inserted by scan_doctor
+
+--aql select * into E from A
+scan(E)  -- Inserted by scan_doctor
+--aql select * into E from A where x=1
+scan(E)  -- Inserted by scan_doctor
+--aql select * into E from A where x<>1
+scan(E)  -- Inserted by scan_doctor
+--aql select * into E from A where a=30
+scan(E)  -- Inserted by scan_doctor
+--aql select * into E from A where a<30
+scan(E)  -- Inserted by scan_doctor
+--aql select * into E from A where x=0 and a<12
+scan(E)  -- Inserted by scan_doctor
+--aql select * into E from A where a=10 or x=2
+scan(E)  -- Inserted by scan_doctor
+
+--aql select * into F from A
+scan(F)  -- Inserted by scan_doctor
+--aql select * into F from A where x=1
+scan(F)  -- Inserted by scan_doctor
+--aql select * into F from A where x<>1
+scan(F)  -- Inserted by scan_doctor
+--aql select * into F from A where a=30
+scan(F)  -- Inserted by scan_doctor
+--aql select * into F from A where a<30
+scan(F)  -- Inserted by scan_doctor
+--aql select * into F from A where a>10 and x>1
+scan(F)  -- Inserted by scan_doctor
+--aql select * into F from A where a>11 or x=5
+scan(F)  -- Inserted by scan_doctor
+
+--aql select * into G from A
+scan(G)  -- Inserted by scan_doctor
+--aql select * into G from A where x=1
+scan(G)  -- Inserted by scan_doctor
+--aql select * into G from A where x<>1
+scan(G)  -- Inserted by scan_doctor
+--aql select * into G from A where a=30
+scan(G)  -- Inserted by scan_doctor
+--aql select * into G from A where a<30
+scan(G)  -- Inserted by scan_doctor
+--aql select * into G from A where a<30 and x=1
+scan(G)  -- Inserted by scan_doctor
+--aql select * into G from A where a<10 or x=0
+scan(G)  -- Inserted by scan_doctor
+
+--cleanup
+remove(A)
+remove(B)
+remove(C)
+remove(D)
+remove(E)
+remove(F)
+remove(G)
+--stop-query-logging

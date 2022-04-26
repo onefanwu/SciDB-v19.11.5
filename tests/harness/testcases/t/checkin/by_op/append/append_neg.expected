@@ -1,0 +1,33 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Some of stuff...
+{i} v_sum
+{0} 2800
+
+[An error expected at this place for the query "append(STUFF, TWO_D)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_MULTIDIMENSIONAL_ARRAY_NOT_ALLOWED. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_MULTIDIMENSIONAL_ARRAY_NOT_ALLOWED.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+{i} v_sum
+{0} 2800
+
+[An error expected at this place for the query "append(STUFF, TWO_D, x)". And it failed with error code = scidb::SCIDB_SE_EXECUTION::SCIDB_LE_CHUNK_OUT_OF_BOUNDARIES. Expected error code = scidb::SCIDB_SE_EXECUTION::SCIDB_LE_CHUNK_OUT_OF_BOUNDARIES.]
+
+[An error expected at this place for the query "append(build(STUFF, random()), IDONTEXIST)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_DOESNT_EXIST. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_DOESNT_EXIST.]
+
+[An error expected at this place for the query "append(flatten(build(STUFF, random())), IDONTEXIST)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_DOESNT_EXIST. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_DOESNT_EXIST.]
+
+[An error expected at this place for the query "append(STUFF)". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_NAME_ARITY_MISMATCH. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_NAME_ARITY_MISMATCH.]
+
+[An error expected at this place for the query "append()". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_NAME_ARITY_MISMATCH. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_NAME_ARITY_MISMATCH.]
+
+[An error expected at this place for the query "append(STUFF, TWO_D, TWO_D)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+[An error expected at this place for the query "append(STUFF, TWO_D, x, x)". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT.]
+
+Query was executed successfully
+
+Query was executed successfully
+

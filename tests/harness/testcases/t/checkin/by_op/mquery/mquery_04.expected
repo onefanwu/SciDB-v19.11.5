@@ -1,0 +1,57 @@
+SCIDB QUERY : <create array s <v:int64>[i=1:*:0:1]>
+Query was executed successfully
+
+SCIDB QUERY : <create array t <v:int64>[i=1:*:0:1]>
+Query was executed successfully
+
+SCIDB QUERY : <create array u <v:int64>[i=1:*:0:1]>
+Query was executed successfully
+
+SCIDB QUERY : <mquery(insert(build(<v:int64>[i=1:9:0:1],1*i),s), insert(s,t), insert(t,u))>
+Query was executed successfully
+
+SCIDB QUERY : <scan(s)>
+{i} v
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+{5} 5
+{6} 6
+{7} 7
+{8} 8
+{9} 9
+
+SCIDB QUERY : <scan(t)>
+{i} v
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+{5} 5
+{6} 6
+{7} 7
+{8} 8
+{9} 9
+
+SCIDB QUERY : <scan(u)>
+{i} v
+{1} 1
+{2} 2
+{3} 3
+{4} 4
+{5} 5
+{6} 6
+{7} 7
+{8} 8
+{9} 9
+
+SCIDB QUERY : <remove(s)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(t)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(u)>
+Query was executed successfully
+

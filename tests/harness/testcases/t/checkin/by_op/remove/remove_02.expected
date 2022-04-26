@@ -1,0 +1,56 @@
+SCIDB QUERY : <store(build(<v:int64>[i=1:100:0:1], 2*i+1), remove_array_test)>
+Query was executed successfully
+
+SCIDB QUERY : <store(project(apply(remove_array_test, vnew, 3*v), vnew), remove_array_test)>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(versions(remove_array_test))>
+{i} count
+{0} 2
+
+SCIDB QUERY : <store(project(filter(list(), name = 'remove_array_test'), uaid), uaids, distribution:replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <lock_arrays(true)>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(_dskeys(uaids))>
+{i} count
+{0} 800
+
+SCIDB QUERY : <lock_arrays(false)>
+Query was executed successfully
+
+SCIDB QUERY : <remove_versions(remove_array_test, keep:1)>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(versions(remove_array_test))>
+{i} count
+{0} 1
+
+SCIDB QUERY : <lock_arrays(true)>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(_dskeys(uaids))>
+{i} count
+{0} 400
+
+SCIDB QUERY : <lock_arrays(false)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(remove_array_test)>
+Query was executed successfully
+
+SCIDB QUERY : <lock_arrays(true)>
+Query was executed successfully
+
+SCIDB QUERY : <op_count(_dskeys(uaids))>
+{i} count
+{0} 0
+
+SCIDB QUERY : <lock_arrays(false)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(uaids)>
+Query was executed successfully
+

@@ -1,0 +1,14 @@
+--setup
+--start-query-logging
+create array f <x:uint64>[i=0:9]
+
+--test
+scan(f)
+add_attributes(f, <y:int64>)
+scan(f)
+store(apply(build(<x:uint64>[i=0:9],i),y,int64(i)),f)
+scan(f)
+
+--cleanup
+remove(f)
+--stop-query-logging

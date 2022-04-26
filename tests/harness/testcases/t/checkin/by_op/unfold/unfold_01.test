@@ -1,0 +1,15 @@
+--setup
+--start-query-logging
+store(apply(op_count(build(<v:uint64>[i=0:0],i)),w,uint64(1),x,uint64(2),y,uint64(3)),dense)
+store(apply(build(<v:uint64>[i=0:0],i),w,uint64(1),x,uint64(2),y,uint64(3)),sparse)
+
+--test
+_show_nodist(dense)
+_show_nodist(sparse)
+unfold(dense)
+unfold(sparse)
+
+--cleanup
+remove(dense)
+remove(sparse)
+--stop-query-logging

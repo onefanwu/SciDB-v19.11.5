@@ -1,0 +1,54 @@
+# Cloned from la_rank.test.  Verifies that, for those cases that don't
+# specify dimensions, rank() and avg_rank() get the same results for
+# the dataframe version of teeth.
+
+--setup
+create array teeth <val:int64 null> [x=0:*,2,0,y=0:*,2,0]
+load( teeth, '${TEST_DATA_DIR}/teeth.txt', 0)
+scan(teeth)  -- Inserted by scan_doctor
+
+store(flatten(teeth), flat_teeth)
+store(flatten(teeth), many_flat_teeth, distribution:replicated)
+
+--test
+
+--echo not replicated
+sort(rank(flat_teeth, val))
+sort(avg_rank(apply(flat_teeth, v2, string(val)), v2))
+
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "rank(apply(flat_teeth, v2, double(val)), v2, x)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "avg_rank(apply(flat_teeth, v2, uint8(val)), v2, y)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "rank(apply(flat_teeth, v2, int16(val)), v2, x, y)"
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "rank(apply(flat_teeth, v2, double(val)), v2, \$seq)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "avg_rank(apply(flat_teeth, v2, uint8(val)), v2, \$seq)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "rank(apply(flat_teeth, v2, int16(val)), v2, \$seq, \$inst)"
+
+--echo replicated
+sort(rank(many_flat_teeth, val))
+sort(avg_rank(apply(many_flat_teeth, v2, string(val)), v2))
+
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "rank(apply(many_flat_teeth, v2, double(val)), v2, x)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "avg_rank(apply(many_flat_teeth, v2, uint8(val)), v2, y)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 \
+    "rank(apply(many_flat_teeth, v2, int16(val)), v2, x, y)"
+
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "rank(apply(many_flat_teeth, v2, double(val)), v2, \$seq)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "avg_rank(apply(many_flat_teeth, v2, uint8(val)), v2, \$seq)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "rank(apply(many_flat_teeth, v2, int16(val)), v2, \$seq, \$inst)"
+
+--cleanup
+remove(teeth)
+remove(flat_teeth)
+remove(many_flat_teeth)

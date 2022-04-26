@@ -1,0 +1,14 @@
+SCIDB QUERY : <store(build(<v:int64>[i=0:2,1,0,j=0:2,2,0],3*i+j), REPL, distribution: replicated)>
+Query was executed successfully
+
+SCIDB QUERY : <show(REPL)>
+{i} schema,distribution,etcomp
+{0} 'REPL<v:int64> [i=0:2:0:1; j=0:2:0:2]','replicated','none'
+
+SCIDB QUERY : <op_sum(flatten(REPL),v)>
+{i} v_sum
+{0} 36
+
+SCIDB QUERY : <remove(REPL)>
+Query was executed successfully
+

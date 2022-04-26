@@ -1,0 +1,18 @@
+SCIDB QUERY : <load_library('mpi_test')>
+Query was executed successfully
+
+SCIDB QUERY : <trap 'kill 0' SIGINT SIGTERM SIGHUP SIGQUIT ; ( iquery -p ${IQUERY_PORT:=1239} -c ${IQUERY_HOST:=localhost} -odcsv -aq '_mpi_test()' 1> /tmp/${HPID}_mpitest1.stdout 2> /tmp/${HPID}_mpitest1.stderr ) & export pid=$! ; export rc=0 ; iquery -p ${IQUERY_PORT:=1239} -c ${IQUERY_HOST:=localhost} -odcsv -aq '_mpi_test()' 1> /tmp/${HPID}_mpitest2.stdout 2> /tmp/${HPID}_mpitest2.stderr || export rc=${rc}2 ; wait $pid || export rc=${rc}1 ; echo $rc && [ $rc == 0 ];>
+0
+
+SCIDB QUERY : <ls /dev/shm/SciDB* 2>/dev/null || true>
+
+SCIDB QUERY : <cat /tmp/${HPID}_mpitest1.stdout>
+{mpi_test_dimension} mpi_test_attribute
+
+SCIDB QUERY : <cat /tmp/${HPID}_mpitest1.stderr>
+
+SCIDB QUERY : <cat /tmp/${HPID}_mpitest2.stdout>
+{mpi_test_dimension} mpi_test_attribute
+
+SCIDB QUERY : <cat /tmp/${HPID}_mpitest2.stderr>
+

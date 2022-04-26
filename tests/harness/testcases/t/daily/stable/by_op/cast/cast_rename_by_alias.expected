@@ -1,0 +1,43 @@
+SCIDB QUERY : <create array AA < chr : char, i16 : int16 not null, str : string, i64 : int64, u64 : uint64, dbl : double, flt : float > [ i=0:3:0:4; j=0:9 ]>
+Query was executed successfully
+
+SCIDB QUERY : <store( redimension( apply( build( <i64: int64>[i=0:3], i ), (chr, char(int8(38))), (str, 'Yow!'), (u64, uint64(i*100)), (dbl, 6.02e23), (flt, float(3.1415)), (i16, int16(64000)), (j, i+4)), AA), AA)>
+Query was executed successfully
+
+SCIDB QUERY : <store(AA, BB)>
+Query was executed successfully
+
+SCIDB QUERY : <cast(join(AA, BB), (AA.str, aa_str))>
+{i,j} chr,i16,aa_str,i64,u64,dbl,flt,chr,i16,str,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415,'&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415,'&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415,'&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415,'&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <cast(join(AA, BB), (BB.str, bb_str))>
+{i,j} chr,i16,str,i64,u64,dbl,flt,chr,i16,bb_str,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415,'&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415,'&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415,'&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415,'&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <cast(join(AA, BB), (AA.str, aa_str), (BB.str, bb_str))>
+{i,j} chr,i16,aa_str,i64,u64,dbl,flt,chr,i16,bb_str,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415,'&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415,'&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415,'&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415,'&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <cast( join( cast(AA, (str, FOO)), BB ) as C, (C.str, BAR) )>
+{i,j} chr,i16,FOO,i64,u64,dbl,flt,chr,i16,BAR,i64,u64,dbl,flt
+{0,4} '&',-1536,'Yow!',0,0,6.02e+23,3.1415,'&',-1536,'Yow!',0,0,6.02e+23,3.1415
+{1,5} '&',-1536,'Yow!',1,100,6.02e+23,3.1415,'&',-1536,'Yow!',1,100,6.02e+23,3.1415
+{2,6} '&',-1536,'Yow!',2,200,6.02e+23,3.1415,'&',-1536,'Yow!',2,200,6.02e+23,3.1415
+{3,7} '&',-1536,'Yow!',3,300,6.02e+23,3.1415,'&',-1536,'Yow!',3,300,6.02e+23,3.1415
+
+SCIDB QUERY : <remove(AA)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(BB)>
+Query was executed successfully
+

@@ -1,0 +1,110 @@
+--setup
+store(build(<v:int64 null>[R=0:0,1,0], 1), ARRAY_A)
+scan(ARRAY_A)  -- Inserted by scan_doctor
+store(build(<v:int64 null>[R=0:0,1,0], 1), ARRAY_B)
+scan(ARRAY_B)  -- Inserted by scan_doctor
+
+--test
+--start-query-logging
+
+#
+# single array from clause (no join)
+#
+
+# select from clause, one alias
+--aql select A.v from ARRAY_A as A
+--aql select A.v from ARRAY_A as A where A.v = 1
+
+# select nested from clause, inner clause array alias
+--aql select A.v from (select A.v from ARRAY_A as A)
+--aql select A.v from (select A.v from ARRAY_A as A where A.v=1 )
+
+# select nested from clause, outer clause alias
+--aql select A.v from (select ARRAY_A.v from ARRAY_A) as A
+--aql select A.v from (select ARRAY_A.v from ARRAY_A) as A where A.v = 1
+
+# select nested from clause, both inner and outer aliases
+--aql select A.v,AA.v from (select A.v from ARRAY_A as A             ) as AA
+--aql select A.v,AA.v from (select A.v from ARRAY_A as A where A.v=1 ) as AA where AA.v=1
+
+#
+# multi array from clause (join)
+#
+
+# select from clause, join with two aliases
+--aql select A.v,B.v from ARRAY_A as A, ARRAY_B as B
+--aql select A.v,B.v from ARRAY_A as A, ARRAY_B as B where A.v = B.v
+
+# select from clause, join with inner clause array aliases
+--aql select A.v,B.v from (select A.v from ARRAY_A as A            ),(select B.v from ARRAY_B as B)
+--aql select A.v,B.v from (select A.v from ARRAY_A as A where A.v=1),(select B.v from ARRAY_B as B) where A.v = B.v
+
+# select from clause, join with outer clause array aliases
+--aql select AA.v,BB.v from (select ARRAY_A.v from ARRAY_A) as AA,(select ARRAY_B.v from ARRAY_B) as BB
+--aql select AA.v,BB.v from (select ARRAY_A.v from ARRAY_A) as AA,(select ARRAY_B.v from ARRAY_B) as BB where AA.v = BB.v
+
+# select from clause, join with both inner and outer clause array aliases
+--aql select A.v,AA.v,B.v,BB.v from (select A.v from ARRAY_A as A            ) as AA,(select B.v from ARRAY_B as B) as BB
+--aql select A.v,AA.v,B.v,BB.v from (select A.v from ARRAY_A as A where A.v=1) as AA,(select B.v from ARRAY_B as B where B.v=1) as BB where AA.v = BB.v
+
+################################################################################
+# everything above (8 pairs of queries) with the build substituted for the ARRAY
+# reference, in order to go one level of recursion deeper
+#
+# this was originally motivated by a query from misc_operator_macros.test
+# which failed despite everything above passing:
+#     select * from op_now() as A, op_now() as B where A.when = B.when
+# which expands to:
+#     select * from build(<when:datetimetz>[R=0:0,1,0],tznow()) as A, build(<when:datetimetz>[R=0:0,1,0], tznow()) as B where A.when = B.when
+# which is structurally equivalent to the following integer-typed query
+#     select * from build(<v:int64>[R=0:0,1,0],abs(1)) as A, build(<v:int64>[R=0:0,1,0],abs(1) as B where A.v = B.v
+# That query appears if "build(<v:int64>[R=0:0,1,0],abs(1))" is substituted for ARRAY_{A,B} in
+# the queries above
+################################################################################
+
+#
+# single array from clause (no join)
+#
+
+# select from clause, one alias
+--aql select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A
+--aql select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v = 1
+
+# select nested from clause, inner clause array alias
+--aql select A.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A)
+--aql select A.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v=1 )
+
+# select nested from clause, outer clause alias
+--aql select A.v from (select v from build(<v:int64>[R=0:0,1,0],abs(1))) as A
+--aql select A.v from (select v from build(<v:int64>[R=0:0,1,0],abs(1))) as A where A.v = 1
+
+# select nested from clause, both inner and outer aliases
+--aql select A.v,AA.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A             ) as AA
+--aql select A.v,AA.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v=1 ) as AA where AA.v=1
+
+#
+# multi array from clause (join)
+#
+
+# select from clause, join with two aliases
+--aql select A.v,B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A, build(<v:int64>[R=0:0,1,0],abs(1)) as B
+--aql select A.v,B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A, build(<v:int64>[R=0:0,1,0],abs(1)) as B where A.v = B.v
+
+# select from clause, join with inner clause array aliases
+--aql select A.v,B.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A            ),(select B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as B)
+--aql select A.v,B.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v=1),(select B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as B) where A.v = B.v
+
+# select from clause, join with outer clause array aliases
+--aql select AA.v,BB.v from (select v from build(<v:int64>[R=0:0,1,0],abs(1))) as AA,(select v from build(<v:int64>[R=0:0,1,0],abs(1))) as BB
+--aql select AA.v,BB.v from (select v from build(<v:int64>[R=0:0,1,0],abs(1))) as AA,(select v from build(<v:int64>[R=0:0,1,0],abs(1))) as BB where AA.v = BB.v
+
+# select from clause, join with both inner and outer clause array aliases
+--aql select A.v,AA.v,B.v,BB.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A            ) as AA,(select B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as B) as BB
+--aql select A.v,AA.v,B.v,BB.v from (select A.v from build(<v:int64>[R=0:0,1,0],abs(1)) as A where A.v=1) as AA,(select B.v from build(<v:int64>[R=0:0,1,0],abs(1)) as B where B.v=1) as BB where AA.v = BB.v
+
+
+
+--cleanup
+remove(ARRAY_A)
+remove(ARRAY_B)
+

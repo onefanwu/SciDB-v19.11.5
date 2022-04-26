@@ -1,0 +1,62 @@
+SCIDB QUERY : <store(apply(build(<v:int64>[i=0:199:0:10], i), (w, 2*v)), A)>
+Query was executed successfully
+
+{i} v,w
+
+v,w
+
+Baseline sums.
+SCIDB QUERY : <op_sum(A, v)>
+{i} v_sum
+{0} 19900
+
+SCIDB QUERY : <op_sum(flatten(A), v)>
+{i} v_sum
+{0} 19900
+
+SCIDB QUERY : <op_sum(A, w)>
+{i} w_sum
+{0} 39800
+
+SCIDB QUERY : <op_sum(flatten(A), w)>
+{i} w_sum
+{0} 39800
+
+Sums from input()
+[Query was executed successfully, ignoring data output by this query.]
+
+{i} v_sum
+{0} 19900
+
+{i} w_sum
+{0} 39800
+
+Reload saved dataframe.
+[Query was executed successfully, ignoring data output by this query.]
+
+Query was executed successfully
+
+SCIDB QUERY : <project(apply(show(DF), nschema, substr(schema, 0, 29)+'-'+substr(schema, 30, 100)), nschema)>
+{i} nschema
+{0} 'DF<v:int64,w:int64> [$inst=0:-:0:1; $seq=0:*:0:10]'
+
+SCIDB QUERY : <op_sum(DF, v)>
+{i} v_sum
+{0} 19900
+
+SCIDB QUERY : <op_sum(DF, w)>
+{i} w_sum
+{0} 39800
+
+SG found reloading a dataframe saved in opaque format.
+Found SG
+
+SG found storing an array.
+Found SG
+
+SCIDB QUERY : <remove(A)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(DF)>
+Query was executed successfully
+

@@ -1,0 +1,37 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Initial sum...
+{i} v_sum
+{0} 1890
+
+SCIDB QUERY : <append(A, X)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 1890
+
+SCIDB QUERY : <append(A, X)>
+Query was executed successfully
+
+SCIDB QUERY : <op_sum(X, v)>
+{i} v_sum
+{0} 3780
+
+SCIDB QUERY : <append(B, Y)>
+[An error expected at this place for the query "append(B, Y)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

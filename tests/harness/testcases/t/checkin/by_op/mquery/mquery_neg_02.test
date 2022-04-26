@@ -1,0 +1,11 @@
+--setup
+--start-query-logging
+create array a<v:int64>[i=12:24:0:1]
+
+--test
+--error --code scidb::SCIDB_SE_QPROC::SCIDB_LE_DDL_CANT_BE_NESTED \
+  "mquery(mquery(insert(build(a,2*i+1),a)))"
+
+--cleanup
+remove(a)
+--stop-query-logging

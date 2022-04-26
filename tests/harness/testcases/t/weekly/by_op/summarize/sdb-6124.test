@@ -1,0 +1,11 @@
+--setup
+create array public_RNAQUANTIFICATION <value:float> [dataset_version=0:*:0:1; dataset_id=0:*:0:10; measurementset_id=0:*:0:10; biosample_id=0:*:0:1000; feature_id=0:*:0:100]
+--start-igdata
+load(public_RNAQUANTIFICATION, '/public/data/tickets/sdb6124/public_opaque_save_RNAQUANT/public_RNAQUANTIFICATION', -2, 'opaque')
+--stop-igdata
+
+--test
+summarize(filter(between(public_RNAQUANTIFICATION,null,null,null,null,null,null,null,null,null,null), measurementset_id = 16))
+
+--cleanup
+remove(public_RNAQUANTIFICATION)

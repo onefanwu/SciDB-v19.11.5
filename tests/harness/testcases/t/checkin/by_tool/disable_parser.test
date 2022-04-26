@@ -1,0 +1,9 @@
+# Test the disable parser
+--setup
+
+--test
+--start-query-logging
+--shell --store --command="disable.py --config ${TESTDIR}/disable.ini --build Assert ${TESTDIR}/disable.tests -"
+--stop-query-logging
+
+--cleanup

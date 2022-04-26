@@ -1,0 +1,116 @@
+--setup
+--start-query-logging
+
+create array L <a:int64> [x=0:*,4,0 , y=0:*,4,0]
+create array Ldata_small <a:int64> [x=0:7,4,0 , y=0:7,4,0]
+create array Ldata_large <a:int64> [x=0:11,4,0 , y=0:11,4,0]
+
+create array Ldata_left  <a:int64> [x=0:4,4,0 , y=0:4,4,0]
+create array Ldata_right <a:int64> [x=0:11,4,0 , y=0:4,4,0]
+
+create array R <a:int64> [x=0:*,4,0 , y=0:*,4,0]
+create array Rdata_small <a:int64> [x=0:7,4,0 , y=0:7,4,0]
+create array Rdata_large <a:int64> [x=0:11,4,0 , y=0:11,4,0]
+
+create array Rdata_left  <a:int64> [x=0:4,4,0 , y=0:11,4,0]
+create array Rdata_right <a:int64> [x=0:11,4,0 , y=0:11,4,0]
+
+--test
+store(build(Ldata_small, 100*x-19*y), Ldata_small)
+scan(Ldata_small)  -- Inserted by scan_doctor
+store(build(Ldata_large, 50*x-10*y), Ldata_large)
+scan(Ldata_large)  -- Inserted by scan_doctor
+
+store(filter(build(Ldata_left,  50*x-10*y), x < 5), Ldata_left)
+scan(Ldata_left)  -- Inserted by scan_doctor
+store(filter(build(Ldata_right, 50*x-10*y), x > 4), Ldata_right)
+scan(Ldata_right)  -- Inserted by scan_doctor
+
+store(build(Rdata_small, 100*x-19*y), Rdata_small)
+scan(Rdata_small)  -- Inserted by scan_doctor
+store(build(Rdata_large, 50*x-10*y), Rdata_large)
+scan(Rdata_large)  -- Inserted by scan_doctor
+
+store(filter(build(Rdata_left, 50*x-10*y), x < 5), Rdata_left)
+scan(Rdata_left)  -- Inserted by scan_doctor
+store(filter(build(Rdata_right, 50*x-10*y), x > 4), Rdata_right)
+scan(Rdata_right)  -- Inserted by scan_doctor
+
+# case 1. s -> l
+store(Ldata_small, L)
+scan(L)  -- Inserted by scan_doctor
+store(Rdata_large, R)
+scan(R)  -- Inserted by scan_doctor
+_show_nodist(L)
+_show_nodist(R)
+insert(L, R)
+scan(R)  -- Inserted by scan_doctor
+_show_nodist(R)
+dimensions(R)
+
+# case 2. l -> s
+insert(R, L)
+scan(L)  -- Inserted by scan_doctor
+_show_nodist(L)
+dimensions(L)
+
+# case 3. disjoint no overlap
+store(Ldata_left, L)
+scan(L)  -- Inserted by scan_doctor
+store(Rdata_right, R)
+scan(R)  -- Inserted by scan_doctor
+insert(L, R)
+scan(R)  -- Inserted by scan_doctor
+
+# case 4. l contains r
+store(Ldata_large, L)
+scan(L)  -- Inserted by scan_doctor
+store(Rdata_small, R)
+scan(R)  -- Inserted by scan_doctor
+insert(L, R)
+scan(R)  -- Inserted by scan_doctor
+
+# case 5. l and r different overlap, remove overlap and add arrays
+dimensions(R)
+dimensions(L)
+store(Rdata_right, R)
+scan(R)  -- Inserted by scan_doctor
+store(repart(Ldata_left, <a:int64> [x=0:*,4,2 , y=0:*,4,2]), Ldata_left_ol)
+scan(Ldata_left_ol)  -- Inserted by scan_doctor
+insert(repart(Ldata_left_ol, <a:int64> [x=0:*,4,0, y=0:*,4,0]), R)
+scan(R)  -- Inserted by scan_doctor
+dimensions(R)
+dimensions(L)
+
+# case 6. l and r different overlap, add overlap and add arrays
+store(Rdata_right, R)
+scan(R)  -- Inserted by scan_doctor
+store(repart(Ldata_left, <a:int64> [x=0:*,4,2 , y=0:*,4,2]), Ldata_left_ol)
+scan(Ldata_left_ol)  -- Inserted by scan_doctor
+dimensions(R)
+dimensions(Ldata_left_ol)
+_show_nodist(R)
+_show_nodist(Ldata_left_ol)
+
+insert(repart(R, <a:int64> [x=0:*,4,2, y=0:*,4,2]), Ldata_left_ol)
+scan(Ldata_left_ol)  -- Inserted by scan_doctor
+dimensions(R)
+dimensions(Ldata_left_ol)
+_show_nodist(R)
+_show_nodist(Ldata_left_ol)
+
+--cleanup
+remove(L)
+remove(Ldata_small)
+remove(Ldata_large)
+
+remove(Ldata_left)
+remove(Ldata_right)
+
+remove(R)
+remove(Rdata_small)
+remove(Rdata_large)
+
+remove(Rdata_left)
+remove(Rdata_right)
+remove(Ldata_left_ol)

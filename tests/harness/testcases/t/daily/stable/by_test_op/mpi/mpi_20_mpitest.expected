@@ -1,0 +1,6 @@
+SCIDB QUERY : <load_library('mpi_test')>
+Query was executed successfully
+
+SCIDB QUERY : <_mpi_test()>
+{mpi_test_dimension} mpi_test_attribute
+

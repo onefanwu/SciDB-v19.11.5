@@ -1,0 +1,15 @@
+#
+# The scidb build directory (and descendants)
+/stage/
+#
+# Files and Directories associated with Eclipse editor
+.project
+.settings/
+.cproject
+.pydevproject
+#
+# Emacs backup files
+*~
+#
+# Accidental testDisable.py results
+disable.results

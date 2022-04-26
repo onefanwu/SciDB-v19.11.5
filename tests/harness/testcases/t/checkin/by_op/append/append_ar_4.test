@@ -1,0 +1,50 @@
+# Append arrays, trying all combinations of lower dimension bound for
+# source and destination array.
+
+--setup
+
+store(build(<v:int64>[i=-5:9:0:5], i), A)
+store(build(<v:int64>[i=0:19:0:5], i), B)
+store(build(<v:int64>[i=10:29:0:5], i), C)
+
+create array W<v:int64>[j=0:*:0:8]
+create array X<v:int64>[j=3:*:0:8]
+create array Y<v:int64>[j=-10:*:0:8]
+
+--test
+--echo Initial sums...
+--start-query-logging
+op_sum(A, v)
+op_sum(B, v)
+op_sum(C, v)
+
+append(A, W)
+op_sum(W, v)
+append(B, W)
+op_sum(W, v)
+append(C, W)
+op_sum(W, v)
+
+append(A, X)
+op_sum(X, v)
+append(B, X)
+op_sum(X, v)
+append(C, X)
+op_sum(X, v)
+
+append(A, Y)
+op_sum(Y, v)
+append(B, Y)
+op_sum(Y, v)
+append(C, Y)
+op_sum(Y, v)
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(B)
+remove(C)
+remove(W)
+remove(X)
+remove(Y)

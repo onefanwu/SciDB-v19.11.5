@@ -1,0 +1,84 @@
+# a test to show that it is unacceptable to specify distribution when storing a dataframe
+
+--setup
+--start-query-logging
+
+create array SCHEMA <v:int64>[i=0:7;j=0:7]
+store(redimension(apply(build(<v:int64>[i=0:7], i),j,i), SCHEMA), DATA)
+store(flatten(build(DATA, i)), DF)
+store(DATA, DATA_EXISTS)
+store(DF, DF_EXISTS)
+
+--test
+
+# brief review of functionality intended: distribution can be specified
+# when the input is an array.  this is not the test of that functionality
+# just a quick overview of what is allowed before enumerating the prohibited
+# cases further below.
+store(DATA, OUT_HA, distribution: hashed)
+show(OUT_HA)
+scan(OUT_HA)
+
+store(DATA, OUT_RC, distribution: row_cyclic)
+show(OUT_RC)
+scan(OUT_RC)
+
+store(DATA, OUT_RE, distribution: replicated)
+show(OUT_RE)
+scan(OUT_RE)
+
+store(DATA, OUT_CC, distribution: col_cyclic)
+show(OUT_CC)
+scan(OUT_CC)
+
+# SDB-6465, the use of distribution: is restricted when the input is not an array:
+# check three ways, since the store code has different paths
+# varying with the output's existance and type
+# (1) output does not exist
+# (2) output exists and is a dataframe
+# (3) output exists and is an array
+
+# (1) when the destination does not exist
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "store(DF, NOT_EXISTS, distribution: hashed)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "store(DF, NOT_EXISTS, distribution: row_cyclic)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_BAD_DATAFRAME_USAGE \
+    "store(DF, NOT_EXISTS, distribution: col_cyclic)"
+
+# Now supporting 'distribution: replicated' for dataframes!
+store(DF, OUT_RDF, distribution: replicated)
+show(OUT_RDF)
+scan(OUT_RDF)
+
+#
+# (2) when the destination is an existing dataframe
+#     but these can produce SCIDB_LE_INVALID_OPERATOR_ARGUMENT or LE_ARRAYS_NOT_CONFORMAT depending
+#     on the value of x-dflt-dist-root, so we won't specify a single code here
+--error "store(DF, DF_EXISTS, distribution: hashed)"
+--error "store(DF, DF_EXISTS, distribution: row_cyclic)"
+--error "store(DF, DF_EXISTS, distribution: replicated)"
+--error "store(DF, DF_EXISTS, distribution: col_cyclic)"
+
+#
+# (3) when the destination is an existing array
+#     note the error code depends on whether the distribution of DATA_EXISTS matches distribution:
+#     but these can produce SCIDB_LE_INVALID_OPERATOR_ARGUMENT or LE_ARRAYS_NOT_CONFORMAT depending
+#     on the value of x-dflt-dist-root, so we won't specify a single code here either
+--error "store(DF, DATA_EXISTS, distribution: hashed)"
+--error "store(DF, DATA_EXISTS, distribution: row_cyclic)"
+--error "store(DF, DATA_EXISTS, distribution: replicated)"
+--error "store(DF, DATA_EXISTS, distribution: col_cyclic)"
+
+--cleanup
+remove(SCHEMA)
+remove(DATA)
+remove(DF)
+remove(DATA_EXISTS)
+remove(DF_EXISTS)
+
+remove(OUT_HA)
+remove(OUT_RC)
+remove(OUT_RE)
+remove(OUT_CC)
+remove(OUT_RDF)

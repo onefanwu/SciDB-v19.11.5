@@ -1,0 +1,21 @@
+--setup
+create array A <a:int32>[x=0:2,3,0]
+create array B <b:string>[y=0:2,3,0]
+store(build(A,x+1),A)
+scan(A)  -- Inserted by scan_doctor
+store(build(B,'b'+string(y+1)),B)
+scan(B)  -- Inserted by scan_doctor
+store(join(A,B),C)
+scan(C)  -- Inserted by scan_doctor
+store(join(A,B),D)
+scan(D)  -- Inserted by scan_doctor
+
+--test
+cross_join(C,D,C.x,D.x)
+
+--cleanup
+remove(A)
+remove(B)
+remove(C)
+remove(D)
+

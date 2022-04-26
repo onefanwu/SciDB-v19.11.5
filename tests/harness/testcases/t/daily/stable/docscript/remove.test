@@ -1,0 +1,15 @@
+
+--test
+--start-query-logging
+
+--set-format dense
+store(build(<val:double>[i=0:9,10,0],1),source)  
+scan(source)  -- Inserted by scan_doctor
+--set-format dcsv
+remove(source) 
+
+--stop-query-logging
+
+
+--cleanup
+

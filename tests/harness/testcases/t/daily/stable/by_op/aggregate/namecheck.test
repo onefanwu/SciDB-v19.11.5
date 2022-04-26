@@ -1,0 +1,112 @@
+# ticket no. 1040
+
+--setup
+--start-query-logging
+--aql create array A <a:int32> [x=0:2,3,0]
+--aql select * into A from build(A,x+1)
+scan(A)  -- Inserted by scan_doctor
+
+
+--test
+
+--aql select * into Tcount from aggregate(A,count(*))
+scan(Tcount)  -- Inserted by scan_doctor
+_show_nodist(Tcount)
+--aql select count(*) into Tcount_s from A
+scan(Tcount_s)  -- Inserted by scan_doctor
+_show_nodist(Tcount_s)
+--aql select count(a) into Tcount_a from A
+scan(Tcount_a)  -- Inserted by scan_doctor
+_show_nodist(Tcount_a)
+
+--aql select * into Tsum from aggregate(A,sum(a))
+scan(Tsum)  -- Inserted by scan_doctor
+_show_nodist(Tsum)
+--aql select sum(a) into Tsum_a from A
+scan(Tsum_a)  -- Inserted by scan_doctor
+_show_nodist(Tsum_a)
+
+--aql select * into Tmax from aggregate(A,max(a))
+scan(Tmax)  -- Inserted by scan_doctor
+_show_nodist(Tmax)
+--aql select max(a) into Tmax_a from A
+scan(Tmax_a)  -- Inserted by scan_doctor
+_show_nodist(Tmax_a)
+
+--aql select * into Tmin from aggregate(A,min(a))
+scan(Tmin)  -- Inserted by scan_doctor
+_show_nodist(Tmin)
+--aql select min(a) into Tmin_a from A
+scan(Tmin_a)  -- Inserted by scan_doctor
+_show_nodist(Tmin_a)
+
+--aql select * into Tavg from aggregate(A,avg(a))
+scan(Tavg)  -- Inserted by scan_doctor
+_show_nodist(Tavg)
+--aql select avg(a) into Tavg_a from A
+scan(Tavg_a)  -- Inserted by scan_doctor
+_show_nodist(Tavg_a)
+
+--aql select * into Tvar from aggregate(A,var(a))
+scan(Tvar)  -- Inserted by scan_doctor
+_show_nodist(Tvar)
+--aql select var(a) into Tvar_a from A
+scan(Tvar_a)  -- Inserted by scan_doctor
+_show_nodist(Tvar_a)
+
+--aql select * into Tstdev from aggregate(A,stdev(a))
+scan(Tstdev)  -- Inserted by scan_doctor
+_show_nodist(Tstdev)
+--aql select stdev(a) into Tstdev_a from A
+scan(Tstdev_a)  -- Inserted by scan_doctor
+_show_nodist(Tstdev_a)
+
+
+store(window(A,1,0,count(*),count(a)),Wcount)
+scan(Wcount)  -- Inserted by scan_doctor
+_show_nodist(Wcount)
+store(window(A,1,0,sum(a)),Wsum)
+scan(Wsum)  -- Inserted by scan_doctor
+_show_nodist(Wsum)
+store(window(A,1,0,max(a)),Wmax)
+scan(Wmax)  -- Inserted by scan_doctor
+_show_nodist(Wmax)
+store(window(A,1,0,min(a)),Wmin)
+scan(Wmin)  -- Inserted by scan_doctor
+_show_nodist(Wmin)
+store(window(A,1,0,avg(a)),Wavg)
+scan(Wavg)  -- Inserted by scan_doctor
+_show_nodist(Wavg)
+store(window(A,1,0,var(a)),Wvar)
+scan(Wvar)  -- Inserted by scan_doctor
+_show_nodist(Wvar)
+store(window(A,1,0,stdev(a)),Wstdev)
+scan(Wstdev)  -- Inserted by scan_doctor
+_show_nodist(Wstdev)
+
+
+--cleanup
+remove(A)
+remove(Tcount)
+remove(Tcount_s)
+remove(Tcount_a)
+remove(Tsum)
+remove(Tsum_a)
+remove(Tmax)
+remove(Tmax_a)
+remove(Tmin)
+remove(Tmin_a)
+remove(Tavg)
+remove(Tavg_a)
+remove(Tvar)
+remove(Tvar_a)
+remove(Tstdev)
+remove(Tstdev_a)
+remove(Wcount)
+remove(Wsum)
+remove(Wmax)
+remove(Wmin)
+remove(Wavg)
+remove(Wvar)
+remove(Wstdev)
+--stop-query-logging

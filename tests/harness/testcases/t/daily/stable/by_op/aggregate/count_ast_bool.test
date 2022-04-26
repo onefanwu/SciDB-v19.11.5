@@ -1,0 +1,15 @@
+--setup
+
+--test 
+
+create array ba<b: bool NULL>[x=0:2,3,0]
+store(build(ba, 1), ba)
+scan(ba)  -- Inserted by scan_doctor
+--aql update ba set b = null
+scan(ba)  -- Inserted by scan_doctor
+--aql select count(*) from ba
+
+--cleanup
+remove(ba)
+
+

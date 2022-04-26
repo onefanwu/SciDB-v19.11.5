@@ -1,0 +1,17 @@
+--setup
+CREATE ARRAY dense <a: double > [x=0:5,3,0, y=0:5,3,0]
+load(dense,'${TEST_DATA_DIR}/dense.txt')
+scan(dense)  -- Inserted by scan_doctor
+
+--test
+unpack(dense, row)
+
+_show2_nodist('unpack(dense, row)', 'afl')
+_show2_nodist('unpack(dense, row, 10)', 'afl')
+_show2_nodist('unpack(dense, row, chunk_size: 8)', 'afl')
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_KEYWORD_CONFLICTS_WITH_OPTIONAL "unpack(dense, row, 10, chunk_size: 8)"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_WRONG_OPERATOR_ARGUMENTS_COUNT "unpack(dense, row, 10, 42)"
+
+--cleanup
+remove (dense)
+
