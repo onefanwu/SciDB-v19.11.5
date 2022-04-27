@@ -57,7 +57,8 @@ function cleanup()
     echo "Removing build dirs: ${build_dir} ${chroot_tmp_dir}"
     cd ${script_dir}
     rm -rf "${build_dir}" "${chroot_tmp_dir}"
-    sudo rm -rf "${build_dir}"
+    # sudo rm -rf "${build_dir}"
+    rm -rf "${build_dir}"
 }
 
 function die()

@@ -13,3 +13,7 @@
 #
 # Accidental testDisable.py results
 disable.results
+
+# doxygen
+html/
+latex/

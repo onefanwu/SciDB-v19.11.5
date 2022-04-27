@@ -247,7 +247,7 @@ find_package(LibRT REQUIRED)
 # BOOST CONFIG
 set(BOOST_ROOT /opt/scidb/${SCIDB_VERSION_MAJOR}.${SCIDB_VERSION_MINOR}/3rdparty/boost)
 set(Boost_NO_BOOST_CMAKE TRUE)
-  find_package(Boost 1.54 REQUIRED
+  find_package(Boost 1.58 REQUIRED # origin version is 1.54
     COMPONENTS date_time
                filesystem
                program_options
