@@ -17,3 +17,6 @@ disable.results
 # doxygen
 html/
 latex/
+
+# vscode
+.vscode/
