@@ -58,9 +58,7 @@ public:
     }
 
     /// @brief Wrapper of Expression::extractSpatialConstraints()
-    void extractSpatialConstraints(
-        std::shared_ptr<SpatialRanges>& spatialRangesPtr,
-        bool& hasOtherClauses) const
+    void extractSpatialConstraints(std::shared_ptr<SpatialRanges>& spatialRangesPtr, bool& hasOtherClauses) const
     {
         assert(_parameters.size() == 1);
         assert(_parameters[0]->getParamType() == PARAM_PHYSICAL_EXPRESSION);
@@ -87,8 +85,7 @@ public:
      * Filter is a pipelined operator, hence it executes by returning an iterator-based array to the consumer
      * that overrides the chunkiterator method.
      */
-    std::shared_ptr<Array> execute(std::vector< std::shared_ptr<Array> >& inputArrays,
-                                   std::shared_ptr<Query> query)
+    std::shared_ptr<Array> execute(std::vector< std::shared_ptr<Array> >& inputArrays, std::shared_ptr<Query> query)
     {
         assert(inputArrays.size() == 1);
         checkOrUpdateIntervals(_schema, inputArrays[0]);

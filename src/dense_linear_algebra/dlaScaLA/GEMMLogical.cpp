@@ -177,8 +177,7 @@ ArrayDesc GEMMLogical::inferSchema(std::vector<ArrayDesc> schemas, std::shared_p
     //
     const Dimensions& dimsCC = schemas[CC].getDimensions();
 
-    std::pair<string, string> distinctNames = ScaLAPACKDistinctDimensionNames(dimsCC[ROW].getBaseName(),
-                                                                              dimsCC[COL].getBaseName());
+    std::pair<string, string> distinctNames = ScaLAPACKDistinctDimensionNames(dimsCC[ROW].getBaseName(), dimsCC[COL].getBaseName());
     _fixer.clear();
     Dimensions outDims(2);
     outDims[ROW] = DimensionDesc(distinctNames.first,

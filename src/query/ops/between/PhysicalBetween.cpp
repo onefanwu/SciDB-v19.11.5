@@ -93,8 +93,7 @@ public:
    /***
     * Between is a pipelined operator, hence it executes by returning an iterator-based array to the consumer.
     */
-   std::shared_ptr< Array> execute(std::vector< std::shared_ptr< Array> >& inputArrays,
-                                     std::shared_ptr<Query> query)
+   std::shared_ptr< Array> execute(std::vector< std::shared_ptr< Array> >& inputArrays, std::shared_ptr<Query> query)
    {
       assert(inputArrays.size() == 1);
       checkOrUpdateIntervals(_schema, inputArrays[0]);

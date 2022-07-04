@@ -1,25 +1,15 @@
 /*
-**
-* BEGIN_COPYRIGHT
-*
-* Copyright (C) 2008-2019 SciDB, Inc.
-* All Rights Reserved.
-*
-* SciDB is free software: you can redistribute it and/or modify
-* it under the terms of the AFFERO GNU General Public License as published by
-* the Free Software Foundation.
-*
-* SciDB is distributed "AS-IS" AND WITHOUT ANY WARRANTY OF ANY KIND,
-* INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY,
-* NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE. See
-* the AFFERO GNU General Public License for the complete license terms.
-*
-* You should have received a copy of the AFFERO GNU General Public License
-* along with SciDB.  If not, see <http://www.gnu.org/licenses/agpl-3.0.html>
-*
-* END_COPYRIGHT
-*/
-
+ * Copyright (c) 2021-2022 ZJU Database Group, Zhejiang University. 
+ * All rights reserved. 
+ * 
+ * This file is covered by the LICENSE.txt license file in the root directory.
+ * 
+ * @Description: 
+ * 
+ * @Author: Yifan Wu
+ * @Date: 2022-05-18 14:14:33
+ * @LastEditTime: 2022-05-18 14:41:43
+ */
 // std C++
 #include <cmath>
 #include <sstream>
@@ -38,9 +28,7 @@
 #include <array/MemArray.h>
 #include <array/OpArray.h>
 #include <log4cxx/logger.h>
-#include <mpi/MPISlaveProxy.h>
-#include <mpi/MPILauncher.h>
-#include <mpi/MPIManager.h>
+
 #include <query/AutochunkFixer.h>
 #include <query/Query.h>
 #include <system/BlockCyclic.h>
@@ -50,18 +38,10 @@
 #include <util/shm/SharedMemoryIpc.h>
 #include <util/Utility.h>
 
-// MPI/ScaLAPACK
-#include <scalapackUtil/reformat.hpp>
-#include <scalapackUtil/scalapackFromCpp.hpp>
-#include <scalapackUtil/ScaLAPACKLogical.hpp> // for checkScaLAPACKPhysicalInputs()
-#include <scalapackUtil/ScaLAPACKPhysical.hpp>
-#include <dlaScaLA/scalapackEmulation/scalapackEmulation.hpp>
-#include <dlaScaLA/slaving/pdgemmMaster.hpp>
-#include <dlaScaLA/slaving/pdgemmSlave.hpp>
-
 // locals
 #include "GEMMOptions.hpp"
 #include "DLAErrors.h"
+
 
 //
 // NOTE: code sections marked REFACTOR are being identified as
@@ -175,7 +155,7 @@ std::shared_ptr<Array> GEMMPhysical::invokeMPI(std::vector< std::shared_ptr<Arra
         // redistribute to dtScaLAPACK
         // NOTE: this must be kept in sync with the particpatingInMPI version of the redistribute, below
         // NOTE: this redistribution must be kept in sync with the particpatingInMPI redistributeInputArrays, above
-        for(size_t mat = 0; mat < numArray; mat++ ) {
+        for(size_t mat=0; mat < numArray; mat++ ) {
             std::stringstream labelStream;
             labelStream << "GEMMPhysical input[" << mat << "]";
             std::shared_ptr<Array> tmpRedistedInput = redistributeInputArray(inputArrays[mat],
@@ -513,6 +493,7 @@ std::shared_ptr<Array> GEMMPhysical::execute(std::vector< std::shared_ptr<Array>
     AutochunkFixer af(getControlCookie());
     af.fix(_schema, inputArrays);
 
+
     // before redistributing the inputs, lets make sure the matrix sizes won't overwhelm the ScaLAPACK integer size:
     // TODO: move this to logical operator as much as possible
     // TODO: factor this to ScaLAPACKPhysical::checkArrayInput() as much as possible
@@ -522,8 +503,14 @@ std::shared_ptr<Array> GEMMPhysical::execute(std::vector< std::shared_ptr<Array>
 
     for (size_t iii=0; iii < inputArrays.size(); iii++) {
         const Dimensions& dims = inputArrays[iii]->getArrayDesc().getDimensions();
-        size_t maxLocalRows=std::max(size_t(1), scidb_numroc_max(dims[ROW].getLength(), dims[ROW].getChunkInterval(), gridSize.row));
-        size_t maxLocalCols=std::max(size_t(1), scidb_numroc_max(dims[COL].getLength(), dims[COL].getChunkInterval(), gridSize.col));
+        size_t maxLocalRows=std::max(size_t(1),
+                                     scidb_numroc_max(dims[ROW].getLength(),
+                                                      dims[ROW].getChunkInterval(),
+                                                      gridSize.row));
+        size_t maxLocalCols=std::max(size_t(1),
+                                     scidb_numroc_max(dims[COL].getLength(),
+                                                      dims[COL].getChunkInterval(),
+                                                      gridSize.col));
         // note: dgemm() has the slpp::int_t limitation on its dimensions (as does gesvd()), but it
         //     *does not* have the rows*cols=area limitation, because it does not pass the area
         //     in an slpp::int_t and the implementatio seems to use Fortran INTEGER*8 (64-bit) internally
@@ -584,6 +571,7 @@ std::shared_ptr<Array> GEMMPhysical::execute(std::vector< std::shared_ptr<Array>
 
     // and now invokeMPI produces an array without empty bitmap except when it is not participating
     std::shared_ptr<Array> arrayNoEmptyTag = invokeMPI(inputArrays, options, query, schemaNoEmptyTag);
+
 
     // now we place a wrapper array around arrayNoEmptyTag, that adds a fake emptyTag (true everywhere)
     // but otherwise passes through requests for iterators on the other attributes.

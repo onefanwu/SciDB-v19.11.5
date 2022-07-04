@@ -49,6 +49,7 @@ inline bool hasSingleAttribute(ArrayDesc const& desc)
  * @par Synopsis:
  *   spgemm( leftArray, rightArray [,semiring] )
  *
+ * 
  * @par Summary:
  *   Produces a result array via matrix multiplication.
  *   Both matrices must have a single numeric attribute.
